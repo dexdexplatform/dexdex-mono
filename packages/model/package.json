@@ -1,6 +1,6 @@
 {
   "name": "@dexdex/model",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "DexDex Model",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -13,8 +13,8 @@
     "build": "tsc"
   },
   "devDependencies": {
-    "@dexdex/typescript-typings": "^0.0.1",
-    "@dexdex/utils": "^0.0.1",
+    "@dexdex/typescript-typings": "^0.0.2",
+    "@dexdex/utils": "^0.0.2",
     "@types/jest": "^22.2.3",
     "jest": "^23.0.1",
     "lint-staged": "^7.1.2",
