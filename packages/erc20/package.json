@@ -1,6 +1,6 @@
 {
   "name": "@dexdex/erc20",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "DexDex ERC20 Contract Interface",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -13,8 +13,8 @@
     "build": "tsc"
   },
   "devDependencies": {
-    "@dexdex/model": "^0.0.3",
-    "@dexdex/typescript-typings": "^0.0.3",
+    "@dexdex/model": "^0.0.4",
+    "@dexdex/typescript-typings": "^0.0.4",
     "@types/jest": "^22.2.3",
     "jest": "^23.0.1",
     "lint-staged": "^7.1.2",
