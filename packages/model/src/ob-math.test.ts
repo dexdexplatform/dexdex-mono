@@ -105,7 +105,7 @@ describe('obmath', () => {
       const minVolume = obmath.getMinVolume(orders, toWei(0.001, 'ether'));
 
       // price is Eth / volume
-      const price = (5 * 1.003) / 30;
+      // const price = (5 * 1.003) / 30;
       // MIN volumeEth is 0.001 ether
       // min volume is: volumeEth / price
       // const minVolumeExpected = 0.001 / price;
