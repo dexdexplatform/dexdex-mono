@@ -3,7 +3,10 @@ declare module 'ethjs-query' {
 
   type Address = string;
 
-  export interface TransactionReceipt {}
+  export interface TransactionReceipt {
+    contractAddress: string;
+    gasUsed: BN;
+  }
 
   class Eth {
     constructor(provider: any);
