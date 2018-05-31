@@ -1,4 +1,3 @@
 linters:
   types/**/*.{js,jsx,ts,tsx,json,css}:
     - prettier -l
-    - git add
