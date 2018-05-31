@@ -1,0 +1,20 @@
+{
+  "name": "dexdex-public",
+  "private": true,
+  "scripts": {
+    "lerna:add": "lerna add",
+    "precommit": "wsrun precommit --fast-exit --parallel",
+    "boot": "lerna bootstrap",
+    "build": "wsrun build $PKG --fast-exit -r --stages --exclude @dexdex/typescript-typings",
+    "dev":
+      "wsrun dev $PKG --fast-exit -r --stages --done-criteria='complete|successfully' --exclude @dexdex/typescript-typings",
+    "clean": "wsrun clean $PKG  -r --fast-exit --parallel --exclude @dexdex/typescript-typings"
+  },
+  "workspaces": ["packages/*"],
+  "devDependencies": {
+    "husky": "^0.14.3",
+    "lerna": "^2.11.0",
+    "prettier": "^1.13.3",
+    "wsrun": "^2.2.0"
+  }
+}

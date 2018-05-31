@@ -1,0 +1,13 @@
+{
+  "name": "@dexdex/typescript-typings",
+  "version": "1.0.0",
+  "description": "Typings",
+  "license": "MIT",
+  "scripts": {
+    "precommit": "lint-staged"
+  },
+  "devDependencies": {
+    "@0xproject/typescript-typings": "^0.3.2",
+    "lint-staged": "^7.1.2"
+  }
+}

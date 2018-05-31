@@ -1,0 +1,398 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600,700');
+
+/* reset */
+body {
+  font-family: 'Open Sans', sans-serif;
+
+  margin: 0;
+  padding: 0;
+}
+
+p {
+  margin: 0;
+}
+
+* {
+  outline: 0;
+}
+/* grid */
+.flex-grid,
+.flex-grid-responsive {
+  display: flex;
+}
+
+.col {
+  flex: 1;
+}
+
+.col-1 {
+  -ms-flex-preferred-size: 33.333%;
+  flex-basis: 33.333%;
+
+  max-width: 33.333%;
+}
+.col-2 {
+  -ms-flex-preferred-size: 66.667%;
+  flex-basis: 66.667%;
+
+  max-width: 66.667%;
+}
+
+/* general styles */
+.margin-bottom {
+  margin-bottom: 20px;
+}
+.Select-control:hover {
+  -webkit-box-shadow: transparent;
+  box-shadow: transparent;
+}
+
+/* widget */
+.widget {
+  padding: 1rem;
+
+  outline: 0;
+}
+
+/* operation selector */
+.OperationSelector button {
+  font-size: 1rem;
+  font-weight: 700;
+
+  padding: 1rem;
+
+  transition: 0.25s;
+  text-transform: uppercase;
+
+  border-color: #eee;
+  border-radius: 3px;
+  background-color: #fff;
+}
+
+.OperationSelector button.button-selected {
+  color: #fff;
+  border-color: #7d2;
+  background-color: #7d2;
+}
+
+.OperationSelector button:first-child {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.OperationSelector button:last-child {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.OperationSelector button:focus {
+  outline: 0;
+}
+
+/* gas */
+.gas-selector {
+  margin-bottom: 8px;
+}
+.gas-selector-label,
+.gas-price-value {
+  margin-bottom: 8px;
+}
+.gas-price-value {
+  text-align: right;
+}
+.gas-price-btn button {
+  font-size: 0.75rem;
+
+  padding: 8px;
+
+  color: #124;
+  border: 1px solid #9b9b9b;
+  background-color: #fff;
+}
+
+.gas-price-btn button.selected {
+  color: #fff;
+  border: 1px solid #124;
+  background-color: #124;
+}
+
+.gas-price-btn button:first-child {
+  border-right: transparent;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+.gas-price-btn button:last-child {
+  border-left: transparent;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.wallet-selector-wrapper {
+  position: relative;
+}
+
+.wallet-info {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  padding: 8px 30px;
+
+  text-align: right;
+  pointer-events: none;
+}
+.wallet-info .wallet-amount {
+  font-weight: 700;
+
+  color: #124;
+}
+.wallet-info .wallet-amount .wallet-amount-value {
+  color: #39f;
+}
+
+.wallet-info .wallet-id {
+  font-size: 10px;
+
+  color: rgba(28, 42, 70, 0.4);
+}
+
+/* summary */
+.summary {
+  margin-bottom: 1rem;
+  padding: 1rem;
+
+  border-radius: 4px;
+  background: rgba(28, 42, 70, 0.05);
+}
+
+.summary .summary-total {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.summary .summary-total .summary-total-value {
+  text-align: right;
+}
+
+.summary-token {
+  margin-bottom: 8px;
+
+  color: #124;
+}
+.summary-token-price {
+  color: inherit;
+}
+.summary-token-price-value {
+  text-align: right;
+}
+
+/* submit */
+.btn-submit {
+  font-size: 1rem;
+  font-weight: 700;
+
+  padding: 1rem;
+
+  text-transform: uppercase;
+
+  color: #fff;
+  border: 0;
+  border-radius: 3px;
+  background-color: #39f;
+}
+
+/* footer */
+.footer {
+  font-size: 10px;
+
+  margin-top: 1rem;
+}
+
+.footer .col-1 {
+  text-align: left;
+}
+
+.footer .col-2 {
+  text-align: right;
+}
+
+/* token selector */
+.Select-control {
+  height: 54px !important;
+}
+.Select-control:hover {
+  box-shadow: none !important;
+}
+
+.Select-placeholder,
+.Select--single > .Select-control .Select-value {
+  line-height: 30px !important;
+
+  padding: 8px 10px !important;
+}
+.Select.is-focused:not(.is-open) > .Select-control {
+  border: 1px solid #ccc !important;
+  background: #fff;
+  box-shadow: none !important;
+}
+.Select-menu-outer {
+  border-bottom-right-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+.token-symbol,
+.wallet-symbol {
+  height: 30px;
+
+  vertical-align: middle;
+}
+.token-name,
+.wallet-name {
+  line-height: 30px;
+
+  margin-left: 5px;
+
+  vertical-align: middle;
+}
+
+/* Amount Field */
+.AmountField {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1rem;
+  line-height: 54px;
+
+  box-sizing: border-box;
+  width: 102%;
+  height: 54px;
+  padding: 0 10px;
+
+  border: 1px solid #ccc;
+  border-right: transparent;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.token-selector .Select-control {
+  border-left: transparent;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+/* example 3 */
+.hide {
+  position: absolute;
+  left: -999em;
+}
+.hide3 {
+  overflow: hidden;
+
+  transition: all 0.5s cubic-bezier(0.75, 0, 1, 1);
+}
+
+input[type='checkbox']:checked + .hide3 {
+  /* height: 40px; */
+  opacity: 0;
+}
+input[type='checkbox'] + .hide3 .inner3 {
+  transition: 0.5s;
+  transform: translateY(0);
+}
+
+input[type='checkbox']:checked + .hide3 .inner3 {
+  transition: 0.5s;
+  transform: translateY(-100%);
+}
+
+/* widget status */
+.widget-status {
+  display: flex;
+  flex-direction: column;
+
+  padding: 1rem;
+}
+.widget-status h1 {
+  font-size: 1rem;
+  font-weight: 600;
+
+  padding: 1rem;
+
+  text-align: center;
+
+  border-radius: 4px;
+  background: #eee;
+}
+.widget-status dl {
+  overflow: hidden;
+
+  margin: 1rem 0 0;
+}
+.widget-status dt,
+.widget-status dd {
+  display: inline-block;
+
+  width: 50%;
+}
+
+.widget-status dd {
+  text-align: right;
+}
+
+.widget-status .label {
+  font-weight: 600;
+
+  color: #124;
+}
+
+.widget-status .value {
+  margin: 0;
+
+  color: rgba(17, 34, 68, 0.5);
+}
+.widget-status hr {
+  height: 1px;
+  margin: 1rem 0;
+  /* Set the hr color */
+
+  color: rgba(17, 34, 68, 0.1);
+  border: none;
+  background-color: rgba(17, 34, 68, 0.1);
+}
+.widget-status .link {
+  margin-top: 1rem;
+
+  transition: 0.25s;
+  text-decoration: none;
+
+  color: #39f;
+}
+.widget-status .link:hover {
+  text-decoration: none;
+
+  color: #38f;
+}
+.widget-status .waiting {
+  color: rgba(50, 160, 255, 1);
+  background-color: rgba(50, 160, 255, 0.1);
+}
+
+.widget-status .error {
+  color: rgba(250, 80, 80, 1);
+  background-color: rgba(250, 80, 80, 0.1);
+}
+.widget-status .success {
+  color: rgba(28, 210, 115, 1);
+  background-color: rgba(28, 210, 115, 0.1);
+}
+
+@media (max-width: 480px) {
+  .wallet-name {
+    display: none;
+  }
+}
+
+@media (max-width: 320px) {
+  body,
+  html {
+    font-size: 12px;
+  }
+}

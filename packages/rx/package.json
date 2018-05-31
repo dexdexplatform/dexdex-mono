@@ -1,0 +1,25 @@
+{
+  "name": "@dexdex/rx",
+  "version": "1.0.0",
+  "description": "DexDex Rx.js Utils",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "license": "MIT",
+  "scripts": {
+    "prepublishOnly": "yarn build",
+    "precommit": "lint-staged",
+    "clean": "rm -rf lib",
+    "dev": "tsc -w",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/jest": "^22.2.3",
+    "jest": "^23.0.1",
+    "lint-staged": "^7.1.2",
+    "typescript": "^2.8.3"
+  },
+  "dependencies": {
+    "rxjs": "^6.2.0",
+    "tslib": "^1.9.1"
+  }
+}
