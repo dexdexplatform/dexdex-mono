@@ -9,6 +9,7 @@
     "prepublishOnly": "yarn build",
     "precommit": "lint-staged",
     "clean": "rm -rf lib",
+    "test": "jest",
     "dev": "tsc -w",
     "build": "tsc"
   },

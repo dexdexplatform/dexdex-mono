@@ -9,7 +9,7 @@ module.exports = {
   testEnvironment: 'node',
   testURL: 'http://localhost',
   transform: {
-    '^.+\\.tsx?$': '<rootDir>/config/jest/typescriptTransform.js',
+    '^.+\\.tsx?$': 'ts-jest',
     '^.+\\.css$': '<rootDir>/config/jest/cssTransform.js',
     '^(?!.*\\.(js|jsx|mjs|css|json)$)': '<rootDir>/config/jest/fileTransform.js',
   },

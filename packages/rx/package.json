@@ -10,6 +10,7 @@
     "precommit": "lint-staged",
     "clean": "rm -rf lib",
     "dev": "tsc -w",
+    "test": "jest",
     "build": "tsc"
   },
   "devDependencies": {

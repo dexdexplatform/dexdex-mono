@@ -6,6 +6,7 @@
     "precommit": "wsrun precommit --fast-exit --parallel",
     "boot": "lerna bootstrap",
     "build": "wsrun build $PKG --fast-exit -r --stages --exclude @dexdex/typescript-typings",
+    "test": "wsrun test $PKG --fast-exit -r --stages --exclude @dexdex/typescript-typings",
     "dev":
       "wsrun dev $PKG --fast-exit -r --stages --done-criteria='complete|successfully' --exclude @dexdex/typescript-typings",
     "clean": "wsrun clean $PKG  -r --fast-exit --parallel --exclude @dexdex/typescript-typings"

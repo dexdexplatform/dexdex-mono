@@ -1,8 +1,7 @@
-import * as obmath from './ob-math';
-import { toTokenDecimals, toWei, fromTokenDecimals } from '@dexdex/utils/lib/units';
-import { Trade } from './trade';
-import { getOrderRemainingVolumeEth, Order } from './order';
+import { fromTokenDecimals, toTokenDecimals, toWei } from '@dexdex/utils/lib/units';
 import { BN } from 'bn.js';
+import * as obmath from './ob-math';
+import { Order, getOrderRemainingVolumeEth } from './order';
 
 let nextId = 1;
 let TokenDecimals = 10;
@@ -109,8 +108,8 @@ describe('obmath', () => {
       const price = (5 * 1.003) / 30;
       // MIN volumeEth is 0.001 ether
       // min volume is: volumeEth / price
-      const minVolumeExpected = 0.001 / price;
-      console.log(minVolumeExpected);
+      // const minVolumeExpected = 0.001 / price;
+
       // http://www.wolframalpha.com/input/?i=0.001+%2F+(5+*+1.003+%2F+30)
       expect(minVolume).toEqualBN(toTokenDecimals('0.0059820538', TokenDecimals));
     });
@@ -195,43 +194,6 @@ describe('obmath', () => {
         .muln(40)
         .divn(50);
       expect(tx.set.baseVolumeEth).toEqualBN(requiredVolumeEth);
-    });
-  });
-
-  describe('StdTransactionInfo', () => {
-    test('consume ALL extraVolume', () => {
-      const tx = new Trade({
-        baseVolume: new BN(1000000),
-        baseVolumeEth: new BN(200000),
-        extraVolume: new BN(5000),
-        extraVolumeEth: new BN(10000),
-        orders: [],
-      });
-
-      // We start with current == required
-      expect(tx.currentVolume).toEqualBN(tx.set.baseVolume);
-      expect(tx.currentVolumeEth).toEqualBN(tx.set.baseVolumeEth);
-
-      // Consume Total extra space
-      tx.changeVolume(tx.currentVolume.add(tx.set.extraVolume));
-
-      expect(tx.currentVolume).toEqualBN(tx.set.baseVolume.add(tx.set.extraVolume));
-      expect(tx.currentVolumeEth).toEqualBN(tx.set.baseVolumeEth.add(tx.set.extraVolumeEth));
-    });
-    test('NO extraVolume', () => {
-      const tx = new Trade({
-        baseVolume: new BN(1000000),
-        baseVolumeEth: new BN(200000),
-        extraVolume: new BN(0),
-        extraVolumeEth: new BN(0),
-        orders: [],
-      });
-
-      // We start with current == required
-      expect(tx.currentVolume).toEqualBN(tx.set.baseVolume);
-      expect(tx.currentVolumeEth).toEqualBN(tx.set.baseVolumeEth);
-      expect(tx.maxAvailableVolume).toEqualBN(tx.set.baseVolume);
-      expect(tx.maxAvailableVolumeEth).toEqualBN(tx.set.baseVolumeEth);
     });
   });
 });
