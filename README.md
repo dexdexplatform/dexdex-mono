@@ -124,3 +124,14 @@ module.exports = {
   }
 }
 ```
+
+## Troubleshooting
+
+### Packages not properly linked
+
+If you face any problem where some packages doesn't seem to find another package on the monorepo,
+try:
+
+`yarn lerna link`
+
+and try again
