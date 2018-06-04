@@ -6,12 +6,18 @@
   "types": "lib/index.d.ts",
   "license": "MIT",
   "scripts": {
-    "prepublishOnly": "yarn build",
     "precommit": "lint-staged",
     "clean": "rm -rf lib",
-    "dev": "tsc -w",
+    "prebuild": "yarn clean",
+    "build": "tsc",
+    "watch": "tsc -w",
     "test": "jest",
-    "build": "tsc"
+    "prepublishOnly": "yarn test && yarn build"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json,css}": [
+      "prettier -l"
+    ]
   },
   "devDependencies": {
     "@types/jest": "^22.2.3",

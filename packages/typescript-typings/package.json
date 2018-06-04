@@ -4,7 +4,16 @@
   "description": "Typings",
   "license": "MIT",
   "scripts": {
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "clean": "echo 'No clean required'",
+    "build": "echo 'No build required'",
+    "watch": "echo 'No watch support'",
+    "test": "echo 'No tests'"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json,css}": [
+      "prettier -l"
+    ]
   },
   "devDependencies": {
     "@0xproject/typescript-typings": "^0.3.2",

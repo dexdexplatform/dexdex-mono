@@ -7,12 +7,18 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "clean": "rm -rf build",
     "precommit": "lint-staged",
-    "dev": "node scripts/start.js",
-    "start": "node scripts/start.js",
+    "clean": "rm -rf build",
+    "prebuild": "yarn clean",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js --env=jsdom"
+    "watch": "echo 'Watch not supported'",
+    "test": "node scripts/test.js --env=jsdom",
+    "rundev": "node scripts/start.js"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json,css}": [
+      "prettier -l"
+    ]
   },
   "devDependencies": {
     "@dexdex/typescript-typings": "^0.0.5",

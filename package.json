@@ -2,16 +2,19 @@
   "name": "dexdex-public",
   "private": true,
   "scripts": {
-    "lerna:add": "lerna add",
     "precommit": "wsrun precommit --fast-exit --parallel",
-    "boot": "lerna bootstrap",
-    "build": "wsrun build $PKG --fast-exit -r --stages --exclude @dexdex/typescript-typings",
-    "test": "wsrun test $PKG --fast-exit -r --stages --exclude @dexdex/typescript-typings",
-    "dev":
-      "wsrun dev $PKG --fast-exit -r --stages --done-criteria='complete|successfully' --exclude @dexdex/typescript-typings",
-    "clean": "wsrun clean $PKG  -r --fast-exit --parallel --exclude @dexdex/typescript-typings"
+    "bootstrap": "lerna bootstrap",
+    "packages:build": "wsrun build $PKG --fast-exit -r --stages --exclude @dexdex/typescript-typings",
+    "packages:watch": "lerna run --parallel --ignore \"srv-*\" watch",
+    "packages:test": "wsrun test $PKG --fast-exit -r --stages --exclude @dexdex/typescript-typings",
+    "packages:clean": "wsrun clean $PKG  -r --fast-exit --parallel --exclude @dexdex/typescript-typings",
+    "packages:publish": "lerna publish",
+    "dockerize": "./bin/dockerize",
+    "test": "yarn packages:test"
   },
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
     "husky": "^0.14.3",
     "lerna": "^2.11.0",

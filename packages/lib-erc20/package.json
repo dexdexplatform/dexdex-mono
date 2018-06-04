@@ -1,21 +1,27 @@
 {
-  "name": "@dexdex/model",
+  "name": "@dexdex/erc20",
   "version": "0.0.5",
-  "description": "DexDex Model",
+  "description": "DexDex ERC20 Contract Interface",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "license": "MIT",
   "scripts": {
-    "prepublishOnly": "yarn build",
     "precommit": "lint-staged",
     "clean": "rm -rf lib",
+    "prebuild": "yarn clean",
+    "build": "tsc",
+    "watch": "tsc -w",
     "test": "jest",
-    "dev": "tsc -w",
-    "build": "tsc"
+    "prepublishOnly": "yarn test && yarn build"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json,css}": [
+      "prettier -l"
+    ]
   },
   "devDependencies": {
+    "@dexdex/model": "^0.0.5",
     "@dexdex/typescript-typings": "^0.0.5",
-    "@dexdex/utils": "^0.0.5",
     "@types/jest": "^22.2.3",
     "jest": "^23.0.1",
     "lint-staged": "^7.1.2",
@@ -23,7 +29,8 @@
   },
   "dependencies": {
     "bn.js": "^4.11.8",
-    "ethjs-unit": "^0.1.6",
+    "ethjs-contract": "^0.2.1",
+    "ethjs-query": "^0.3.7",
     "tslib": "^1.9.1"
   }
 }
