@@ -106,7 +106,16 @@ const getCurrentSide = (orderbook: OrderBook | null, op: Operation) =>
 const changeChecker = <A>(oldVal: A, newVal: A) => (...keys: (keyof A)[]): boolean =>
   keys.some(key => oldVal[key] !== newVal[key]);
 
-function reducer(oldState: WidgetState, action: Actions) {
+function reducer(oldState: WidgetState, action: Actions): WidgetState {
+  if (action.type === 'goBack') {
+    return {
+      ...oldState,
+      screen: 'form',
+      approvalTxHash: null,
+      tradeTxHash: null,
+    };
+  }
+
   // apply changes to direct fields in the state
   let st = applySetters(oldState, action);
   const anyChanged = changeChecker(oldState, st);
@@ -166,4 +175,4 @@ function reducer(oldState: WidgetState, action: Actions) {
 export const reducerWithDefaults = (initialState: WidgetState) => (
   state: WidgetState | undefined,
   action: Actions
-) => (state === undefined ? reducer(initialState, action) : reducer(state, action));
+): WidgetState => (state === undefined ? reducer(initialState, action) : reducer(state, action));
