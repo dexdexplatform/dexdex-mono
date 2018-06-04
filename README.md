@@ -135,3 +135,11 @@ try:
 `yarn lerna link`
 
 and try again
+
+### yarn packages:watch fails
+
+Right now, `yarn packages:watch` runs compilation on all projects in parallel. This creates a race
+condition for packages that depend on other packages. For example: `lib-model` depends on `lib-utils`
+and it can fail it `lib-utils` hasn't compile yet.
+
+The safe way of avoiding this, is to first do a `yarn packages:build` and then `yarn packages:watch`

@@ -4,12 +4,11 @@
   "scripts": {
     "precommit": "wsrun precommit --fast-exit --parallel",
     "bootstrap": "lerna bootstrap",
-    "packages:build": "wsrun build $PKG --fast-exit -r --stages --exclude @dexdex/typescript-typings",
-    "packages:watch": "lerna run --parallel --ignore \"srv-*\" watch",
-    "packages:test": "wsrun test $PKG --fast-exit -r --stages --exclude @dexdex/typescript-typings",
-    "packages:clean": "wsrun clean $PKG  -r --fast-exit --parallel --exclude @dexdex/typescript-typings",
+    "packages:build": "wsrun build $PKG --fast-exit -r --stages",
+    "packages:watch": "lerna run --parallel --ignore widget watch",
+    "packages:test": "wsrun test $PKG --fast-exit -r --stages",
+    "packages:clean": "wsrun clean $PKG  -r --fast-exit --parallel",
     "packages:publish": "lerna publish",
-    "dockerize": "./bin/dockerize",
     "test": "yarn packages:test"
   },
   "workspaces": [
