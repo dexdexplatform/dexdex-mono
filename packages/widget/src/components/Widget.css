@@ -1,8 +1,8 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600,700');
+@import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,700');
 
 /* reset */
 body {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Montserrat', sans-serif;
 
   margin: 0;
   padding: 0;
@@ -246,7 +246,7 @@ p {
 
   vertical-align: middle;
 }
-.token-name,
+.select-symbol-name .token-name,
 .wallet-name {
   line-height: 30px;
 
@@ -308,7 +308,9 @@ input[type='checkbox']:checked + .hide3 .inner3 {
   display: flex;
   flex-direction: column;
 
-  padding: 1rem;
+  box-sizing: border-box;
+  height: 100vh;
+  padding: 0 25px;
 }
 .widget-status h1 {
   font-size: 1rem;
@@ -368,7 +370,7 @@ input[type='checkbox']:checked + .hide3 .inner3 {
 .widget-status .link:hover {
   text-decoration: none;
 
-  color: #38f;
+  color: #159;
 }
 .widget-status .waiting {
   color: rgba(50, 160, 255, 1);
@@ -382,6 +384,169 @@ input[type='checkbox']:checked + .hide3 .inner3 {
 .widget-status .success {
   color: rgba(28, 210, 115, 1);
   background-color: rgba(28, 210, 115, 0.1);
+}
+
+.token-info {
+  margin-bottom: auto;
+
+  text-align: center;
+}
+
+.token-info .token-icon {
+  height: 64px;
+  margin-top: 60px;
+}
+
+.token-info .token-amount {
+  font-size: 2rem;
+  font-weight: bold;
+
+  margin-top: 20px;
+}
+
+.token-info .token-name {
+  font-size: 1rem;
+
+  margin-top: 15px;
+}
+
+.status-steps {
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.status-steps .step {
+  position: relative;
+
+  margin-bottom: 40px;
+}
+
+.status-steps .step .sub-step {
+  margin-bottom: -25px;
+  padding: 0 40px;
+
+  list-style-type: none;
+}
+
+.status-steps .step.pending {
+  background-image: url('/pending.svg');
+  background-repeat: no-repeat;
+}
+
+.status-steps .step.current {
+  background-image: url('/current.svg');
+  background-repeat: no-repeat;
+}
+.status-steps .step.completed {
+  background-image: url('/completed.svg');
+  background-repeat: no-repeat;
+}
+.status-steps .step > p {
+  font-size: 15px;
+  line-height: 25px;
+
+  margin-left: 40px;
+}
+
+.status-steps .step.pending > p {
+  color: #d8d8d8;
+}
+
+.status-steps .step.current > p {
+  color: #124;
+}
+
+.status-steps .step.completed > p {
+  color: #7d2;
+}
+
+.status-steps .step .sub-step .sub-step-message {
+  margin-top: 5px;
+}
+
+.step:not(:last-child)::before {
+  position: absolute;
+  z-index: -1;
+  top: 25px;
+  left: 11px;
+
+  width: 3px;
+  height: 40px;
+
+  content: '';
+
+  background: #ddd;
+}
+
+.step.completed:not(:last-child)::before {
+  background: #7d2;
+}
+
+.wallet-info-success {
+  font-size: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 32px;
+}
+
+.wallet-info-success .wallet-icon {
+  margin-right: 10px;
+}
+
+.wallet-info-success .wallet-address {
+  transition: 0.25s;
+  text-decoration: none;
+
+  color: #39f;
+}
+
+.wallet-info-success .wallet-address:hover {
+  text-decoration: none;
+
+  color: #159;
+}
+
+.transacion-details-list {
+  font-size: 12px;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.transacion-details-list li {
+  display: flex;
+  justify-content: space-between;
+
+  padding: 10px 0;
+
+  border-bottom: 1px solid #eee;
+}
+
+.transacion-details-list .label,
+.transacion-details-list .value {
+  color: #124;
+}
+
+.transacion-details-list li:last-child {
+  border-bottom: none;
+}
+
+.transacion-details-list li.title {
+  padding: 5px 0;
+
+  border-bottom: 2px solid #124;
+}
+
+.transacion-details-list li.total {
+  font-size: 16px;
+  font-weight: bold;
 }
 
 @media (max-width: 480px) {

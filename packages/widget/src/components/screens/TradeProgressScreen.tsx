@@ -32,7 +32,42 @@ const TradeProgressScreen: React.SFC<TradeProgressScreen> = props => (
     ) : (
       <h1 className="waiting">Please approve the trade</h1>
     )}
-    <dl>
+    {/* token info start */}
+    <div className="token-info">
+      <img className="token-icon" src="golem.png" alt="DAI Token Icon" />
+      <p className="token-amount">{props.amount}</p>
+      <p className="token-name">{props.tradeable.name}</p>
+    </div>
+    {/* token info ends */}
+
+    {/* status steps */}
+    <ul className="status-steps">
+      <li className="step completed">
+        <p>Completed Step</p>
+      </li>
+      <li className="step completed">
+        <p>Completed Step</p>
+        <ul className="sub-step completed">
+          <li className="sub-step-message">
+            <p>Completed Step</p>
+          </li>
+        </ul>
+      </li>
+      <li className="step current">
+        <p>Current Step</p>
+      </li>
+      <li className="step pending">
+        <p>Pending Step</p>
+        <ul className="sub-step pending">
+          <li className="sub-step-message">
+            <p>Completed Step</p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    {/* end status steps */}
+
+    {/* <dl>
       <dt className="label">Operation</dt>
       <dd className="value">{props.operation}</dd>
       <hr />
@@ -56,12 +91,10 @@ const TradeProgressScreen: React.SFC<TradeProgressScreen> = props => (
     {props.txHash && (
       <React.Fragment>
         <p className="label">Transaction Hash</p>
-        {/* <a className="link" href="#"> */}
         {props.txHash}
-        {/* </a> */}
       </React.Fragment>
     )}
-    <hr />
+    <hr /> */}
   </div>
 );
 

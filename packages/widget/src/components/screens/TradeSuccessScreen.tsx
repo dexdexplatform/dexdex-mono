@@ -29,34 +29,64 @@ export const mapper: RenderMapper<TradeSuccessScreenProps> = store => ws => {
 
 const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
   <div className="widget-status">
-    <h1 className="success">Finished!!!!!</h1>
-    <h2>The trade was an outstanding success!!!</h2>
-    <dl>
-      <dt className="label">Operation</dt>
-      <dd className="value">{props.operation}</dd>
-      <hr />
-      <dt className="label">Wallet Account Address</dt>
-      <dd className="value">{props.fromAddress}</dd>
-      <hr />
-      <dt className="label">Token</dt>
-      <dd className="value">{props.tradeable.name}</dd>
-      <hr />
-      <dt className="label">Token Amount</dt>
-      <dd className="value">{props.amount}</dd>
-      <hr />
-      <dt className="label">Volume Eth</dt>
-      <dd className="value">{props.volumeEthWithFee}</dd>
-      <hr />
-      <dt className="label">Network Fee</dt>
-      <dd className="value">
-        {props.networkFee.ether} ETH / {props.networkFee.usd} USD
-      </dd>
-    </dl>
-    <hr />
-    <p className="label">Transaction Hash</p>
-    <a className="link" href="#">
-      {props.tradeTxHash}
-    </a>
+    {/* token info start */}
+    <div className="token-info">
+      <img className="token-icon" src="golem.png" alt="DAI Token Icon" />
+      <p className="token-amount">{props.amount}</p>
+      <p className="token-name">{props.tradeable.name}</p>
+      {/* wallet info - only success*/}
+      <div className="wallet-info-success">
+        <img className="wallet-icon" src="metamask.png" alt="Wallet Icon" />
+        <a className="wallet-address" href="#">
+          {props.fromAddress}
+        </a>
+      </div>
+      {/* end wallet info - only success*/}
+    </div>
+    {/* end token info */}
+
+    <ul className="transacion-details-list">
+      <li className="title">
+        <div className="label">Transaction details</div>
+        <div className="value">May-21-2018 07:36:55 AM +UTC</div>
+      </li>
+      <li>
+        <div className="label">Operation</div>
+        <div className="value">{props.operation}</div>
+      </li>
+      <li>
+        <div className="label">TxHash</div>
+        <div className="value">
+          <a className="link" href="#">
+            {props.tradeTxHash}
+          </a>
+        </div>
+      </li>
+      <li>
+        <div className="label">Amount bought</div>
+        <div className="value">{props.amount}</div>
+      </li>
+      <li>
+        <div className="label">{props.tradeable.name} Price</div>
+        <div className="value">{props.tradeable.buy_price}</div>
+      </li>
+      <li>
+        <div className="label">Network Fee</div>
+        <div className="value">{props.networkFee.ether} ETH</div>
+      </li>
+      <li>
+        <div className="label">Dexdex Fee</div>
+        <div className="value">Fee dexdex</div>
+      </li>
+      <li>
+        <div className="label">Price Optimization</div>
+        <div className="value">Price Optimization %</div>
+      </li>
+      <li className="total">
+        <div className="label">Total</div>
+        <div className="value">{props.volumeEthWithFee} ETH</div>
+      </li>
+    </ul>
   </div>
 );
 
