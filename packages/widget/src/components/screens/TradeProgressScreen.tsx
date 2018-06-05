@@ -3,7 +3,8 @@ import { Tradeable } from '@dexdex/model/lib/tradeable';
 import * as React from 'react';
 import { RenderMapper } from '.';
 import { getTradeVolumeEthWithFee, networkFee } from '../../model/widget-state/selectors';
-import './../Widget.css';
+import { TokenInfo } from '../TokenInfo';
+import { SellSteps, BuySteps } from '../TradeSteps';
 
 export interface TradeProgressScreen {
   operation: Operation;
@@ -13,6 +14,7 @@ export interface TradeProgressScreen {
   volumeEthWithFee: string;
   networkFee: { ether: string; usd: string };
   txHash?: string | null;
+  approvalHash?: string | null;
 }
 
 export const mapper: RenderMapper<TradeProgressScreen> = store => ws => ({
@@ -23,6 +25,7 @@ export const mapper: RenderMapper<TradeProgressScreen> = store => ws => ({
   volumeEthWithFee: getTradeVolumeEthWithFee(ws),
   networkFee: networkFee(ws),
   txHash: ws.tradeTxHash,
+  approvalHash: ws.approvalTxHash,
 });
 
 const TradeProgressScreen: React.SFC<TradeProgressScreen> = props => (
@@ -32,69 +35,13 @@ const TradeProgressScreen: React.SFC<TradeProgressScreen> = props => (
     ) : (
       <h1 className="waiting">Please approve the trade</h1>
     )}
-    {/* token info start */}
-    <div className="token-info">
-      <img className="token-icon" src="golem.png" alt="DAI Token Icon" />
-      <p className="token-amount">{props.amount}</p>
-      <p className="token-name">{props.tradeable.name}</p>
-    </div>
-    {/* token info ends */}
+    <TokenInfo token={props.tradeable} volume={props.amount} />
 
-    {/* status steps */}
-    <ul className="status-steps">
-      <li className="step completed">
-        <p>Completed Step</p>
-      </li>
-      <li className="step completed">
-        <p>Completed Step</p>
-        <ul className="sub-step completed">
-          <li className="sub-step-message">
-            <p>Completed Step</p>
-          </li>
-        </ul>
-      </li>
-      <li className="step current">
-        <p>Current Step</p>
-      </li>
-      <li className="step pending">
-        <p>Pending Step</p>
-        <ul className="sub-step pending">
-          <li className="sub-step-message">
-            <p>Completed Step</p>
-          </li>
-        </ul>
-      </li>
-    </ul>
-    {/* end status steps */}
-
-    {/* <dl>
-      <dt className="label">Operation</dt>
-      <dd className="value">{props.operation}</dd>
-      <hr />
-      <dt className="label">Wallet Account Address</dt>
-      <dd className="value">{props.fromAddress}</dd>
-      <hr />
-      <dt className="label">Token</dt>
-      <dd className="value">{props.tradeable.symbol}</dd>
-      <hr />
-      <dt className="label">Token Amount</dt>
-      <dd className="value">{props.amount}</dd>
-      <hr />
-      <dt className="label">ETH Amount</dt>
-      <dd className="value">{props.volumeEthWithFee}</dd>
-      <hr />
-      <dt className="label">Network Fee</dt>
-      <dd className="value">
-        {props.networkFee.ether} ETH / {props.networkFee.usd} USD
-      </dd>
-    </dl>
-    {props.txHash && (
-      <React.Fragment>
-        <p className="label">Transaction Hash</p>
-        {props.txHash}
-      </React.Fragment>
+    {props.operation === 'sell' ? (
+      <SellSteps approvalHash={props.approvalHash} approvalMined={true} tradeHash={props.txHash} />
+    ) : (
+      <BuySteps tradeHash={props.txHash} />
     )}
-    <hr /> */}
   </div>
 );
 

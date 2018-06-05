@@ -7,6 +7,7 @@ import { Screen as TradeProgressScreen } from '../components/screens/TradeProgre
 import { Screen as TradeSuccessScreen } from '../components/screens/TradeSuccessScreen';
 import { Operation } from '@dexdex/model/lib/base';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
+import '../components/Widget.css';
 
 const tokenA: Tradeable = {
   address: '0xbc98051d2cd1eeaa4b396dcde34624e5cd4d50e3',
@@ -40,11 +41,11 @@ const TestApp = () => (
   <div>
     <h1>Widget Screen Stages</h1>
     <ScreenTest name="Request Allowance Screen - Signature">
-      <RequestAllowanceScreen tokenSymbol={data.tradeable.symbol} volume={data.amount} />
+      <RequestAllowanceScreen token={data.tradeable} volume={data.amount} />
     </ScreenTest>
     <ScreenTest name="Request Allowance Screen - Waiting Ethereum">
       <RequestAllowanceScreen
-        tokenSymbol={data.tradeable.symbol}
+        token={data.tradeable}
         volume={data.amount}
         txHash={'asdfsdfasdfsdfsdafsdafd'}
       />

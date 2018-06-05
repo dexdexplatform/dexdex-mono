@@ -2,6 +2,8 @@ import { WidgetState } from '.';
 import { getFinalVolumeEth } from '@dexdex/model/lib/trade';
 import { fromWei, toTokenDecimals } from '@dexdex/utils/lib/units';
 import { computeGasPrice } from '../widget';
+import { Tradeable } from '@dexdex/model/lib/tradeable';
+import { BN } from 'bn.js';
 
 export const getTradeVolumeEthWithFee = (ws: WidgetState) => {
   return ws.currentTrade
@@ -24,17 +26,17 @@ export const networkFee = (ws: WidgetState) => {
   };
 };
 
-export const amountTD = (ws: WidgetState) => toTokenDecimals(ws.amount, ws.tradeable.decimals);
+export const amountTD = (ws: WidgetState): BN => toTokenDecimals(ws.amount, ws.tradeable.decimals);
 
 export const getAllowanceTxHash = (ws: WidgetState) => ws.approvalTxHash;
 
 export interface RequestAllowanceProps {
-  tokenSymbol: string;
+  token: Tradeable;
   volume: string;
   txHash?: string | null;
 }
 export const getTokenAllowanceInfo = (state: WidgetState): RequestAllowanceProps => ({
-  tokenSymbol: state.tradeable.symbol,
+  token: state.tradeable,
   volume: state.amount,
   txHash: getAllowanceTxHash(state),
 });

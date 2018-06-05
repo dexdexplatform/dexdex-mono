@@ -3,7 +3,6 @@ import { Tradeable } from '@dexdex/model/lib/tradeable';
 import * as React from 'react';
 import { RenderMapper } from '.';
 import { getTradeVolumeEthWithFee, networkFee } from '../../model/widget-state/selectors';
-import './../Widget.css';
 
 export interface TradeSuccessScreenProps {
   operation: Operation;
