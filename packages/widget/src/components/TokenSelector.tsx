@@ -46,7 +46,7 @@ class TokenSelector extends React.PureComponent<TokenSelectorProps> {
         className="token-selector col"
         name="token"
         clearable={false}
-        searchable={false}
+        searchable={true}
         optionRenderer={this.optionRenderer}
         valueRenderer={this.valueRenderer}
         value={selectedToken ? tokens.indexOf(selectedToken) : -1}
@@ -58,7 +58,7 @@ class TokenSelector extends React.PureComponent<TokenSelectorProps> {
         }}
         options={tokens.map((token, idx) => ({
           value: idx,
-          label: `{token.symbol} - {token.name}`,
+          label: `${token.symbol} - ${token.name}`,
         }))}
       />
     );
