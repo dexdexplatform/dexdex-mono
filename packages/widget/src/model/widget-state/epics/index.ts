@@ -4,12 +4,12 @@ import { ServerApi } from '../../server-api';
 import { Actions } from '../actions';
 import { Epic } from '../store';
 import { orderbook } from './orderbook';
-import { runTransaction } from './transaction';
+import { executeTradeEpic } from './trade-exec';
 import { walletDetails } from './wallet-details';
 
 export type WidgetEpic = Epic<WidgetState, Actions>;
 
 const rootEpic = (api: ServerApi): WidgetEpic => changes =>
-  merge(orderbook(api)(changes), walletDetails(changes), runTransaction(api)(changes));
+  merge(orderbook(api)(changes), walletDetails(changes), executeTradeEpic(api)(changes));
 
 export default rootEpic;

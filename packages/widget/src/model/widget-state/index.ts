@@ -6,7 +6,7 @@ import { Tradeable } from '@dexdex/model/lib/tradeable';
 import { BN } from 'bn.js';
 import { ApiOptions, createApi } from '../server-api';
 import { Wallet, getWallets } from '../wallets';
-import { GasPrice, WidgetConfig } from '../widget';
+import { GasPrice, WidgetConfig, TxStage } from '../widget';
 import * as actions from './actions';
 import rootEpic from './epics';
 import { reducerWithDefaults } from './reducer';
@@ -41,13 +41,15 @@ export interface WidgetState {
   amount: string; // expressed in Tokens #
   orderbook: OrderBook | null;
   gasPrice: GasPrice;
-  screen: WidgetScreen;
   walletDetails: null | WalletDetails;
   isValidAmount: boolean;
   tradePlan: TradePlan | null;
-  tradeTxHash: null | string;
-  approvalTxHash: null | string;
-  trade: null | Trade;
+  tradeExecution: {
+    stage: TxStage;
+    approvalTxHash: null | string;
+    tradeTxHash: null | string;
+    trade: null | Trade;
+  };
 }
 
 export type WidgetStore = Store<WidgetState, actions.Actions>;
@@ -82,13 +84,15 @@ export async function initWidget(
     amount: '0', // expressed in Tokens #
     orderbook: null,
     gasPrice: GasPrice.Normal,
-    screen: 'form',
     walletDetails: null,
     isValidAmount: false,
     tradePlan: null,
-    tradeTxHash: null,
-    approvalTxHash: null,
-    trade: null,
+    tradeExecution: {
+      stage: TxStage.Idle,
+      approvalTxHash: null,
+      tradeTxHash: null,
+      trade: null,
+    },
   };
 
   return createStore(reducerWithDefaults(initialState), rootEpic(api));

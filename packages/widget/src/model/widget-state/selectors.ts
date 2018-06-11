@@ -4,33 +4,37 @@ import { fromWei, getDecimalBase, toTokenDecimals } from '@dexdex/utils/lib/unit
 import { BN } from 'bn.js';
 import { WidgetState } from '.';
 import { computeGasPrice } from '../widget';
+import { Trade, TradeState } from '@dexdex/model/lib/trade';
 
 const formatEth = (volumeEth: null | BN): string =>
   volumeEth ? Number(fromWei(volumeEth, 'ether')).toFixed(4) : '--';
+
+const withTrade = <A>(f: (t: Trade, ws: WidgetState) => A, defaultValue: A) => (
+  ws: WidgetState
+): A =>
+  ws.tradeExecution && ws.tradeExecution.trade ? f(ws.tradeExecution.trade, ws) : defaultValue;
 
 export const expectedVolumeEth = (ws: WidgetState) => {
   return ws.tradePlan ? formatEth(getFinalVolumeEth(ws.tradePlan, ws.config.feePercentage)) : '--';
 };
 
-export const effectiveVolumeEth = (ws: WidgetState) => {
-  return ws.trade ? formatEth(ws.trade.volumeEthEffective) : '--';
-};
+export const effectiveVolumeEth = withTrade(t => formatEth(t.volumeEthEffective), '--');
 
-export const effectiveVolume = (ws: WidgetState) => {
-  return ws.trade ? formatEth(ws.trade.volumeEffective) : '--';
-};
-
-export const effectivePrice = (ws: WidgetState) => {
-  if (ws.trade == null || ws.trade.volumeEffective == null || ws.trade.volumeEthEffective == null) {
-    return '--';
+export const effectiveVolume = withTrade(t => formatEth(t.volumeEffective), '--');
+export const effectivePrice = withTrade((t, ws) => {
+  if (
+    t.state === TradeState.Completed &&
+    t.volumeEffective != null &&
+    t.volumeEthEffective != null
+  ) {
+    return formatEth(
+      t.volumeEffective // value without decimals
+        .div(getDecimalBase(ws.tradeable.decimals)) // div by base => to decimals
+        .div(t.volumeEthEffective) // get price
+    );
   }
-
-  return formatEth(
-    ws.trade.volumeEffective // value without decimals
-      .div(getDecimalBase(ws.tradeable.decimals)) // div by base => to decimals
-      .div(ws.trade.volumeEthEffective) // get price
-  );
-};
+  return '--';
+}, '--');
 
 export const networkFee = (ws: WidgetState) => {
   const transactionInfo = ws.tradePlan;
@@ -45,7 +49,8 @@ export const networkFee = (ws: WidgetState) => {
 
 export const amountTD = (ws: WidgetState): BN => toTokenDecimals(ws.amount, ws.tradeable.decimals);
 
-export const getAllowanceTxHash = (ws: WidgetState) => ws.approvalTxHash;
+export const getAllowanceTxHash = (ws: WidgetState) =>
+  ws.tradeExecution ? ws.tradeExecution.approvalTxHash : null;
 
 export interface RequestAllowanceProps {
   token: Tradeable;

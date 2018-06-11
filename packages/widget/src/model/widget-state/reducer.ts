@@ -1,4 +1,4 @@
-import { WidgetScreen, WidgetState } from '.';
+import { WidgetState } from '.';
 import { fixDecimals, removeExtraZeros } from '@dexdex/utils/lib/format';
 import { Operation } from '@dexdex/model/lib/base';
 import {
@@ -10,23 +10,8 @@ import {
 } from '@dexdex/model/lib/orderbook';
 import { OrderBookEvent, OrderEventKind } from '../server-api';
 import { fromTokenDecimals, toTokenDecimals } from '@dexdex/utils/lib/units';
-import { TransactionState, TxStage } from '../widget';
+import { TxStage } from '../widget';
 import { Actions } from './actions';
-
-const TxStageScreenMap: Record<TxStage, WidgetScreen> = {
-  [TxStage.Idle]: 'form',
-  [TxStage.TokenAllowanceInProgress]: 'waitingApproval',
-  [TxStage.TradeInProgress]: 'waitingTrade',
-  [TxStage.RequestTokenAllowanceSignature]: 'signatureApproval',
-  [TxStage.RequestTradeSignature]: 'signatureTrade',
-  [TxStage.Completed]: 'tradeSuccess',
-  [TxStage.Failed]: 'error',
-  [TxStage.SignatureRejected]: 'rejectedSignature',
-};
-
-function txEventToScreen(txEvent: TransactionState): WidgetScreen {
-  return TxStageScreenMap[txEvent.stage];
-}
 
 const OB = orderBookActions();
 
@@ -45,6 +30,64 @@ function applyEvent(ob: OrderBook, event: OrderBookEvent): OrderBook {
       return OB.newOrderBook(event.snapshot);
     default:
       throw new Error(`invalid OrderEvent ${event}`);
+  }
+}
+
+function tradeExecutionReducer(
+  state: WidgetState['tradeExecution'],
+  action: Actions
+): WidgetState['tradeExecution'] {
+  if (action.type === 'goBack') {
+    return {
+      stage: TxStage.Idle,
+      approvalTxHash: null,
+      tradeTxHash: null,
+      trade: null,
+    };
+  }
+
+  if (action.type !== 'setTransactionState') {
+    return state;
+  }
+
+  switch (action.payload.stage) {
+    case TxStage.Idle:
+      return {
+        stage: TxStage.Idle,
+        approvalTxHash: null,
+        tradeTxHash: null,
+        trade: null,
+      };
+    case TxStage.UnkownError:
+    case TxStage.RequestTokenAllowanceSignature:
+    case TxStage.RequestTradeSignature:
+    case TxStage.SignatureRejected:
+      return {
+        ...state,
+        stage: action.payload.stage,
+      };
+    case TxStage.TradeFailed:
+    case TxStage.TradeCompleted:
+      return {
+        ...state,
+        stage: action.payload.stage,
+        trade: action.payload.trade,
+      };
+    case TxStage.TokenAllowanceInProgress:
+      return {
+        ...state,
+        stage: action.payload.stage,
+        approvalTxHash: action.payload.txId,
+      };
+    case TxStage.TradeInProgress:
+      return {
+        ...state,
+        stage: action.payload.stage,
+        tradeTxHash: action.payload.txId,
+      };
+
+    default:
+      throw new Error(`invalid exeuction stage ${action.payload}`);
   }
 }
 
@@ -74,16 +117,7 @@ function applySetters(state: WidgetState, action: Actions): WidgetState {
     case 'setTransactionState':
       return {
         ...state,
-        tradeTxHash:
-          action.payload.stage === TxStage.TradeInProgress
-            ? action.payload.txId
-            : state.tradeTxHash,
-        approvalTxHash:
-          action.payload.stage === TxStage.TokenAllowanceInProgress
-            ? action.payload.txId
-            : state.approvalTxHash,
-        trade: action.payload.stage === TxStage.Completed ? action.payload.trade : null,
-        screen: txEventToScreen(action.payload),
+        tradeExecution: tradeExecutionReducer(state.tradeExecution, action),
       };
     default:
       return { ...state };
@@ -108,15 +142,6 @@ const changeChecker = <A>(oldVal: A, newVal: A) => (...keys: (keyof A)[]): boole
   keys.some(key => oldVal[key] !== newVal[key]);
 
 function reducer(oldState: WidgetState, action: Actions): WidgetState {
-  if (action.type === 'goBack') {
-    return {
-      ...oldState,
-      screen: 'form',
-      approvalTxHash: null,
-      tradeTxHash: null,
-    };
-  }
-
   // apply changes to direct fields in the state
   let st = applySetters(oldState, action);
   const anyChanged = changeChecker(oldState, st);

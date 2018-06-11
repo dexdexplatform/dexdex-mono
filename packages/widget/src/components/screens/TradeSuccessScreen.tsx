@@ -22,7 +22,7 @@ export interface TradeSuccessScreenProps {
 }
 
 export const mapper: RenderMapper<TradeSuccessScreenProps> = store => ws => {
-  if (ws.tradeTxHash == null) {
+  if (ws.tradeExecution.tradeTxHash == null) {
     throw new Error('BUG: no tradetxhash on success screen');
   }
   if (ws.walletDetails == null || ws.walletDetails.address == null) {
@@ -37,7 +37,7 @@ export const mapper: RenderMapper<TradeSuccessScreenProps> = store => ws => {
     effectiveVolumeEth: effectiveVolumeEth(ws),
     effectivePrice: effectivePrice(ws),
     networkFee: networkFee(ws),
-    tradeTxHash: ws.tradeTxHash,
+    tradeTxHash: ws.tradeExecution.tradeTxHash,
   };
 };
 

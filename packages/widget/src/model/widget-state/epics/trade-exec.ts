@@ -1,5 +1,5 @@
 import { Operation } from '@dexdex/model/lib/base';
-import { Trade } from '@dexdex/model/lib/trade';
+import { Trade, TradeState } from '@dexdex/model/lib/trade';
 import { TradePlan, getFinalVolumeEth } from '@dexdex/model/lib/trade-plan';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
 import { BN } from 'bn.js';
@@ -15,7 +15,9 @@ import { filterAction } from './utils';
 
 const NOAFFILIATE = '0x0000000000000000000000000000000000000000';
 
-async function executeTransaction(
+const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+async function executeTrade(
   api: ServerApi,
   wallet: Wallet,
   gasPrice: BN,
@@ -25,10 +27,11 @@ async function executeTransaction(
   feePercentage: number,
   reportState: (newState: TransactionState) => void
 ) {
+  let tradeTxId: string;
   try {
     if (operation === 'buy') {
       reportState({ stage: TxStage.RequestTradeSignature });
-      const tradeTxId = await wallet.dexdexBuy({
+      tradeTxId = await wallet.dexdexBuy({
         token: tradeable.address,
         volume: plan.currentVolume,
         volumeEth: getFinalVolumeEth(plan, feePercentage),
@@ -36,16 +39,6 @@ async function executeTransaction(
         gasPrice,
         affiliate: NOAFFILIATE,
       });
-      reportState({ stage: TxStage.TradeInProgress, txId: tradeTxId });
-      const tradeTxReceipt = await wallet.waitForTransaction(tradeTxId);
-      console.log(tradeTxReceipt);
-
-      let trade: Trade | null = null;
-      while (trade == null) {
-        trade = await api.getTrade(tradeTxId);
-      }
-
-      reportState({ stage: TxStage.Completed, trade });
     } else {
       reportState({ stage: TxStage.RequestTokenAllowanceSignature });
       const allowanceTxId = await wallet.approveTokenAllowance(
@@ -57,7 +50,7 @@ async function executeTransaction(
       await wallet.waitForTransaction(allowanceTxId);
 
       reportState({ stage: TxStage.RequestTradeSignature });
-      const tradeTxId = await wallet.dexdexSell({
+      tradeTxId = await wallet.dexdexSell({
         token: tradeable.address,
         volume: plan.currentVolume,
         volumeEth: getFinalVolumeEth(plan, feePercentage),
@@ -65,28 +58,34 @@ async function executeTransaction(
         gasPrice,
         affiliate: NOAFFILIATE,
       });
-      reportState({ stage: TxStage.TradeInProgress, txId: tradeTxId });
-      const tradeTxReceipt = await wallet.waitForTransaction(tradeTxId);
-      console.log(tradeTxReceipt);
+    }
 
-      let trade: Trade | null = null;
-      while (trade == null) {
-        trade = await api.getTrade(tradeTxId);
-      }
+    reportState({ stage: TxStage.TradeInProgress, txId: tradeTxId });
+    const tradeTxReceipt = await wallet.waitForTransaction(tradeTxId);
+    console.log(tradeTxReceipt);
 
-      reportState({ stage: TxStage.Completed, trade });
+    let trade: Trade | null = null;
+    while (trade == null || trade.state === TradeState.Pending) {
+      trade = await api.getTrade(tradeTxId);
+      wait(1000);
+    }
+
+    if (trade.state === TradeState.Failed) {
+      reportState({ stage: TxStage.TradeFailed, trade });
+    } else {
+      reportState({ stage: TxStage.TradeCompleted, trade });
     }
   } catch (err) {
     console.error(err);
     if (err.name === 'WalletError' && err.codeName === 'SignatureRejected') {
       reportState({ stage: TxStage.SignatureRejected });
     } else {
-      reportState({ stage: TxStage.Failed });
+      reportState({ stage: TxStage.UnkownError });
     }
   }
 }
 
-function executeTransactionObs(
+function executeTradeObs(
   api: ServerApi,
   wallet: Wallet,
   gasPrice: BN,
@@ -96,7 +95,7 @@ function executeTransactionObs(
   feePercentage: number
 ): Observable<TransactionState> {
   return Observable.create(async (observer: Observer<TransactionState>) => {
-    executeTransaction(api, wallet, gasPrice, tradeable, operation, plan, feePercentage, state =>
+    executeTrade(api, wallet, gasPrice, tradeable, operation, plan, feePercentage, state =>
       observer.next(state)
     )
       .catch(err => observer.error(err))
@@ -108,14 +107,14 @@ function executeTransactionObs(
   });
 }
 
-export const runTransaction = (api: ServerApi): Epic<WidgetState, Actions> => changes =>
+export const executeTradeEpic = (api: ServerApi): Epic<WidgetState, Actions> => changes =>
   changes.pipe(
     filterAction('startTransaction'),
     switchMap(({ state }) => {
       if (state.wallet && state.tradePlan) {
         const gasPriceBN = computeGasPrice(state.config.gasprices, state.gasPrice);
         const plan = state.tradePlan;
-        return executeTransactionObs(
+        return executeTradeObs(
           api,
           state.wallet,
           gasPriceBN,

@@ -24,8 +24,8 @@ export const mapper: RenderMapper<TradeProgressScreen> = store => ws => ({
   operation: ws.operation,
   expectedVolumeEth: expectedVolumeEth(ws),
   networkFee: networkFee(ws),
-  txHash: ws.tradeTxHash,
-  approvalHash: ws.approvalTxHash,
+  txHash: ws.tradeExecution.tradeTxHash,
+  approvalHash: ws.tradeExecution.approvalTxHash,
 });
 
 const TradeProgressScreen: React.SFC<TradeProgressScreen> = props => (
