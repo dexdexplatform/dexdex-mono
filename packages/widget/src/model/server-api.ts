@@ -89,7 +89,7 @@ export function fromJsonOrderbookEvent(event: JsonOrderBookEvent): OrderBookEven
 const getWidgetConfig = (baseUrl: string) => async (
   widgetId: string
 ): Promise<Exclude<WidgetConfig, 'wallets'>> => {
-  const res = await fetch(`${baseUrl}/api/v1/widget/${widgetId}`);
+  const res = await fetch(`${baseUrl}/api/v1/widgets/${widgetId}`);
   if (res.ok) {
     return await res.json();
   } else {
@@ -98,7 +98,7 @@ const getWidgetConfig = (baseUrl: string) => async (
 };
 
 const getTrade = (baseUrl: string) => async (txhash: string): Promise<Trade | null> => {
-  const res = await fetch(`${baseUrl}/api/v1/trade/${txhash}`);
+  const res = await fetch(`${baseUrl}/api/v1/trades/${txhash}`);
   if (res.ok) {
     const json: TradeJson = await res.json();
     return fromJson(json);
@@ -112,7 +112,7 @@ const getTrade = (baseUrl: string) => async (txhash: string): Promise<Trade | nu
 const getOrderBook = (baseUrl: string) => async (
   tradeableAddress: string
 ): Promise<OrderBookSnapshot> => {
-  const res = await fetch(`${baseUrl}/api/v1/orderbook/${tradeableAddress}`);
+  const res = await fetch(`${baseUrl}/api/v1/orderbooks/${tradeableAddress}`);
   if (res.ok) {
     return fromJsonOrderbookSnapshot(await res.json());
   } else {
