@@ -4,6 +4,7 @@ import * as io from 'socket.io-client';
 import { Address } from '@dexdex/model/lib/base';
 import { JsonOrder, Order, fromJsonOrder } from '@dexdex/model/lib/order';
 import { WidgetConfig } from './widget';
+import { Trade, TradeJson, fromJson } from '@dexdex/model/lib/trade';
 
 //-------------------------------------------------------------------------------------------------
 // Types
@@ -48,6 +49,7 @@ export type JsonOrderBookEvent =
 export interface ServerApi {
   getWidgetConfig(widgetId: string): Promise<Exclude<WidgetConfig, 'wallets'>>;
   getOrderBook(tokenAddress: string): Promise<OrderBookSnapshot>;
+  getTrade(txhash: string): Promise<Trade | null>;
   orderBookWatcher(tokenAddress: string): Observable<OrderBookEvent>;
 }
 
@@ -90,6 +92,18 @@ const getWidgetConfig = (baseUrl: string) => async (
   const res = await fetch(`${baseUrl}/api/v1/widget/${widgetId}`);
   if (res.ok) {
     return await res.json();
+  } else {
+    throw new Error(`Error with request: ${res.status}`);
+  }
+};
+
+const getTrade = (baseUrl: string) => async (txhash: string): Promise<Trade | null> => {
+  const res = await fetch(`${baseUrl}/api/v1/trade/${txhash}`);
+  if (res.ok) {
+    const json: TradeJson = await res.json();
+    return fromJson(json);
+  } else if (res.status === 404) {
+    return null;
   } else {
     throw new Error(`Error with request: ${res.status}`);
   }
@@ -227,6 +241,7 @@ export function createApi(opts: ApiOptions): ServerApi {
   return {
     getWidgetConfig: getWidgetConfig(opts.url),
     getOrderBook: getOrderBook(opts.url),
+    getTrade: getTrade(opts.url),
     orderBookWatcher: wsApi.watchTradeable,
   };
 }

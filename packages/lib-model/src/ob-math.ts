@@ -1,6 +1,6 @@
 import { BN } from 'bn.js';
 import { Order, getOrderRemainingVolume, getOrderRemainingVolumeEth } from './order';
-import { Trade } from './trade';
+import { TradePlan } from './trade-plan';
 
 function findMinVolumeIdx(orders: Order[]): number {
   let lowest = getOrderRemainingVolume(orders[0]);
@@ -37,9 +37,9 @@ function applyOrder(order: Order, requiredVolume: BN) {
   }
 }
 
-export function getTransactionFor(orders: Order[], ordersQty: number, totalVolume: BN): Trade {
+export function tradePlanFor(orders: Order[], ordersQty: number, totalVolume: BN): TradePlan {
   if (orders.length === 0) {
-    return new Trade({
+    return new TradePlan({
       baseVolume: new BN(0),
       baseVolumeEth: new BN(0),
       extraVolume: new BN(0),
@@ -73,7 +73,7 @@ export function getTransactionFor(orders: Order[], ordersQty: number, totalVolum
 
     // If we already achieve the required volume, exit
     if (accVolume.gte(totalVolume)) {
-      return new Trade({
+      return new TradePlan({
         baseVolume: accVolume,
         baseVolumeEth: accVolumeEth,
         extraVolume,

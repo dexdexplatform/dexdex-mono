@@ -82,6 +82,7 @@ function applySetters(state: WidgetState, action: Actions): WidgetState {
           action.payload.stage === TxStage.TokenAllowanceInProgress
             ? action.payload.txId
             : state.approvalTxHash,
+        trade: action.payload.stage === TxStage.Completed ? action.payload.trade : null,
         screen: txEventToScreen(action.payload),
       };
     default:
@@ -148,21 +149,18 @@ function reducer(oldState: WidgetState, action: Actions): WidgetState {
   // Recompute currentTransaction when necessary
   if (currentSide == null || !st.isValidAmount) {
     // we don't have orderbook or the amount is invalid => no valid tx
-    st.currentTrade = null;
+    st.tradePlan = null;
   } else if (oldSide !== currentSide) {
     // ordebookSide changed => (side orders changed OR operation changed) => recompute
-    st.currentTrade = OB.computeTransaction(
-      currentSide,
-      toTokenDecimals(st.amount, st.tradeable.decimals)
-    );
+    st.tradePlan = OB.tradePlanFor(currentSide, toTokenDecimals(st.amount, st.tradeable.decimals));
   } else if (anyChanged('amount')) {
     // only the amount changed. Maybe the current computed transaction is still valid
     const volumeTD = toTokenDecimals(st.amount, st.tradeable.decimals);
-    if (st.currentTrade && st.currentTrade.canHandle(volumeTD)) {
-      st.currentTrade = st.currentTrade!.changeVolume(volumeTD);
+    if (st.tradePlan && st.tradePlan.canHandle(volumeTD)) {
+      st.tradePlan = st.tradePlan!.changeVolume(volumeTD);
     } else {
       // current is not valid => recompute
-      st.currentTrade = OB.computeTransaction(
+      st.tradePlan = OB.tradePlanFor(
         currentSide,
         toTokenDecimals(st.amount, st.tradeable.decimals)
       );

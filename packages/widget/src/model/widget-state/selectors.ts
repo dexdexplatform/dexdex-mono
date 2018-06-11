@@ -1,28 +1,45 @@
-import { WidgetState } from '.';
-import { getFinalVolumeEth } from '@dexdex/model/lib/trade';
-import { fromWei, toTokenDecimals } from '@dexdex/utils/lib/units';
-import { computeGasPrice } from '../widget';
+import { getFinalVolumeEth } from '@dexdex/model/lib/trade-plan';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
+import { fromWei, getDecimalBase, toTokenDecimals } from '@dexdex/utils/lib/units';
 import { BN } from 'bn.js';
+import { WidgetState } from '.';
+import { computeGasPrice } from '../widget';
 
-export const getTradeVolumeEthWithFee = (ws: WidgetState) => {
-  return ws.currentTrade
-    ? Number(fromWei(getFinalVolumeEth(ws.currentTrade, ws.config.feePercentage), 'ether')).toFixed(
-        4
-      )
-    : '--';
+const formatEth = (volumeEth: null | BN): string =>
+  volumeEth ? Number(fromWei(volumeEth, 'ether')).toFixed(4) : '--';
+
+export const expectedVolumeEth = (ws: WidgetState) => {
+  return ws.tradePlan ? formatEth(getFinalVolumeEth(ws.tradePlan, ws.config.feePercentage)) : '--';
+};
+
+export const effectiveVolumeEth = (ws: WidgetState) => {
+  return ws.trade ? formatEth(ws.trade.volumeEthEffective) : '--';
+};
+
+export const effectiveVolume = (ws: WidgetState) => {
+  return ws.trade ? formatEth(ws.trade.volumeEffective) : '--';
+};
+
+export const effectivePrice = (ws: WidgetState) => {
+  if (ws.trade == null || ws.trade.volumeEffective == null || ws.trade.volumeEthEffective == null) {
+    return '--';
+  }
+
+  return formatEth(
+    ws.trade.volumeEffective // value without decimals
+      .div(getDecimalBase(ws.tradeable.decimals)) // div by base => to decimals
+      .div(ws.trade.volumeEthEffective) // get price
+  );
 };
 
 export const networkFee = (ws: WidgetState) => {
-  const transactionInfo = ws.currentTrade;
+  const transactionInfo = ws.tradePlan;
   const gasPrice = computeGasPrice(ws.config.gasprices, ws.gasPrice);
-  const gasCost = transactionInfo
-    ? String(Number(fromWei(transactionInfo.requiredGas.mul(gasPrice), 'ether')).toFixed(4))
-    : '--';
+  const gasCost = transactionInfo ? formatEth(transactionInfo.requiredGas.mul(gasPrice)) : '--';
 
   return {
     ether: gasCost,
-    usd: transactionInfo ? String((Number(gasCost) * ws.config.ethers2usdER).toFixed(2)) : '--',
+    usd: transactionInfo ? (Number(gasCost) * ws.config.ethers2usdER).toFixed(2) : '--',
   };
 };
 

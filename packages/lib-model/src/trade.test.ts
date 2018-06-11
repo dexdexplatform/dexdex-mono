@@ -1,66 +1,30 @@
 import { BN } from 'bn.js';
-import { Trade } from './trade';
-
-expect.extend({
-  toEqualBN(received: any, argument: BN) {
-    const pass = BN.isBN(received) && received.eq(argument);
-    if (pass) {
-      return {
-        message: () =>
-          `expected ${received.toString(10)} not to be equal to ${argument.toString(10)}`,
-        pass: true,
-      };
-    } else {
-      return {
-        message: () => `expected ${received.toString(10)} to be equal to ${argument.toString(10)}`,
-        pass: false,
-      };
-    }
-  },
-});
-
-declare global {
-  namespace jest {
-    // tslint:disable-next-line:interface-name
-    interface Matchers<R> {
-      toEqualBN(x: BN): R;
-    }
-  }
-}
+import { Trade, TradeState, fromJson, toJson } from './trade';
+import { Buffer } from 'buffer';
 
 describe('Trade', () => {
-  test('consume ALL extraVolume', () => {
-    let tx = new Trade({
-      baseVolume: new BN(1000000),
-      baseVolumeEth: new BN(200000),
-      extraVolume: new BN(5000),
-      extraVolumeEth: new BN(10000),
-      orders: [],
-    });
+  test('to/fromJson()', () => {
+    const trade: Trade = {
+      affiliateAddress: '0x0000000001000000000200000000030000000004',
+      depositAddress: '0x0000000001000000000200000000030000000004',
+      senderAddress: '0x0000000001000000000200000000030000000004',
+      tradeableAddress: '0x0000000001000000000200000000030000000004',
+      isSell: true,
+      id: 'aaaaaaaaaaaaaaaaaaa',
+      ordersData: Buffer.from('00000000000000', 'hex'),
+      txhash: '0x000000000100000000020000000003000000000400000000050000000006aaaa',
+      state: TradeState.Completed,
+      createdDate: new Date(),
+      updatedDate: new Date(),
+      volume: new BN(10),
+      volumeEth: new BN(1),
+      volumeEffective: new BN(5),
+      volumeEthEffective: new BN(2),
+    };
 
-    // We start with current == required
-    expect(tx.currentVolume).toEqualBN(tx.set.baseVolume);
-    expect(tx.currentVolumeEth).toEqualBN(tx.set.baseVolumeEth);
+    const tradeBis = fromJson(JSON.parse(JSON.stringify(toJson(trade))));
 
-    // Consume Total extra space
-    tx = tx.changeVolume(tx.currentVolume.add(tx.set.extraVolume));
-
-    expect(tx.currentVolume).toEqualBN(tx.set.baseVolume.add(tx.set.extraVolume));
-    expect(tx.currentVolumeEth).toEqualBN(tx.set.baseVolumeEth.add(tx.set.extraVolumeEth));
-  });
-  test('NO extraVolume', () => {
-    const tx = new Trade({
-      baseVolume: new BN(1000000),
-      baseVolumeEth: new BN(200000),
-      extraVolume: new BN(0),
-      extraVolumeEth: new BN(0),
-      orders: [],
-    });
-
-    // We start with current == required
-    expect(tx.currentVolume).toEqualBN(tx.set.baseVolume);
-    expect(tx.currentVolumeEth).toEqualBN(tx.set.baseVolumeEth);
-    expect(tx.maxAvailableVolume).toEqualBN(tx.set.baseVolume);
-    expect(tx.maxAvailableVolumeEth).toEqualBN(tx.set.baseVolumeEth);
+    expect(tradeBis).toMatchObject(trade);
+    // expect(tradeBis.volume).toMatchObject(trade.volume);
   });
 });

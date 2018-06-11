@@ -1,9 +1,9 @@
 import { BN } from 'bn.js';
 import { Operation } from './base';
-import { getMaxVolume, getMinVolume, getTransactionFor } from './ob-math';
+import * as obmath from './ob-math';
 import { Order } from './order';
 import { toWei } from '@dexdex/utils/lib/units';
-import { Trade } from './trade';
+import { TradePlan } from './trade-plan';
 
 export type OrderBookConfig = {
   minVolumeEth: BN;
@@ -50,8 +50,8 @@ export const orderBookActions = (cfg: OrderBookConfig = DefaultConfig) => {
 
   const newOBSide = (orders: Order[] = []): OrderBookSide => ({
     orders: orders,
-    minVolume: getMinVolume(orders, cfg.minVolumeEth),
-    maxVolume: getMaxVolume(orders, cfg.maxTransactionOrders),
+    minVolume: obmath.getMinVolume(orders, cfg.minVolumeEth),
+    maxVolume: obmath.getMaxVolume(orders, cfg.maxTransactionOrders),
   });
 
   const newOrderBook = (
@@ -88,8 +88,8 @@ export const orderBookActions = (cfg: OrderBookConfig = DefaultConfig) => {
     }
   };
 
-  const computeTransaction = (obside: OrderBookSide, volumeTD: BN): Trade => {
-    return getTransactionFor(obside.orders, cfg.maxTransactionOrders, volumeTD);
+  const tradePlanFor = (obside: OrderBookSide, volumeTD: BN): TradePlan => {
+    return obmath.tradePlanFor(obside.orders, cfg.maxTransactionOrders, volumeTD);
   };
 
   return {
@@ -98,7 +98,7 @@ export const orderBookActions = (cfg: OrderBookConfig = DefaultConfig) => {
     addOrder,
     removeOrder,
     updateOrder,
-    computeTransaction,
+    tradePlanFor,
     isValidVolume,
   };
 };

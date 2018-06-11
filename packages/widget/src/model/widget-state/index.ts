@@ -1,9 +1,10 @@
-import { BN } from 'bn.js';
 import { Address, Operation } from '@dexdex/model/lib/base';
 import { OrderBook } from '@dexdex/model/lib/orderbook';
 import { Trade } from '@dexdex/model/lib/trade';
-import { ApiOptions, createApi } from '../server-api';
+import { TradePlan } from '@dexdex/model/lib/trade-plan';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
+import { BN } from 'bn.js';
+import { ApiOptions, createApi } from '../server-api';
 import { Wallet, getWallets } from '../wallets';
 import { GasPrice, WidgetConfig } from '../widget';
 import * as actions from './actions';
@@ -43,9 +44,10 @@ export interface WidgetState {
   screen: WidgetScreen;
   walletDetails: null | WalletDetails;
   isValidAmount: boolean;
-  currentTrade: Trade | null;
+  tradePlan: TradePlan | null;
   tradeTxHash: null | string;
   approvalTxHash: null | string;
+  trade: null | Trade;
 }
 
 export type WidgetStore = Store<WidgetState, actions.Actions>;
@@ -63,7 +65,10 @@ export interface Operations {
 // Store Initialization
 //-------------------------------------------------------------------------------------------------
 
-export async function initWidget(apiOpts: ApiOptions, widgetId: string) {
+export async function initWidget(
+  apiOpts: ApiOptions,
+  widgetId: string
+): Promise<Store<WidgetState, actions.Actions>> {
   const api = createApi(apiOpts);
   const config: WidgetConfig = await api.getWidgetConfig(widgetId);
   config.wallets = await getWallets();
@@ -80,9 +85,10 @@ export async function initWidget(apiOpts: ApiOptions, widgetId: string) {
     screen: 'form',
     walletDetails: null,
     isValidAmount: false,
-    currentTrade: null,
+    tradePlan: null,
     tradeTxHash: null,
     approvalTxHash: null,
+    trade: null,
   };
 
   return createStore(reducerWithDefaults(initialState), rootEpic(api));

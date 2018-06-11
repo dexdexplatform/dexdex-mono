@@ -10,6 +10,6 @@ import { walletDetails } from './wallet-details';
 export type WidgetEpic = Epic<WidgetState, Actions>;
 
 const rootEpic = (api: ServerApi): WidgetEpic => changes =>
-  merge(orderbook(api)(changes), walletDetails(changes), runTransaction(changes));
+  merge(orderbook(api)(changes), walletDetails(changes), runTransaction(api)(changes));
 
 export default rootEpic;

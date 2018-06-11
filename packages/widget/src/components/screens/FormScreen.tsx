@@ -6,7 +6,7 @@ import { Wallet } from '../../model/wallets';
 import { GasPrice } from '../../model/widget';
 import { Operations, WalletDetails, WidgetState } from '../../model/widget-state';
 import * as actions from '../../model/widget-state/actions';
-import { networkFee, getTradeVolumeEthWithFee } from '../../model/widget-state/selectors';
+import { networkFee, expectedVolumeEth } from '../../model/widget-state/selectors';
 import { fixDecimals } from '@dexdex/utils/lib/format';
 import AmountField from '../AmountField';
 import GasPriceSelector from '../GasPriceSelector';
@@ -55,7 +55,7 @@ export const mapper: RenderMapper<WidgetFormProps> = store => {
     amount: ws.amount,
     gasPrice: ws.gasPrice,
     operation: ws.operation,
-    volumeEthWithFee: getTradeVolumeEthWithFee(ws),
+    volumeEthWithFee: expectedVolumeEth(ws),
     networkFee: networkFee(ws),
     actions: {
       setAmount: setAmount(ws),

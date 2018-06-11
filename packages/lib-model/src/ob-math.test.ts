@@ -132,10 +132,10 @@ describe('obmath', () => {
     });
   });
 
-  describe('getTransactionFor()', () => {
+  describe('tradePlanFor()', () => {
     test('case: 1 order - partial completion', () => {
       const orders = [sellOrderED(30, 5), sellOrderED(20, 10), sellOrderED(50, 30)];
-      const tx = obmath.getTransactionFor(orders, 1, toTokenDecimals(20, TokenDecimals));
+      const tx = obmath.tradePlanFor(orders, 1, toTokenDecimals(20, TokenDecimals));
 
       // expected result:
       //   we use only the first order, since it has 30 and we need only 20
@@ -157,7 +157,7 @@ describe('obmath', () => {
 
     test('case: 1 order - partial completion - order is not full', () => {
       const orders = [sellOrderED(30, 5, 0.5), sellOrderED(20, 10), sellOrderED(50, 30)];
-      const tx = obmath.getTransactionFor(orders, 1, toTokenDecimals(10, TokenDecimals));
+      const tx = obmath.tradePlanFor(orders, 1, toTokenDecimals(10, TokenDecimals));
 
       const order = orders[0];
       // we have half the order remaining
@@ -174,7 +174,7 @@ describe('obmath', () => {
 
     test('case: 2 orders - partial completion', () => {
       const orders = [sellOrderED(30, 5), sellOrderED(20, 10), sellOrderED(50, 30)];
-      const tx = obmath.getTransactionFor(orders, 2, toTokenDecimals(40, TokenDecimals));
+      const tx = obmath.tradePlanFor(orders, 2, toTokenDecimals(40, TokenDecimals));
 
       expect(tx.set.orders).toHaveLength(2);
       expect(tx.set.orders.map(o => o.id)).toEqual(['order-1', 'order-2']);
@@ -185,7 +185,7 @@ describe('obmath', () => {
 
     test('case: 1 order - first orders have low volume', () => {
       const orders = [sellOrderED(30, 5), sellOrderED(20, 10), sellOrderED(50, 30)];
-      const tx = obmath.getTransactionFor(orders, 1, toTokenDecimals(40, TokenDecimals));
+      const tx = obmath.tradePlanFor(orders, 1, toTokenDecimals(40, TokenDecimals));
 
       expect(tx.set.orders).toHaveLength(1);
       expect(tx.set.orders.map(o => o.id)).toEqual(['order-3']);

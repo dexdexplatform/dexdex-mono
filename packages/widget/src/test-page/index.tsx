@@ -57,7 +57,7 @@ const TestApp = () => (
         operation={data.operation}
         networkFee={data.networkFee}
         tradeable={data.tradeable}
-        volumeEthWithFee={data.txEtherRange.max}
+        expectedVolumeEth={data.txEtherRange.max}
       />
     </ScreenTest>
     <ScreenTest name="Trade Screen - Waiting Ethereum">
@@ -67,7 +67,7 @@ const TestApp = () => (
         operation={data.operation}
         networkFee={data.networkFee}
         tradeable={data.tradeable}
-        volumeEthWithFee={data.txEtherRange.max}
+        expectedVolumeEth={data.txEtherRange.max}
         txHash={'asdfsdfasdfsdfsdafsdafd'}
       />
     </ScreenTest>
@@ -78,7 +78,9 @@ const TestApp = () => (
         operation={data.operation}
         networkFee={data.networkFee}
         tradeable={data.tradeable}
-        volumeEthWithFee={data.txEtherRange.max}
+        effectiveVolumeEth={data.txEtherRange.max}
+        effectiveVolume={data.txEtherRange.max}
+        effectivePrice={data.txEtherRange.max}
         tradeTxHash={data.tradeTxHash}
       />
     </ScreenTest>

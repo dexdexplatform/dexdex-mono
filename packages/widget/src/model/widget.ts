@@ -2,6 +2,7 @@ import { Tradeable } from '@dexdex/model/lib/tradeable';
 import { toWei } from '@dexdex/utils/lib/units';
 import { Wallet } from './wallets';
 import { BN } from 'bn.js';
+import { Trade } from '@dexdex/model/lib/trade';
 
 export enum GasPrice {
   Slow = 'Slow',
@@ -43,7 +44,7 @@ export type TransactionState =
       stage: TxStage.TradeInProgress | TxStage.TokenAllowanceInProgress;
       txId: string;
     }
-  | { stage: TxStage.Completed }
+  | { stage: TxStage.Completed; trade: Trade }
   | { stage: TxStage.SignatureRejected }
   | { stage: TxStage.Failed };
 

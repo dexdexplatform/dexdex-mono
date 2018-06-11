@@ -2,7 +2,7 @@ import { Address, Operation } from '@dexdex/model/lib/base';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
 import * as React from 'react';
 import { RenderMapper } from '.';
-import { getTradeVolumeEthWithFee, networkFee } from '../../model/widget-state/selectors';
+import { expectedVolumeEth, networkFee } from '../../model/widget-state/selectors';
 import { TokenInfo } from '../TokenInfo';
 import { SellSteps, BuySteps } from '../TradeSteps';
 
@@ -11,7 +11,7 @@ export interface TradeProgressScreen {
   tradeable: Tradeable;
   amount: string;
   fromAddress: Address;
-  volumeEthWithFee: string;
+  expectedVolumeEth: string;
   networkFee: { ether: string; usd: string };
   txHash?: string | null;
   approvalHash?: string | null;
@@ -22,7 +22,7 @@ export const mapper: RenderMapper<TradeProgressScreen> = store => ws => ({
   fromAddress: ws.walletDetails!.address!,
   amount: ws.amount,
   operation: ws.operation,
-  volumeEthWithFee: getTradeVolumeEthWithFee(ws),
+  expectedVolumeEth: expectedVolumeEth(ws),
   networkFee: networkFee(ws),
   txHash: ws.tradeTxHash,
   approvalHash: ws.approvalTxHash,
