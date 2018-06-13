@@ -14,6 +14,8 @@ import OperationSelector from '../OperationSelector';
 import TokenSelector from '../TokenSelector';
 import WalletSelector from '../WalletSelector';
 
+const DEXDEX_ICON = require('../icons/dexdex.svg');
+
 export interface WidgetFormProps {
   actions: Operations;
   tradeableList: Tradeable[];
@@ -124,7 +126,7 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
     </div>
     <div className="footer flex-grid-responsive">
       <div className="col-1">
-        <img src="/dexdex.svg" alt="Powered by DEXDEX" />
+        <img src={DEXDEX_ICON} alt="Powered by DEXDEX" />
       </div>
       <div className="col-2">
         <p>

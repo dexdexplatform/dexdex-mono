@@ -431,16 +431,16 @@ input[type='checkbox']:checked + .hide3 .inner3 {
 }
 
 .status-steps .step.pending {
-  background-image: url('/pending.svg');
+  background-image: url('./icons/pending.svg');
   background-repeat: no-repeat;
 }
 
 .status-steps .step.current {
-  background-image: url('/current.svg');
+  background-image: url('./icons/current.svg');
   background-repeat: no-repeat;
 }
 .status-steps .step.completed {
-  background-image: url('/completed.svg');
+  background-image: url('./icons/completed.svg');
   background-repeat: no-repeat;
 }
 .status-steps .step > p {
