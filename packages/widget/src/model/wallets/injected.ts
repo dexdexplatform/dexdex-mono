@@ -16,13 +16,12 @@ const DEXDEX_ADDRESS = process.env.DEXDEX_CONTRACT!;
 const KnowWallets = [
   {
     name: 'Metamask',
-    icon: 'https://metamask.io/img/metamask.png',
+    icon: require('./icons/metamask.png'),
     condition: (web3: any) => web3.currentProvider.isMetaMask,
   },
   {
     name: 'Toshi',
-    icon:
-      'https://lh3.googleusercontent.com/NJxIx1gBbOtXNC5z0f-80q3N3IJRnYXPDKUueYQT53wpRZtXA-mi3rw2SEba-wCQobS3=s360-rw',
+    icon: require('./icons/toshi.png'),
     condition: (web3: any) => web3.currentProvider.isToshi,
   },
 ];

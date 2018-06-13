@@ -5,6 +5,7 @@ import { Screen as RejectedSignature } from '../components/screens/RejectedSigna
 import { Screen as RequestAllowanceScreen } from '../components/screens/RequestAllowanceScreen';
 import { Screen as TradeProgressScreen } from '../components/screens/TradeProgressScreen';
 import { Screen as TradeSuccessScreen } from '../components/screens/TradeSuccessScreen';
+import { getWallets, Wallet } from '../model/wallets';
 import { Operation } from '@dexdex/model/lib/base';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
 import '../components/Widget.css';
@@ -37,7 +38,7 @@ const ScreenTest: React.SFC<{ name: string }> = ({ name, children }) => (
     <div style={{ marginBottom: 200, borderTop: 'solid 1px #EEE' }}>{children}</div>
   </div>
 );
-const TestApp = () => (
+const TestApp: React.SFC<{ wallet: Wallet }> = ({ wallet }) => (
   <div>
     <h1>Widget Screen Stages</h1>
     <ScreenTest name="Request Allowance Screen - Signature">
@@ -82,6 +83,7 @@ const TestApp = () => (
         effectiveVolume={data.txEtherRange.max}
         effectivePrice={data.txEtherRange.max}
         tradeTxHash={data.tradeTxHash}
+        wallet={wallet}
       />
     </ScreenTest>
     <ScreenTest name="Error Screen">
@@ -93,4 +95,12 @@ const TestApp = () => (
   </div>
 );
 
-ReactDOM.render(<TestApp />, document.getElementById('root') as HTMLElement);
+async function main() {
+  const wallets = await getWallets();
+
+  ReactDOM.render(<TestApp wallet={wallets[0]} />, document.getElementById('root') as HTMLElement);
+}
+
+main().catch(err => {
+  console.error('Error: ', err);
+});

@@ -8,6 +8,7 @@ import {
   effectiveVolumeEth,
   networkFee,
 } from '../../model/widget-state/selectors';
+import { Wallet } from '../../model/wallets';
 
 export interface TradeSuccessScreenProps {
   operation: Operation;
@@ -19,6 +20,7 @@ export interface TradeSuccessScreenProps {
   effectivePrice: string;
   networkFee: { ether: string; usd: string };
   tradeTxHash: string;
+  wallet: Wallet;
 }
 
 export const mapper: RenderMapper<TradeSuccessScreenProps> = store => ws => {
@@ -38,6 +40,7 @@ export const mapper: RenderMapper<TradeSuccessScreenProps> = store => ws => {
     effectivePrice: effectivePrice(ws),
     networkFee: networkFee(ws),
     tradeTxHash: ws.tradeExecution.tradeTxHash,
+    wallet: ws.wallet!,
   };
 };
 
@@ -50,8 +53,8 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
       <p className="token-name">{props.tradeable.name}</p>
       {/* wallet info - only success*/}
       <div className="wallet-info-success">
-        <img className="wallet-icon" src="metamask.png" alt="Wallet Icon" />
-        <a className="wallet-address" href="#">
+        <img className="wallet-icon" src={props.wallet.icon} alt="Wallet Icon" />
+        <a className="wallet-address" href={`https://etherscan.io/address/${props.fromAddress}`}>
           {props.fromAddress}
         </a>
       </div>
