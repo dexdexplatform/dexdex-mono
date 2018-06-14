@@ -17,8 +17,8 @@ class WalletSelector extends React.Component<WalletSelectorProps> {
     const wallet = this.props.wallets[option.value!];
     return (
       <div className="col select-symbol-name">
-        <span className="wallet-name">{wallet.name} </span>
         <img className="wallet-symbol" src={wallet.icon} />
+        <span className="wallet-name">{wallet.name} </span>
       </div>
     );
   };
@@ -27,8 +27,8 @@ class WalletSelector extends React.Component<WalletSelectorProps> {
     const wallet = this.props.wallets[option.value!];
     return (
       <div className="col select-symbol-name">
-        <span className="wallet-name">{wallet.name} </span>
         <img className="wallet-symbol" src={wallet.icon} />
+        <span className="wallet-name">{wallet.name} </span>
       </div>
     );
   };
