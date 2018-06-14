@@ -64,8 +64,8 @@ p {
 
 .OperationSelector button.button-selected {
   color: #fff;
-  border-color: #7d2;
-  background-color: #7d2;
+  border-color: #124;
+  background-color: #124;
 }
 
 .OperationSelector button:first-child {
@@ -203,6 +203,20 @@ p {
 }
 .Select-control:hover {
   box-shadow: none !important;
+}
+
+.Select.token-selector.is-focused:not(.is-open) > .Select-control {
+  border-left: none !important;
+}
+
+.Select.token-selector.is-focused.is-open .Select-value {
+  display: none;
+}
+
+.Select-input > input {
+  height: 54px !important;
+  padding: 0 !important;
+  line-height: 54px !important;
 }
 
 .Select-placeholder,
