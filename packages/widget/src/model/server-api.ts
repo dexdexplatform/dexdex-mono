@@ -5,7 +5,7 @@ import { Address } from '@dexdex/model/lib/base';
 import { JsonOrder, Order, fromJsonOrder } from '@dexdex/model/lib/order';
 import { WidgetConfig } from './widget';
 import { Trade, TradeJson, fromJson } from '@dexdex/model/lib/trade';
-
+import { ApiBase } from '../config';
 //-------------------------------------------------------------------------------------------------
 // Types
 //-------------------------------------------------------------------------------------------------
@@ -53,10 +53,6 @@ export interface ServerApi {
   orderBookWatcher(tokenAddress: string): Observable<OrderBookEvent>;
 }
 
-export type ApiOptions = {
-  url: string;
-};
-
 //-------------------------------------------------------------------------------------------------
 // Helpers
 //-------------------------------------------------------------------------------------------------
@@ -86,10 +82,8 @@ export function fromJsonOrderbookEvent(event: JsonOrderBookEvent): OrderBookEven
 // Api Impl
 //-------------------------------------------------------------------------------------------------
 
-const getWidgetConfig = (baseUrl: string) => async (
-  widgetId: string
-): Promise<Exclude<WidgetConfig, 'wallets'>> => {
-  const res = await fetch(`${baseUrl}/api/v1/widgets/${widgetId}`);
+const getWidgetConfig = async (widgetId: string): Promise<Exclude<WidgetConfig, 'wallets'>> => {
+  const res = await fetch(`${ApiBase}/api/v1/widgets/${widgetId}`);
   if (res.ok) {
     return await res.json();
   } else {
@@ -97,8 +91,8 @@ const getWidgetConfig = (baseUrl: string) => async (
   }
 };
 
-const getTrade = (baseUrl: string) => async (txhash: string): Promise<Trade | null> => {
-  const res = await fetch(`${baseUrl}/api/v1/trades/${txhash}`);
+const getTrade = async (txhash: string): Promise<Trade | null> => {
+  const res = await fetch(`${ApiBase}/api/v1/trades/${txhash}`);
   if (res.ok) {
     const json: TradeJson = await res.json();
     return fromJson(json);
@@ -109,10 +103,8 @@ const getTrade = (baseUrl: string) => async (txhash: string): Promise<Trade | nu
   }
 };
 
-const getOrderBook = (baseUrl: string) => async (
-  tradeableAddress: string
-): Promise<OrderBookSnapshot> => {
-  const res = await fetch(`${baseUrl}/api/v1/orderbooks/${tradeableAddress}`);
+const getOrderBook = async (tradeableAddress: string): Promise<OrderBookSnapshot> => {
+  const res = await fetch(`${ApiBase}/api/v1/orderbooks/${tradeableAddress}`);
   if (res.ok) {
     return fromJsonOrderbookSnapshot(await res.json());
   } else {
@@ -235,13 +227,13 @@ const websocketApi = (socketUrl: string) => {
   };
 };
 
-export function createApi(opts: ApiOptions): ServerApi {
-  const wsApi = websocketApi(opts.url);
+export function createApi(): ServerApi {
+  const wsApi = websocketApi(ApiBase);
 
   return {
-    getWidgetConfig: getWidgetConfig(opts.url),
-    getOrderBook: getOrderBook(opts.url),
-    getTrade: getTrade(opts.url),
+    getWidgetConfig: getWidgetConfig,
+    getOrderBook: getOrderBook,
+    getTrade: getTrade,
     orderBookWatcher: wsApi.watchTradeable,
   };
 }

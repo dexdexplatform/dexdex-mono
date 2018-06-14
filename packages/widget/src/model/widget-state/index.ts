@@ -4,13 +4,13 @@ import { Trade } from '@dexdex/model/lib/trade';
 import { TradePlan } from '@dexdex/model/lib/trade-plan';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
 import { BN } from 'bn.js';
-import { ApiOptions, createApi } from '../server-api';
-import { Wallet, getWallets } from '../wallets';
-import { GasPrice, WidgetConfig, TxStage } from '../widget';
+import { createApi } from '../server-api';
+import { getWallets, Wallet } from '../wallets';
+import { GasPrice, TxStage, WidgetConfig } from '../widget';
 import * as actions from './actions';
 import rootEpic from './epics';
 import { reducerWithDefaults } from './reducer';
-import { Store, createStore } from './store';
+import { createStore, Store } from './store';
 
 //-------------------------------------------------------------------------------------------------
 // Types
@@ -67,11 +67,8 @@ export interface Operations {
 // Store Initialization
 //-------------------------------------------------------------------------------------------------
 
-export async function initWidget(
-  apiOpts: ApiOptions,
-  widgetId: string
-): Promise<Store<WidgetState, actions.Actions>> {
-  const api = createApi(apiOpts);
+export async function initWidget(widgetId: string): Promise<Store<WidgetState, actions.Actions>> {
+  const api = createApi();
   const config: WidgetConfig = await api.getWidgetConfig(widgetId);
   config.wallets = await getWallets();
 

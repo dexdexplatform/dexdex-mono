@@ -9,9 +9,7 @@ import { Tradeable } from '@dexdex/model/lib/tradeable';
 import DexDex from '../contracts/dexdex';
 import Erc20 from '@dexdex/erc20';
 import * as WalletErrors from './errors';
-
-// This will resolve on build
-const DEXDEX_ADDRESS = process.env.DEXDEX_CONTRACT!;
+import { ContractAddress } from '../../config';
 
 const KnowWallets = [
   {
@@ -129,7 +127,7 @@ class InjectedWallet implements Wallet {
       if (account == null) {
         throw new Error('No selected account');
       }
-      const dexdex = DexDex(this.eth, DEXDEX_ADDRESS);
+      const dexdex = DexDex(this.eth, ContractAddress);
       return await dexdex.buy(opts.token, opts.volume, opts.ordersData, account, opts.affiliate, {
         from: account,
         value: opts.volumeEth,
@@ -153,7 +151,7 @@ class InjectedWallet implements Wallet {
       if (account == null) {
         throw new Error('No selected account');
       }
-      const dexdex = DexDex(this.eth, DEXDEX_ADDRESS);
+      const dexdex = DexDex(this.eth, ContractAddress);
       return await dexdex.sell(
         opts.token,
         opts.volume,
@@ -187,7 +185,7 @@ class InjectedWallet implements Wallet {
       throw new Error('No selected account');
     }
     const tokenContract = Erc20(this.eth, token.address);
-    return tokenContract.approve(DEXDEX_ADDRESS, volume, { from: account, gasPrice });
+    return tokenContract.approve(ContractAddress, volume, { from: account, gasPrice });
   }
 }
 

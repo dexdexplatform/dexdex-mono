@@ -10,20 +10,10 @@ const paths = require('./paths');
 const getClientEnvironment = require('./env');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
-// Webpack uses `publicPath` to determine where the app is being served from.
-// It requires a trailing slash, or the file assets will get an incorrect path.
-const publicPath = paths.servedPath;
-// Some apps do not use client-side routing with pushState.
-// For these, "homepage" can be set to "." to enable relative asset paths.
-const shouldUseRelativeAssetPaths = publicPath === './';
 // Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
-// `publicUrl` is just like `publicPath`, but we will provide it to our app
-// as %PUBLIC_URL% in `index.html` and `process.env.PUBLIC_URL` in JavaScript.
-// Omit trailing slash as %PUBLIC_URL%/xyz looks better than %PUBLIC_URL%xyz.
-const publicUrl = publicPath.slice(0, -1);
-// Get environment variables to inject into our app.
-const env = getClientEnvironment(publicUrl);
+
+const env = getClientEnvironment();
 
 // Assert this just to be safe.
 // Development builds of React are slow and not intended for production.
@@ -32,31 +22,19 @@ if (env.stringified['process.env'].NODE_ENV !== '"production"') {
 }
 
 // Note: defined here because it will be used more than once.
-const cssFilename = 'static/css/[name].[contenthash:8].css';
+const cssFilename = 'content/[name].[contenthash:8].css';
 
-// ExtractTextPlugin expects the build output to be flat.
-// (See https://github.com/webpack-contrib/extract-text-webpack-plugin/issues/27)
-// However, our output is structured with css, js and media folders.
-// To have this structure working with relative paths, we have to use custom options.
-const extractTextPluginOptions = shouldUseRelativeAssetPaths
-  ? // Making sure that the publicPath goes back to to build folder.
-    { publicPath: Array(cssFilename.split('/').length).join('../') }
-  : {};
-
-// This is the production configuration.
-// It compiles slowly and is focused on producing a fast and minimal bundle.
-// The development configuration is different and lives in a separate file.
 module.exports = {
   bail: true,
   devtool: false,
   entry: {
-    embed: [require.resolve('./polyfills'), paths.embedEntryJs],
+    iframe: [require.resolve('./polyfills'), paths.embedEntryJs],
   },
   output: {
     path: paths.appBuild,
-    filename: 'static/js/[name].[chunkhash:8].js',
-    chunkFilename: 'static/js/[name].[chunkhash:8].chunk.js',
-    publicPath: publicPath,
+    filename: 'content/[name].[chunkhash:8].js',
+    chunkFilename: 'content/[name].[chunkhash:8].chunk.js',
+    publicPath: '/',
     // Point sourcemap entries to original disk location (format as URL on Windows)
     devtoolModuleFilenameTemplate: info =>
       path.relative(paths.appSrc, info.absoluteResourcePath).replace(/\\/g, '/'),
@@ -84,7 +62,7 @@ module.exports = {
             loader: require.resolve('url-loader'),
             options: {
               limit: 10000,
-              name: 'static/media/[name].[hash:8].[ext]',
+              name: 'content/media/[name].[hash:8].[ext]',
             },
           },
           {
@@ -154,7 +132,7 @@ module.exports = {
                     },
                   ],
                 },
-                extractTextPluginOptions
+                {}
               )
             ),
             // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
@@ -163,7 +141,7 @@ module.exports = {
             loader: require.resolve('file-loader'),
             exclude: [/\.js$/, /\.html$/, /\.json$/],
             options: {
-              name: 'static/media/[name].[hash:8].[ext]',
+              name: 'content/media/[name].[hash:8].[ext]',
             },
           },
         ],
@@ -198,12 +176,8 @@ module.exports = {
       sourceMap: shouldUseSourceMap,
     }),
     // Note: this won't work without ExtractTextPlugin.extract(..) in `loaders`.
-    new ExtractTextPlugin({
-      filename: cssFilename,
-    }),
-    new ManifestPlugin({
-      fileName: 'asset-manifest.json',
-    }),
+    new ExtractTextPlugin({ filename: cssFilename }),
+    new ManifestPlugin({ fileName: 'asset-manifest.json' }),
     // remove automatic load of all moment js locales
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new ForkTsCheckerWebpackPlugin({
@@ -212,8 +186,6 @@ module.exports = {
       tslint: paths.appTsLint,
     }),
   ],
-  // Some libraries import Node modules but don't use them in the browser.
-  // Tell Webpack to provide empty mocks for them so importing them works.
   node: {
     dgram: 'empty',
     fs: 'empty',

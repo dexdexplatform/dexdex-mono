@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Subscription } from 'rxjs';
-import { ApiOptions } from '../model/server-api';
 import { WidgetState, WidgetStore, initWidget, WidgetScreen } from '../model/widget-state';
 import './Widget.css';
 import WidgetLoader from './WidgetLoader';
@@ -15,7 +14,6 @@ export interface WidgetManagerState {
 
 export interface WidgetProps {
   widgetId: string;
-  opts: ApiOptions;
 }
 
 function connectDevTools(widgetId: string) {
@@ -81,7 +79,7 @@ class Widget extends React.Component<WidgetProps, WidgetManagerState> {
 
   async componentDidMount() {
     try {
-      this.store = await initWidget(this.props.opts, this.props.widgetId);
+      this.store = await initWidget(this.props.widgetId);
       this.subscription = this.store.changes.subscribe({
         next: change => {
           this.devTools.send(change.action, change.state);

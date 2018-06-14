@@ -1,5 +1,3 @@
-'use strict';
-
 // Do this as the first thing so that any code reading it knows the right env.
 process.env.NODE_ENV = 'production';
 
@@ -19,79 +17,19 @@ const fs = require('fs-extra');
 const webpack = require('webpack');
 const config = require('../config/webpack.config.prod');
 const paths = require('../config/paths');
-const checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
 const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
-const printHostingInstructions = require('react-dev-utils/printHostingInstructions');
-const FileSizeReporter = require('react-dev-utils/FileSizeReporter');
+const {
+  measureFileSizesBeforeBuild,
+  printFileSizesAfterBuild,
+} = require('react-dev-utils/FileSizeReporter');
 const printBuildError = require('react-dev-utils/printBuildError');
-
-const measureFileSizesBeforeBuild = FileSizeReporter.measureFileSizesBeforeBuild;
-const printFileSizesAfterBuild = FileSizeReporter.printFileSizesAfterBuild;
-const useYarn = fs.existsSync(paths.yarnLockFile);
 
 // These sizes are pretty large. We'll warn for bundles exceeding them.
 const WARN_AFTER_BUNDLE_GZIP_SIZE = 512 * 1024;
 const WARN_AFTER_CHUNK_GZIP_SIZE = 1024 * 1024;
 
-// Warn and crash if required files are missing
-if (!checkRequiredFiles([paths.appHtml, paths.embedEntryJs])) {
-  process.exit(1);
-}
-
-// First, read the current file sizes in build directory.
-// This lets us display how much they changed later.
-measureFileSizesBeforeBuild(paths.appBuild)
-  .then(previousFileSizes => {
-    // Remove all content but keep the directory so that
-    // if you're in it, you don't end up in Trash
-    fs.emptyDirSync(paths.appBuild);
-    // Merge with the public folder
-    copyPublicFolder();
-    // Start the webpack build
-    return build(previousFileSizes);
-  })
-  .then(
-    ({ stats, previousFileSizes, warnings }) => {
-      if (warnings.length) {
-        console.log(chalk.yellow('Compiled with warnings.\n'));
-        console.log(warnings.join('\n\n'));
-        console.log(
-          '\nSearch for the ' +
-            chalk.underline(chalk.yellow('keywords')) +
-            ' to learn more about each warning.'
-        );
-        console.log(
-          'To ignore, add ' + chalk.cyan('// eslint-disable-next-line') + ' to the line before.\n'
-        );
-      } else {
-        console.log(chalk.green('Compiled successfully.\n'));
-      }
-
-      console.log('File sizes after gzip:\n');
-      printFileSizesAfterBuild(
-        stats,
-        previousFileSizes,
-        paths.appBuild,
-        WARN_AFTER_BUNDLE_GZIP_SIZE,
-        WARN_AFTER_CHUNK_GZIP_SIZE
-      );
-      console.log();
-
-      const appPackage = require(paths.appPackageJson);
-      const publicUrl = paths.publicUrl;
-      const publicPath = config.output.publicPath;
-      const buildFolder = path.relative(process.cwd(), paths.appBuild);
-      printHostingInstructions(appPackage, publicUrl, publicPath, buildFolder, useYarn);
-    },
-    err => {
-      console.log(chalk.red('Failed to compile.\n'));
-      printBuildError(err);
-      process.exit(1);
-    }
-  );
-
 // Create the production build and print the deployment instructions.
-function build(previousFileSizes) {
+function build() {
   console.log('Creating an optimized production build...');
 
   let compiler = webpack(config);
@@ -124,7 +62,6 @@ function build(previousFileSizes) {
       }
       return resolve({
         stats,
-        previousFileSizes,
         warnings: messages.warnings,
       });
     });
@@ -132,8 +69,77 @@ function build(previousFileSizes) {
 }
 
 function copyPublicFolder() {
+  const FILES_TO_COPY = ['404.html', 'favicon.png', 'widget.js'];
   fs.copySync(paths.appPublic, paths.appBuild, {
     dereference: true,
-    filter: file => file !== paths.appHtml,
+    filter: file => {
+      const filename = path.basename(file);
+
+      return file === paths.appPublic || FILES_TO_COPY.includes(filename);
+    },
+  });
+
+  fs.mkdirp(path.join(paths.appBuild, 'content'));
+
+  const webpackManifest = fs.readJsonSync(path.join(paths.appBuild, 'asset-manifest.json'));
+
+  const content = fs.readFileSync(path.join(paths.appPublic, 'content/iframe.html'), {
+    encoding: 'utf8',
+  });
+
+  fs.writeFileSync(
+    path.join(paths.appBuild, 'content/iframe.html'),
+    content
+      .replace('src="/content/iframe.js"', `src="/${webpackManifest['iframe.js']}"`)
+      .replace('<!--%CSS%-->', `<link href="/${webpackManifest['iframe.css']}" rel="stylesheet">`)
+  );
+}
+
+function printSummary(previousFileSizes, stats, warnings) {
+  if (warnings.length) {
+    console.log(chalk.yellow('Compiled with warnings.\n'));
+    console.log(warnings.join('\n\n'));
+    console.log(
+      '\nSearch for the ' +
+        chalk.underline(chalk.yellow('keywords')) +
+        ' to learn more about each warning.'
+    );
+    console.log(
+      'To ignore, add ' + chalk.cyan('// eslint-disable-next-line') + ' to the line before.\n'
+    );
+  } else {
+    console.log(chalk.green('Compiled successfully.\n'));
+  }
+
+  console.log('File sizes after gzip:\n');
+  printFileSizesAfterBuild(
+    stats,
+    previousFileSizes,
+    paths.appBuild,
+    WARN_AFTER_BUNDLE_GZIP_SIZE,
+    WARN_AFTER_CHUNK_GZIP_SIZE
+  );
+  console.log();
+}
+
+async function run() {
+  try {
+    const previousFileSizes = await measureFileSizesBeforeBuild(paths.appBuild);
+    fs.emptyDirSync(paths.appBuild);
+    const { stats, warnings } = await build();
+    copyPublicFolder();
+    printSummary(previousFileSizes, stats, warnings);
+  } catch (err) {
+    console.log(chalk.red('Failed to compile.\n'));
+    printBuildError(err);
+    throw err;
+  }
+}
+
+module.exports = run;
+
+if (require.main === module) {
+  run().catch(() => {
+    process.exit(1);
   });
 }
