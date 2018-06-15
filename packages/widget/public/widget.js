@@ -24,6 +24,7 @@
     const iframeUrl = new URL('../content/iframe.html', dexdexScript.src);
     const parameters = {
       widgetId: dexdexScript.getAttribute('data-dexdex-id'),
+      net: dexdexScript.getAttribute('data-dexdex-net'),
     };
     return iframeUrl.toString() + '#' + toQueryString(parameters);
   }
