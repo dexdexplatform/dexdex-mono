@@ -1,24 +1,24 @@
 import { Address, Operation } from '@dexdex/model/lib/base';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
+import { BN } from 'bn.js';
 import * as React from 'react';
 import { RenderMapper } from '.';
+import { Wallet } from '../../model/wallets';
 import {
-  effectivePrice,
   effectiveVolume,
   effectiveVolumeEth,
-  networkFee,
+  networkCost,
 } from '../../model/widget-state/selectors';
-import { Wallet } from '../../model/wallets';
+import { FormatAddress, FormatEth, FormatPrice, FormatToken, FormatTxHash } from '../Format';
 
 export interface TradeSuccessScreenProps {
   operation: Operation;
   tradeable: Tradeable;
   amount: string;
   fromAddress: Address;
-  effectiveVolume: string;
-  effectiveVolumeEth: string;
-  effectivePrice: string;
-  networkFee: { ether: string; usd: string };
+  effectiveVolume: BN;
+  effectiveVolumeEth: BN;
+  networkCost: BN | null;
   tradeTxHash: string;
   wallet: Wallet;
 }
@@ -37,8 +37,7 @@ export const mapper: RenderMapper<TradeSuccessScreenProps> = store => ws => {
     operation: ws.operation,
     effectiveVolume: effectiveVolume(ws),
     effectiveVolumeEth: effectiveVolumeEth(ws),
-    effectivePrice: effectivePrice(ws),
-    networkFee: networkFee(ws),
+    networkCost: networkCost(ws),
     tradeTxHash: ws.tradeExecution.tradeTxHash,
     wallet: ws.wallet!,
   };
@@ -49,14 +48,14 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
     {/* token info start */}
     <div className="token-info">
       <img className="token-icon" src="golem.png" alt="DAI Token Icon" />
-      <p className="token-amount">{props.effectiveVolume}</p>
+      <p className="token-amount">
+        <FormatToken value={props.effectiveVolume} token={props.tradeable} />
+      </p>
       <p className="token-name">{props.tradeable.name}</p>
       {/* wallet info - only success*/}
       <div className="wallet-info-success">
         <img className="wallet-icon" src={props.wallet.icon} alt="Wallet Icon" />
-        <a className="wallet-address" href={`https://etherscan.io/address/${props.fromAddress}`}>
-          {props.fromAddress}
-        </a>
+        <FormatAddress className="wallet-address" value={props.fromAddress} />
       </div>
       {/* end wallet info - only success*/}
     </div>
@@ -74,22 +73,30 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
       <li>
         <div className="label">Transaction</div>
         <div className="value">
-          <a className="link" href={`https://etherscan.io/tx/${props.tradeTxHash}`}>
-            {props.tradeTxHash}
-          </a>
+          <FormatTxHash className="link" value={props.tradeTxHash} />
         </div>
       </li>
       <li>
         <div className="label">Amount bought</div>
-        <div className="value">{props.effectiveVolume}</div>
+        <div className="value">
+          <FormatToken value={props.effectiveVolume} token={props.tradeable} />
+        </div>
       </li>
       <li>
         <div className="label">{props.tradeable.name} Price</div>
-        <div className="value">{props.effectivePrice}</div>
+        <div className="value">
+          <FormatPrice
+            volume={props.effectiveVolume}
+            volumeEth={props.effectiveVolumeEth}
+            token={props.tradeable}
+          />
+        </div>
       </li>
       <li>
         <div className="label">Network Cost</div>
-        <div className="value">{props.networkFee.ether} ETH</div>
+        <div className="value">
+          <FormatEth value={props.networkCost} /> ETH
+        </div>
       </li>
       {/* <li>
         <div className="label">Dexdex Fee</div>
@@ -99,10 +106,12 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
         <div className="label">Price Optimization</div>
         <div className="value">Price Optimization %</div>
       </li> */}
-      {/* <li className="total">
+      <li className="total">
         <div className="label">Total</div>
-        <div className="value">{props.effectiveVolumeEth} ETH</div>
-      </li> */}
+        <div className="value">
+          <FormatEth value={props.effectiveVolumeEth} /> ETH
+        </div>
+      </li>
     </ul>
   </div>
 );

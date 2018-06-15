@@ -6,12 +6,14 @@ import { Wallet } from '../../model/wallets';
 import { GasPrice } from '../../model/widget';
 import { Operations, WalletDetails, WidgetState } from '../../model/widget-state';
 import * as actions from '../../model/widget-state/actions';
-import { networkFee, expectedVolumeEth } from '../../model/widget-state/selectors';
+import { networkCost, expectedVolumeEth, expectedVolume } from '../../model/widget-state/selectors';
 import { fixDecimals } from '@dexdex/utils/lib/format';
 import AmountField from '../AmountField';
 import OperationSelector from '../OperationSelector';
 import TokenSelector from '../TokenSelector';
 import WalletSelector from '../WalletSelector';
+import { BN } from 'bn.js';
+import { FormatEth, FormatPrice } from '../Format';
 
 const DEXDEX_ICON = require('../icons/dexdex.svg');
 
@@ -27,8 +29,9 @@ export interface WidgetFormProps {
   amount: string; // expressed in Tokens #
   gasPrice: GasPrice;
   operation: Operation;
-  volumeEthWithFee: string;
-  networkFee: { ether: string; usd: string };
+  expectedVolume: BN | null;
+  expectedVolumeEth: BN | null;
+  networkCost: BN | null;
 }
 
 export const mapper: RenderMapper<WidgetFormProps> = store => {
@@ -55,8 +58,9 @@ export const mapper: RenderMapper<WidgetFormProps> = store => {
     amount: ws.amount,
     gasPrice: ws.gasPrice,
     operation: ws.operation,
-    volumeEthWithFee: expectedVolumeEth(ws),
-    networkFee: networkFee(ws),
+    expectedVolume: ws.isValidAmount ? expectedVolume(ws) : null,
+    expectedVolumeEth: expectedVolumeEth(ws),
+    networkCost: networkCost(ws),
     actions: {
       setAmount: setAmount(ws),
       setTradeable,
@@ -90,18 +94,28 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
       selectedWallet={props.wallet}
       walletDetails={props.walletDetails}
       wallets={props.walletList}
+      tradeable={props.tradeable}
       onChange={props.actions.setWallet}
     />
     <div className="summary">
       <div className="summary-token margin-bottom">
         <div className="summary-token-price flex-grid">
-          <label className="col">DAI Price</label>
-          <div className="summary-token-price-value value col">0.02332 ETH</div>
+          <label className="col">{props.tradeable.symbol} Price</label>
+          <div className="summary-token-price-value value col">
+            <FormatPrice
+              volume={props.expectedVolume}
+              volumeEth={props.expectedVolumeEth}
+              token={props.tradeable}
+            />{' '}
+            ETH
+          </div>
         </div>
       </div>
       <div className="summary-total flex-grid">
         <label className="col">Total</label>
-        <div className="summary-total-value value col">{props.volumeEthWithFee}</div>
+        <div className="summary-total-value value col">
+          <FormatEth value={props.expectedVolumeEth} />
+        </div>
       </div>
     </div>
     <div className="gas-info flex-grid">
@@ -109,7 +123,7 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
         Network Cost
       </label>
       <div className="gas-price-value col">
-        {props.networkFee.ether} ETH / $ {props.networkFee.usd}
+        <FormatEth value={props.networkCost} /> ETH
       </div>
     </div>
     <div className="flex-grid">

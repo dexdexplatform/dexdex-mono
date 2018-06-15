@@ -134,7 +134,8 @@ p {
   pointer-events: none;
 }
 .wallet-info .wallet-amount {
-  font-weight: 700;
+  /* font-weight: 700; */
+  font-size: 0.85rem;
   color: #124;
 }
 .wallet-info .wallet-amount .wallet-amount-value {

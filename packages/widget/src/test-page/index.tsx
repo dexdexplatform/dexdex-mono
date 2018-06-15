@@ -1,3 +1,7 @@
+import { Operation } from '@dexdex/model/lib/base';
+import { Tradeable } from '@dexdex/model/lib/tradeable';
+import { toTokenDecimals } from '@dexdex/utils/lib/units';
+import { BN } from 'bn.js';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Screen as ErrorScreen } from '../components/screens/ErrorScreen';
@@ -5,10 +9,8 @@ import { Screen as RejectedSignature } from '../components/screens/RejectedSigna
 import { Screen as RequestAllowanceScreen } from '../components/screens/RequestAllowanceScreen';
 import { Screen as TradeProgressScreen } from '../components/screens/TradeProgressScreen';
 import { Screen as TradeSuccessScreen } from '../components/screens/TradeSuccessScreen';
-import { getWallets, Wallet } from '../model/wallets';
-import { Operation } from '@dexdex/model/lib/base';
-import { Tradeable } from '@dexdex/model/lib/tradeable';
 import '../components/Widget.css';
+import { getWallets, Wallet } from '../model/wallets';
 
 const tokenA: Tradeable = {
   address: '0xbc98051d2cd1eeaa4b396dcde34624e5cd4d50e3',
@@ -26,8 +28,9 @@ const data = {
   operation: 'buy' as Operation,
   tradeable: tokenA,
   amount: '25.5',
-  txEtherRange: { min: '0.05', max: '0.07' },
-  networkFee: { ether: '0.0001', usd: '3.4' },
+  amountBN: toTokenDecimals('25.5', 5),
+  expectedVolumeEth: new BN('100000000000000000'),
+  networkCost: new BN('1000000000'),
   fromAddress: '0xbc98051d2cd1eeaa4b396dcde34624e5cd4d50e3',
   tradeTxHash: 'asdfsdfasdfsdfsdafsdafd',
 };
@@ -42,33 +45,33 @@ const TestApp: React.SFC<{ wallet: Wallet }> = ({ wallet }) => (
   <div>
     <h1>Widget Screen Stages</h1>
     <ScreenTest name="Request Allowance Screen - Signature">
-      <RequestAllowanceScreen token={data.tradeable} volume={data.amount} />
+      <RequestAllowanceScreen token={data.tradeable} volume={data.amountBN} />
     </ScreenTest>
     <ScreenTest name="Request Allowance Screen - Waiting Ethereum">
       <RequestAllowanceScreen
         token={data.tradeable}
-        volume={data.amount}
+        volume={data.amountBN}
         txHash={'asdfsdfasdfsdfsdafsdafd'}
       />
     </ScreenTest>
     <ScreenTest name="Trade Screen - Signature">
       <TradeProgressScreen
-        amount={data.amount}
+        expectedVolume={data.amountBN}
         fromAddress={data.fromAddress}
         operation={data.operation}
-        networkFee={data.networkFee}
+        networkCost={data.networkCost}
         tradeable={data.tradeable}
-        expectedVolumeEth={data.txEtherRange.max}
+        expectedVolumeEth={data.expectedVolumeEth}
       />
     </ScreenTest>
     <ScreenTest name="Trade Screen - Waiting Ethereum">
       <TradeProgressScreen
-        amount={data.amount}
+        expectedVolume={data.amountBN}
         fromAddress={data.fromAddress}
         operation={data.operation}
-        networkFee={data.networkFee}
+        networkCost={data.networkCost}
         tradeable={data.tradeable}
-        expectedVolumeEth={data.txEtherRange.max}
+        expectedVolumeEth={data.expectedVolumeEth}
         txHash={'asdfsdfasdfsdfsdafsdafd'}
       />
     </ScreenTest>
@@ -77,11 +80,10 @@ const TestApp: React.SFC<{ wallet: Wallet }> = ({ wallet }) => (
         amount={data.amount}
         fromAddress={data.fromAddress}
         operation={data.operation}
-        networkFee={data.networkFee}
+        networkCost={data.networkCost}
         tradeable={data.tradeable}
-        effectiveVolumeEth={data.txEtherRange.max}
-        effectiveVolume={data.txEtherRange.max}
-        effectivePrice={data.txEtherRange.max}
+        effectiveVolumeEth={data.expectedVolumeEth}
+        effectiveVolume={data.expectedVolumeEth}
         tradeTxHash={data.tradeTxHash}
         wallet={wallet}
       />

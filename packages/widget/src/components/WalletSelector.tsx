@@ -1,14 +1,16 @@
 import * as React from 'react';
 import Select, { Option } from 'react-select';
 import 'react-select/dist/react-select.css';
-import { toEther } from '@dexdex/utils/lib/units';
 import { Wallet } from '../model/wallets';
 import { WalletDetails } from '../model/widget-state';
+import { FormatEth, FormatToken } from './Format';
+import { Tradeable } from '@dexdex/model/lib/tradeable';
 
 export interface WalletSelectorProps {
   wallets: Wallet[];
   walletDetails: WalletDetails | null;
   selectedWallet: Wallet | null;
+  tradeable: Tradeable;
   onChange: (selected: Wallet | null) => void;
 }
 
@@ -34,7 +36,7 @@ class WalletSelector extends React.Component<WalletSelectorProps> {
   };
 
   render() {
-    const { wallets, walletDetails, selectedWallet, onChange } = this.props;
+    const { wallets, walletDetails, selectedWallet, tradeable, onChange } = this.props;
 
     return (
       <div className="margin-bottom">
@@ -72,9 +74,13 @@ class WalletSelector extends React.Component<WalletSelectorProps> {
               {walletDetails && (
                 <>
                   <p className="wallet-amount">
-                    You have{' '}
                     <span className="wallet-amount-value">
-                      {toEther(walletDetails.etherBalance)} ethers
+                      <FormatEth value={walletDetails.etherBalance} /> ETH
+                    </span>
+                    <br />
+                    <span className="wallet-amount-value">
+                      <FormatToken value={walletDetails.tradeableBalance} token={tradeable} />{' '}
+                      {tradeable.symbol}
                     </span>
                   </p>
                   <p className="wallet-id">{walletDetails.address}</p>

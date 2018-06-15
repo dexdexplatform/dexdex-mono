@@ -1,3 +1,5 @@
+import { Address } from '@dexdex/model/lib/base';
+
 export type EthNet = 'main' | 'kovan';
 
 const searchParams = new URLSearchParams(window.location.hash.slice(1));
@@ -38,3 +40,9 @@ export const widgetId: string = searchParams.get('widgetId')!;
 export const EthereumNetwork: EthNet = readNet();
 export const ApiBase: string = getAPIBase(EthereumNetwork);
 export const ContractAddress: string = getContractAddress(EthereumNetwork);
+
+const ETHERSCAN_URL =
+  EthereumNetwork === 'kovan' ? 'https://kovan.etherscan.io' : 'https://etherscan.io';
+
+export const etherscanAddressUrl = (address: Address) => `${ETHERSCAN_URL}/address/${address}`;
+export const etherscanTxUrl = (txhash: string) => `${ETHERSCAN_URL}/tx/${txhash}`;
