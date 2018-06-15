@@ -59,7 +59,6 @@ export interface Operations {
   setTradeable: (tradeable: Tradeable) => void;
   setWallet: (wallet: Wallet | null) => void;
   setAmount: (amount: string) => void;
-  setGasPrice: (gasPrice: GasPrice) => void;
   startTransaction: () => void;
 }
 

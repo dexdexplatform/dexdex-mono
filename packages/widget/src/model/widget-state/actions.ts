@@ -3,7 +3,7 @@ import { Operation } from '@dexdex/model/lib/base';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
 import { OrderBookEvent } from '../server-api';
 import { Wallet } from '../wallets';
-import { GasPrice, TransactionState } from '../widget';
+import { TransactionState } from '../widget';
 
 //-------------------------------------------------------------------------------------------------
 // Actions
@@ -56,16 +56,6 @@ export const setWalletDetails = (payload: WalletDetails | null): SetWalletDetail
   payload,
 });
 
-export interface SetGasPriceAction {
-  type: 'setGasPrice';
-  payload: GasPrice;
-}
-
-export const setGasPrice = (payload: GasPrice): SetGasPriceAction => ({
-  type: 'setGasPrice',
-  payload,
-});
-
 export interface SetTradeableAction {
   type: 'setTradeable';
   payload: Tradeable;
@@ -113,7 +103,6 @@ export type Actions =
   | SetWalletAction
   | SetWalletDetailsAction
   | StartTransactionAction
-  | SetGasPriceAction
   | SetTransactionStateAction
   | GoBackAction
   | SetTradeableAction;

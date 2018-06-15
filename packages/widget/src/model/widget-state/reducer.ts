@@ -95,8 +95,6 @@ function applySetters(state: WidgetState, action: Actions): WidgetState {
   switch (action.type) {
     case 'setAmount':
       return { ...state, amount: action.payload, amountPristine: false };
-    case 'setGasPrice':
-      return { ...state, gasPrice: action.payload };
     case 'setOperation':
       return { ...state, operation: action.payload };
     case 'setWallet':
