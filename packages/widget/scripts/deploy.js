@@ -19,15 +19,15 @@ const fs = require('fs-extra');
 const paths = require('../config/paths');
 
 /** Run Shell command */
-const sh = cmd => execSync(cmd, { encoding: 'utf8' });
-const check = (condition, msg) => {
-  if (condition) {
+const sh = cmd => execSync(cmd, { encoding: 'utf8' }).trim();
+const check = (assertion, msg) => {
+  if (!assertion) {
     console.error(chalk.red(msg));
     process.exit(1);
   }
 };
 
-check(sh('git status --porcelain').length > 0, 'You have uncommited files, cannot publish');
+check(sh('git status --porcelain').length === 0, 'You have uncommited files, cannot publish');
 
 check(
   sh('git rev-parse --abbrev-ref HEAD') === 'master',
