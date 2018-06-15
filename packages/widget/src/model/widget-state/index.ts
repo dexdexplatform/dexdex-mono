@@ -11,6 +11,7 @@ import * as actions from './actions';
 import rootEpic from './epics';
 import { reducerWithDefaults } from './reducer';
 import { createStore, Store } from './store';
+import { ErrorCode } from '../form-error';
 
 //-------------------------------------------------------------------------------------------------
 // Types
@@ -42,7 +43,10 @@ export interface WidgetState {
   orderbook: OrderBook | null;
   gasPrice: GasPrice;
   walletDetails: null | WalletDetails;
-  isValidAmount: boolean;
+  errors: {
+    amount: null | ErrorCode.VolumeTooBig | ErrorCode.VolumeTooSmall;
+    balance: null | ErrorCode.CantPayNetwork | ErrorCode.InsufficientFunds;
+  };
   tradePlan: TradePlan | null;
   tradeExecution: {
     stage: TxStage;
@@ -81,7 +85,10 @@ export async function initWidget(widgetId: string): Promise<Store<WidgetState, a
     orderbook: null,
     gasPrice: GasPrice.Normal,
     walletDetails: null,
-    isValidAmount: false,
+    errors: {
+      amount: null,
+      balance: null,
+    },
     tradePlan: null,
     tradeExecution: {
       stage: TxStage.Idle,

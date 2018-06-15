@@ -12,6 +12,7 @@ import { OrderBookEvent, OrderEventKind } from '../server-api';
 import { fromTokenDecimals, toTokenDecimals } from '@dexdex/utils/lib/units';
 import { TxStage } from '../widget';
 import { Actions } from './actions';
+import { ErrorCode } from '../form-error';
 
 const OB = orderBookActions();
 
@@ -122,15 +123,23 @@ function applySetters(state: WidgetState, action: Actions): WidgetState {
   }
 }
 
-const computeIsValidAmount = (amount: string, decimals: number, obside: OrderBookSide | null) => {
+const computeAmountError = (amount: string, decimals: number, obside: OrderBookSide | null) => {
   if (amount.length === 0) {
-    return false;
+    return null;
   }
 
   if (obside === null) {
-    return true;
+    return null;
   }
-  return OB.isValidVolume(obside, toTokenDecimals(amount, decimals));
+
+  const volume = toTokenDecimals(amount, decimals);
+  if (volume.lt(obside.minVolume)) {
+    return ErrorCode.VolumeTooSmall;
+  } else if (volume.gt(obside.maxVolume)) {
+    return ErrorCode.VolumeTooBig;
+  } else {
+    return null;
+  }
 };
 
 const getCurrentSide = (orderbook: OrderBook | null, op: Operation) =>
@@ -166,11 +175,11 @@ function reducer(oldState: WidgetState, action: Actions): WidgetState {
 
   // Recompute isValidAmount if (side,amount or tradeable) changed
   if (oldSide !== currentSide || anyChanged('amount', 'tradeable')) {
-    st.isValidAmount = computeIsValidAmount(st.amount, st.tradeable.decimals, currentSide);
+    st.errors.amount = computeAmountError(st.amount, st.tradeable.decimals, currentSide);
   }
 
   // Recompute currentTransaction when necessary
-  if (currentSide == null || !st.isValidAmount) {
+  if (currentSide == null || st.errors.amount != null) {
     // we don't have orderbook or the amount is invalid => no valid tx
     st.tradePlan = null;
   } else if (oldSide !== currentSide) {

@@ -5,6 +5,8 @@ import { getDecimalBase, toTokenDecimals } from '@dexdex/utils/lib/units';
 import { BN } from 'bn.js';
 import { WidgetState } from '.';
 import { computeGasPrice } from '../widget';
+import { ErrorCode, ErrorMessage } from '../form-error';
+import { getSide } from '@dexdex/model/lib/orderbook';
 
 const price = (volume: BN, volumeEth: BN, token: Tradeable) => {
   const DECIMAL_PLACES = 10000;
@@ -64,3 +66,18 @@ export const getTokenAllowanceInfo = (state: WidgetState): RequestAllowanceProps
   volume: expectedVolume(state),
   txHash: getAllowanceTxHash(state),
 });
+
+export const getAmountError = (ws: WidgetState): null | ErrorMessage => {
+  switch (ws.errors.amount) {
+    case null:
+      return null;
+    case ErrorCode.VolumeTooBig:
+      const maxVolume = getSide(ws.orderbook!, ws.operation).maxVolume;
+      return { code: ErrorCode.VolumeTooBig, token: ws.tradeable, maxVolume };
+    case ErrorCode.VolumeTooSmall:
+      const minVolume = getSide(ws.orderbook!, ws.operation).minVolume;
+      return { code: ErrorCode.VolumeTooSmall, token: ws.tradeable, minVolume };
+    default:
+      throw new Error(`Invalid amount error: ${ws.errors.amount}`);
+  }
+};

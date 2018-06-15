@@ -6,7 +6,12 @@ import { Wallet } from '../../model/wallets';
 import { GasPrice } from '../../model/widget';
 import { Operations, WalletDetails, WidgetState } from '../../model/widget-state';
 import * as actions from '../../model/widget-state/actions';
-import { networkCost, expectedVolumeEth, expectedVolume } from '../../model/widget-state/selectors';
+import {
+  networkCost,
+  expectedVolumeEth,
+  expectedVolume,
+  getAmountError,
+} from '../../model/widget-state/selectors';
 import { fixDecimals } from '@dexdex/utils/lib/format';
 import AmountField from '../AmountField';
 import OperationSelector from '../OperationSelector';
@@ -14,6 +19,7 @@ import TokenSelector from '../TokenSelector';
 import WalletSelector from '../WalletSelector';
 import { BN } from 'bn.js';
 import { FormatEth, FormatPrice } from '../Format';
+import { ErrorMessage } from '../../model/form-error';
 
 const DEXDEX_ICON = require('../icons/dexdex.svg');
 
@@ -24,7 +30,8 @@ export interface WidgetFormProps {
   walletList: Wallet[];
   wallet: Wallet | null;
   walletDetails: null | WalletDetails;
-  isValidAmount: boolean;
+  amountError: null | ErrorMessage;
+  balanceError: null | ErrorMessage;
   canSubmit: boolean;
   amount: string; // expressed in Tokens #
   gasPrice: GasPrice;
@@ -47,28 +54,34 @@ export const mapper: RenderMapper<WidgetFormProps> = store => {
     }
   };
 
-  return ws => ({
-    tradeableList: ws.config.tokens,
-    tradeable: ws.tradeable,
-    walletList: ws.config.wallets,
-    wallet: ws.wallet,
-    walletDetails: ws.walletDetails,
-    isValidAmount: ws.isValidAmount,
-    canSubmit: ws.isValidAmount && ws.wallet != null && ws.orderbook != null,
-    amount: ws.amount,
-    gasPrice: ws.gasPrice,
-    operation: ws.operation,
-    expectedVolume: ws.isValidAmount ? expectedVolume(ws) : null,
-    expectedVolumeEth: expectedVolumeEth(ws),
-    networkCost: networkCost(ws),
-    actions: {
-      setAmount: setAmount(ws),
-      setTradeable,
-      setOperation,
-      setWallet,
-      startTransaction,
-    },
-  });
+  return ws => {
+    const amountError = getAmountError(ws);
+    const balanceError = null;
+    return {
+      tradeableList: ws.config.tokens,
+      tradeable: ws.tradeable,
+      walletList: ws.config.wallets,
+      wallet: ws.wallet,
+      walletDetails: ws.walletDetails,
+      amountError,
+      balanceError,
+      canSubmit:
+        amountError == null && balanceError == null && ws.wallet != null && ws.orderbook != null,
+      amount: ws.amount,
+      gasPrice: ws.gasPrice,
+      operation: ws.operation,
+      expectedVolume: amountError == null ? expectedVolume(ws) : null,
+      expectedVolumeEth: expectedVolumeEth(ws),
+      networkCost: networkCost(ws),
+      actions: {
+        setAmount: setAmount(ws),
+        setTradeable,
+        setOperation,
+        setWallet,
+        startTransaction,
+      },
+    };
+  };
 };
 
 const WidgetForm: React.SFC<WidgetFormProps> = props => (
@@ -81,7 +94,7 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
       <AmountField
         amount={props.amount}
         onChange={props.actions.setAmount}
-        error={!props.isValidAmount}
+        error={props.amountError}
       />
       <TokenSelector
         operation={props.operation}

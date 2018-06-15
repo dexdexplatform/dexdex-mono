@@ -1,7 +1,9 @@
 import * as React from 'react';
+import { ErrorMessage } from '../model/form-error';
+import { FormatError } from './FormatError';
 
 export interface AmountFieldProps {
-  error: boolean;
+  error: null | ErrorMessage;
   amount: string;
   onChange: (newAmount: string) => void;
 }
@@ -25,7 +27,7 @@ class AmountField extends React.Component<AmountFieldProps> {
           value={amount}
           onChange={this.inputChange}
         />
-        <span>{error ? 'Invalid Amount' : ''}</span>
+        <span>{error && <FormatError msg={error} />}</span>
       </div>
     );
   }
