@@ -3,7 +3,13 @@
 (function() {
   function toQueryString(params) {
     return Object.keys(params)
-      .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(params[key]))
+      .map(
+        key =>
+          params[key] != null
+            ? encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
+            : null
+      )
+      .filter(str => str != null)
       .join('&');
   }
 
@@ -24,7 +30,7 @@
     const iframeUrl = new URL('../content/iframe.html', dexdexScript.src);
     const parameters = {
       widgetId: dexdexScript.getAttribute('data-dexdex-id'),
-      net: dexdexScript.getAttribute('data-dexdex-net'),
+      net: dexdexScript.getAttribute('data-net'),
     };
     return iframeUrl.toString() + '#' + toQueryString(parameters);
   }
