@@ -15,7 +15,7 @@ function readNet(): EthNet {
 
 function getAPIBase(ethNet: EthNet) {
   if (process.env.NODE_ENV === 'production') {
-    return ethNet === 'kovan' ? 'https://api-beta.dexdex.io' : 'https://api.dexdex.io';
+    return ethNet === 'kovan' ? 'https://beta-api.dexdex.io' : 'https://api.dexdex.io';
   } else {
     return 'http://localhost:8000';
   }
