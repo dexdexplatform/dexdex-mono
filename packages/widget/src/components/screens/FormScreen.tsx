@@ -117,7 +117,7 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
     </div>
     <div className="gas-info flex-grid">
       <label className="label col" htmlFor="item-3">
-        Network Fee
+        Network Cost
       </label>
       <div className="gas-price-value col">ToDo ETH / $ ToDo</div>
     </div>

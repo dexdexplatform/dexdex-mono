@@ -20,7 +20,7 @@ const GasPriceSelector: React.SFC<GasPriceSelectorProps> = ({
   <div className="gas-selector">
     <div className="flex-grid">
       <label className="gas-selector-label col" htmlFor="item-3">
-        Network Fee ▾
+        Network Cost ▾
       </label>
       <div className="gas-price-value col">
         {totalETHCost} ETH / $ {totalUSDCost}
