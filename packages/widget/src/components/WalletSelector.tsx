@@ -38,7 +38,7 @@ class WalletSelector extends React.Component<WalletSelectorProps> {
 
     return (
       <div className="margin-bottom">
-        <label className="FormControl_Label flex-grid" htmlFor="wallet">
+        <label className="label FormControl_Label flex-grid" htmlFor="wallet">
           Wallet
         </label>
         {wallets.length === 0 ? (

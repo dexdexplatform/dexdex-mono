@@ -9,7 +9,7 @@ import * as actions from '../../model/widget-state/actions';
 import { networkFee, expectedVolumeEth } from '../../model/widget-state/selectors';
 import { fixDecimals } from '@dexdex/utils/lib/format';
 import AmountField from '../AmountField';
-import GasPriceSelector from '../GasPriceSelector';
+// import GasPriceSelector from '../GasPriceSelector';
 import OperationSelector from '../OperationSelector';
 import TokenSelector from '../TokenSelector';
 import WalletSelector from '../WalletSelector';
@@ -73,7 +73,7 @@ export const mapper: RenderMapper<WidgetFormProps> = store => {
 const WidgetForm: React.SFC<WidgetFormProps> = props => (
   <div className="widget">
     <OperationSelector value={props.operation} onChange={props.actions.setOperation} />
-    <label className="flex-grid" htmlFor="token">
+    <label className="label flex-grid" htmlFor="token">
       Buy Amount
     </label>
     <div className="Amount flex-grid margin-bottom">
@@ -103,17 +103,23 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
         </div>
       </div>
 
-      <GasPriceSelector
+      {/* <GasPriceSelector
         value={props.gasPrice}
         totalETHCost={props.networkFee.ether}
         totalUSDCost={props.networkFee.usd}
         onChange={props.actions.setGasPrice}
-      />
+      /> */}
 
       <div className="summary-total flex-grid">
         <label className="col">Total</label>
         <div className="summary-total-value value col">{props.volumeEthWithFee}</div>
       </div>
+    </div>
+    <div className="gas-info flex-grid">
+      <label className="label col" htmlFor="item-3">
+        Network Fee
+      </label>
+      <div className="gas-price-value col">ToDo ETH / $ ToDo</div>
     </div>
     <div className="flex-grid">
       <button

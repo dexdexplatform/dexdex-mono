@@ -50,6 +50,13 @@ p {
   outline: 0;
 }
 
+.label {
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
 /* operation selector */
 .OperationSelector button {
   font-size: 1rem;
@@ -57,14 +64,13 @@ p {
   padding: 1rem;
   transition: 0.25s;
   text-transform: uppercase;
-  border-color: #eee;
+  border-color: transparent;
   border-radius: 3px;
-  background-color: #fff;
+  background-color: rgba(17, 34, 68, 0.1);
 }
 
 .OperationSelector button.button-selected {
   color: #fff;
-  border-color: #124;
   background-color: #124;
 }
 
@@ -83,15 +89,12 @@ p {
 }
 
 /* gas */
-.gas-selector {
-  margin-bottom: 8px;
-}
-.gas-selector-label,
-.gas-price-value {
-  margin-bottom: 8px;
+.gas-info {
+  margin-bottom: 20px;
 }
 .gas-price-value {
   text-align: right;
+  font-size: 11px;
 }
 .gas-price-btn button {
   font-size: 0.75rem;
@@ -149,11 +152,12 @@ p {
   padding: 1rem;
   border-radius: 4px;
   background: rgba(28, 42, 70, 0.05);
+  font-size: 14px;
 }
 
 .summary .summary-total {
-  font-size: 1.25rem;
   font-weight: 700;
+  margin-top: 16px;
 }
 
 .summary .summary-total .summary-total-value {
