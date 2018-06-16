@@ -45,6 +45,7 @@ export const mapper: RenderMapper<TradeSuccessScreenProps> = store => ws => {
 
 const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
   <div className="widget-status">
+    <h1 className="step-title">Total Sent/Obtained</h1>
     {/* token info start */}
     <div className="token-info">
       <img className="token-icon" src="golem.png" alt="DAI Token Icon" />

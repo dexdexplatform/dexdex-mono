@@ -305,11 +305,14 @@ input[type='checkbox']:checked + .hide3 .inner3 {
   padding: 0 25px;
 }
 .widget-status .step-title {
-  font-size: 1rem;
+  font-size: 14px;
   font-weight: 600;
-  padding: 1rem;
+  padding-top: 40px;
   text-align: center;
+  margin: 0;
+  text-transform: uppercase;
 }
+
 .widget-status dl {
   overflow: hidden;
   margin: 1rem 0 0;
