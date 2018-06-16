@@ -32,9 +32,9 @@ export const mapper: RenderMapper<TradeProgressScreen> = store => ws => ({
 const TradeProgressScreen: React.SFC<TradeProgressScreen> = props => (
   <div className="widget-status">
     {props.txHash ? (
-      <h1 className="waiting">Waiting tx mining</h1>
+      <h1 className="step-title">Waiting tx mining</h1>
     ) : (
-      <h1 className="waiting">Please approve the trade</h1>
+      <h1 className="step-title">Please approve the trade</h1>
     )}
     <TokenInfo token={props.tradeable} volume={props.expectedVolume} />
 

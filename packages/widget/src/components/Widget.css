@@ -304,13 +304,11 @@ input[type='checkbox']:checked + .hide3 .inner3 {
   height: 100vh;
   padding: 0 25px;
 }
-.widget-status h1 {
+.widget-status .step-title {
   font-size: 1rem;
   font-weight: 600;
   padding: 1rem;
   text-align: center;
-  border-radius: 4px;
-  background: #eee;
 }
 .widget-status dl {
   overflow: hidden;
@@ -353,19 +351,6 @@ input[type='checkbox']:checked + .hide3 .inner3 {
 .widget-status .link:hover {
   text-decoration: none;
   color: #159;
-}
-.widget-status .waiting {
-  color: rgba(50, 160, 255, 1);
-  background-color: rgba(50, 160, 255, 0.1);
-}
-
-.widget-status .error {
-  color: rgba(250, 80, 80, 1);
-  background-color: rgba(250, 80, 80, 0.1);
-}
-.widget-status .success {
-  color: rgba(28, 210, 115, 1);
-  background-color: rgba(28, 210, 115, 0.1);
 }
 
 .token-info {

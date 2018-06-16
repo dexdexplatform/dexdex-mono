@@ -16,7 +16,7 @@ export const mapper: RenderMapper<ErrorScreenProps> = store => {
 
 const ErrorScreen: React.SFC<ErrorScreenProps> = props => (
   <div className="widget-status">
-    <h1 className="error">Ohhh!! There was an error!</h1>
+    <h1 className="step-title">Ohhh!! There was an error!</h1>
     <h2>should we start again?</h2>
     <button onClick={props.goBack}>YEAH!</button>
   </div>

@@ -16,7 +16,7 @@ export const mapper: RenderMapper<RejectedSignatureScreenProps> = store => {
 
 const RejectedSignatureScreen: React.SFC<RejectedSignatureScreenProps> = props => (
   <div className="widget-status">
-    <h1 className="error">You rejected us... :(</h1>
+    <h1 className="step-title">You rejected us... :(</h1>
     <h2>should we start again?</h2>
     <button onClick={props.goBack}>Go Gack</button>
   </div>
