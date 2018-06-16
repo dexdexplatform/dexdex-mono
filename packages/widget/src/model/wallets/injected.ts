@@ -51,6 +51,11 @@ function getWeb3(): { eth: Eth; name: string; icon: string } | null {
         };
       }
     }
+    return {
+      eth: new Eth(web3.currentProvider),
+      name: 'Unidentified',
+      icon: require('./icons/unknown.png'),
+    };
   }
   return null;
 }
