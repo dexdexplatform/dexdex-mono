@@ -40,7 +40,7 @@ const KnowWallets = [
 ];
 
 function getWeb3(): { eth: Eth; name: string; icon: string } | null {
-  const web3 = (window as any).web3 || ((window as any).parent && (window.parent as any).web3);
+  const web3 = (window as any).web3;
   if (typeof web3 !== 'undefined') {
     for (const kw of KnowWallets) {
       if (kw.condition(web3)) {
