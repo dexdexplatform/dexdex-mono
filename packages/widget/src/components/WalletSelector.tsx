@@ -45,7 +45,7 @@ class WalletSelector extends React.Component<WalletSelectorProps> {
         </label>
         {wallets.length === 0 ? (
           <div className="select-symbol-name">
-            <span className="wallet-name">You don't have a connected wallet</span>
+            <span>You don't have a connected wallet</span>
           </div>
         ) : (
           <div className="wallet-selector-wrapper flex-grid">
