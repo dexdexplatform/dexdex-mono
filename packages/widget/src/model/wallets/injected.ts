@@ -22,6 +22,21 @@ const KnowWallets = [
     icon: require('./icons/toshi.png'),
     condition: (web3: any) => web3.currentProvider.isToshi,
   },
+  {
+    name: 'Cipher',
+    icon: require('./icons/cipher.png'),
+    condition: (web3: any) => web3.currentProvider.isCipher,
+  },
+  {
+    name: 'Trust',
+    icon: require('./icons/trust.png'),
+    condition: (web3: any) => web3.currentProvider.isTrust,
+  },
+  {
+    name: 'Status',
+    icon: require('./icons/status.png'),
+    condition: (web3: any) => web3.currentProvider.isStatus,
+  },
 ];
 
 function getWeb3(): { eth: Eth; name: string; icon: string } | null {
