@@ -234,6 +234,7 @@ p {
 .token-symbol,
 .wallet-symbol {
   height: 20px;
+  width: 20px;
   vertical-align: middle;
 }
 .select-symbol-name .token-name,
