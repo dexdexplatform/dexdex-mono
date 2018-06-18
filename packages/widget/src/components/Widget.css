@@ -122,24 +122,15 @@ p {
   border-bottom-right-radius: 4px;
 }
 
-.wallet-selector-wrapper {
-  position: relative;
-}
-
 .wallet-info {
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 8px 30px;
+  margin-right: 15px;
   text-align: right;
-  pointer-events: none;
-}
-.wallet-info .wallet-amount {
-  /* font-weight: 700; */
-  font-size: 0.85rem;
+  font-size: 0.8rem;
+  line-height: 0.9rem;
   color: #124;
 }
-.wallet-info .wallet-amount .wallet-amount-value {
+
+.wallet-info .wallet-amount-value {
   color: #39f;
 }
 
@@ -251,6 +242,12 @@ p {
   vertical-align: middle;
 }
 
+.error-msg {
+  color: #ce0b24;
+  font-size: 0.75rem;
+  flex-basis: 100%;
+  text-align: right;
+}
 /* Amount Field */
 .AmountField {
   font-family: 'Open Sans', sans-serif;
@@ -524,7 +521,7 @@ input[type='checkbox']:checked + .hide3 .inner3 {
   flex: 3;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 320px) {
   .wallet-name {
     display: none;
   }

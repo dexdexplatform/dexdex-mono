@@ -125,7 +125,7 @@ function applySetters(state: WidgetState, action: Actions): WidgetState {
 
 const computeAmountError = (amount: string, decimals: number, obside: OrderBookSide | null) => {
   if (amount.length === 0) {
-    return null;
+    return ErrorCode.VolumeBadFormat;
   }
 
   if (obside === null) {

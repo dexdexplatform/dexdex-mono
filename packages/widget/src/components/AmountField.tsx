@@ -1,9 +1,6 @@
 import * as React from 'react';
-import { ErrorMessage } from '../model/form-error';
-import { FormatError } from './FormatError';
 
 export interface AmountFieldProps {
-  error: null | ErrorMessage;
   amount: string;
   onChange: (newAmount: string) => void;
 }
@@ -11,13 +8,17 @@ export interface AmountFieldProps {
 class AmountField extends React.Component<AmountFieldProps> {
   inputChange: React.ChangeEventHandler<HTMLInputElement> = e => {
     const valueStr = e.target.value;
-    if (Number(valueStr) >= 0) {
-      this.props.onChange(valueStr);
+    try {
+      if (Number(valueStr) >= 0) {
+        this.props.onChange(valueStr);
+      }
+    } catch (err) {
+      console.log('error:', err);
     }
   };
 
   render() {
-    const { amount, error } = this.props;
+    const { amount } = this.props;
     return (
       <div className="col">
         <input
@@ -27,7 +28,6 @@ class AmountField extends React.Component<AmountFieldProps> {
           value={amount}
           onChange={this.inputChange}
         />
-        <span>{error && <FormatError msg={error} />}</span>
       </div>
     );
   }

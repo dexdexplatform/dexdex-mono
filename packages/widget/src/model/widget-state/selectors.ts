@@ -77,6 +77,8 @@ export const getAmountError = (ws: WidgetState): null | ErrorMessage => {
     case ErrorCode.VolumeTooSmall:
       const minVolume = getSide(ws.orderbook!, ws.operation).minVolume;
       return { code: ErrorCode.VolumeTooSmall, token: ws.tradeable, minVolume };
+    case ErrorCode.VolumeBadFormat:
+      return { code: ErrorCode.VolumeBadFormat };
     default:
       throw new Error(`Invalid amount error: ${ws.errors.amount}`);
   }

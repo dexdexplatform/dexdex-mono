@@ -103,17 +103,22 @@ const shortenAddress = (address: string, initial: number, final: number) => {
 
 export type FormatAddressProps = {
   value: string;
-  className: string;
+  className?: string;
+  noLink?: boolean;
 };
 
 export class FormatAddress extends React.PureComponent<FormatAddressProps> {
   render() {
     const address = this.props.value;
-    return (
-      <a className={this.props.className} href={etherscanAddressUrl(address)}>
-        {shortenAddress(address, 6, 6)}
-      </a>
-    );
+    if (this.props.noLink) {
+      return <span className={this.props.className}>{shortenAddress(address, 6, 6)}</span>;
+    } else {
+      return (
+        <a className={this.props.className} href={etherscanAddressUrl(address)}>
+          {shortenAddress(address, 6, 6)}
+        </a>
+      );
+    }
   }
 }
 export type FormatTxHashProps = {

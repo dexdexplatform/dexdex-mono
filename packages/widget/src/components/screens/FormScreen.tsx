@@ -20,6 +20,7 @@ import WalletSelector from '../WalletSelector';
 import { BN } from 'bn.js';
 import { FormatEth, FormatPrice } from '../Format';
 import { ErrorMessage } from '../../model/form-error';
+import { FormField } from '../FormField';
 
 const DEXDEX_ICON = require('../icons/dexdex.svg');
 
@@ -87,22 +88,15 @@ export const mapper: RenderMapper<WidgetFormProps> = store => {
 const WidgetForm: React.SFC<WidgetFormProps> = props => (
   <div className="widget">
     <OperationSelector value={props.operation} onChange={props.actions.setOperation} />
-    <label className="label flex-grid" htmlFor="token">
-      {props.operation} Amount
-    </label>
-    <div className="Amount flex-grid margin-bottom">
-      <AmountField
-        amount={props.amount}
-        onChange={props.actions.setAmount}
-        error={props.amountError}
-      />
+    <FormField label={`${props.operation} Amount`} htmlFor="token" error={props.amountError}>
+      <AmountField amount={props.amount} onChange={props.actions.setAmount} />
       <TokenSelector
         operation={props.operation}
         tokens={props.tradeableList}
         selectedToken={props.tradeable}
         onChange={props.actions.setTradeable}
       />
-    </div>
+    </FormField>
     <WalletSelector
       selectedWallet={props.wallet}
       walletDetails={props.walletDetails}

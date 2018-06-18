@@ -3,8 +3,9 @@ import Select, { Option } from 'react-select';
 import 'react-select/dist/react-select.css';
 import { Wallet } from '../model/wallets';
 import { WalletDetails } from '../model/widget-state';
-import { FormatEth, FormatToken } from './Format';
+import { FormatEth, FormatToken, FormatAddress } from './Format';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
+import { FormField } from './FormField';
 
 export interface WalletSelectorProps {
   wallets: Wallet[];
@@ -15,81 +16,70 @@ export interface WalletSelectorProps {
 }
 
 class WalletSelector extends React.Component<WalletSelectorProps> {
-  valueRenderer = (option: Option<number>) => {
-    const wallet = this.props.wallets[option.value!];
-    return (
-      <div className="col select-symbol-name">
-        <img className="wallet-symbol" src={wallet.icon} />
-        <span className="wallet-name">{wallet.name} </span>
-      </div>
-    );
-  };
-
   optionRenderer = (option: Option<number>) => {
     const wallet = this.props.wallets[option.value!];
     return (
-      <div className="col select-symbol-name">
-        <img className="wallet-symbol" src={wallet.icon} />
-        <span className="wallet-name">{wallet.name} </span>
+      <div className="flex-grid">
+        <div className="col select-symbol-name">
+          <img className="wallet-symbol" src={wallet.icon} />
+          <span className="wallet-name">{wallet.name} </span>
+        </div>
+        <div className="wallet-info">
+          {this.props.walletDetails && (
+            <>
+              <div className="wallet-amount-value">
+                <FormatEth value={this.props.walletDetails.etherBalance} /> ETH
+              </div>
+              <div className="wallet-amount-value">
+                <FormatToken
+                  value={this.props.walletDetails.tradeableBalance}
+                  token={this.props.tradeable}
+                />{' '}
+                {this.props.tradeable.symbol}
+              </div>
+              {this.props.walletDetails.address && (
+                <FormatAddress value={this.props.walletDetails.address} noLink />
+              )}
+            </>
+          )}
+        </div>
       </div>
     );
   };
 
   render() {
-    const { wallets, walletDetails, selectedWallet, tradeable, onChange } = this.props;
+    const { wallets, selectedWallet, onChange } = this.props;
 
     return (
-      <div className="margin-bottom">
-        <label className="label FormControl_Label flex-grid" htmlFor="wallet">
-          Wallet
-        </label>
+      <FormField label="Wallet" htmlFor="wallet">
         {wallets.length === 0 ? (
           <div className="select-symbol-name">
             <span>You don't have a connected wallet</span>
           </div>
         ) : (
-          <div className="wallet-selector-wrapper flex-grid">
-            <Select
-              className="col"
-              name="wallet"
-              clearable={false}
-              searchable={false}
-              optionRenderer={this.optionRenderer}
-              valueRenderer={this.valueRenderer}
-              value={selectedWallet ? wallets.indexOf(selectedWallet) : -1}
-              onChange={selected => {
-                if (selected && !Array.isArray(selected)) {
-                  const idx = Number(selected.value);
-                  onChange(wallets[idx]);
-                } else {
-                  onChange(null);
-                }
-              }}
-              options={wallets.map((w, idx) => ({
-                value: idx,
-                label: w.name,
-              }))}
-            />
-            <div className="wallet-info">
-              {walletDetails && (
-                <>
-                  <p className="wallet-amount">
-                    <span className="wallet-amount-value">
-                      <FormatEth value={walletDetails.etherBalance} /> ETH
-                    </span>
-                    <br />
-                    <span className="wallet-amount-value">
-                      <FormatToken value={walletDetails.tradeableBalance} token={tradeable} />{' '}
-                      {tradeable.symbol}
-                    </span>
-                  </p>
-                  <p className="wallet-id">{walletDetails.address}</p>
-                </>
-              )}
-            </div>
-          </div>
+          <Select
+            className="col"
+            name="wallet"
+            clearable={false}
+            searchable={false}
+            optionRenderer={this.optionRenderer}
+            valueRenderer={this.optionRenderer}
+            value={selectedWallet ? wallets.indexOf(selectedWallet) : -1}
+            onChange={selected => {
+              if (selected && !Array.isArray(selected)) {
+                const idx = Number(selected.value);
+                onChange(wallets[idx]);
+              } else {
+                onChange(null);
+              }
+            }}
+            options={wallets.map((w, idx) => ({
+              value: idx,
+              label: w.name,
+            }))}
+          />
         )}
-      </div>
+      </FormField>
     );
   }
 }
