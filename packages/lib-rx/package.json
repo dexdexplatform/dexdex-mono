@@ -1,6 +1,6 @@
 {
   "name": "@dexdex/rx",
-  "version": "0.0.6",
+  "version": "0.0.9",
   "description": "DexDex Rx.js Utils",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
