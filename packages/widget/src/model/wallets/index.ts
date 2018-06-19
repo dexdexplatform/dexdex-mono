@@ -171,7 +171,7 @@ function singleAccountWallet(
     }).pipe(
       switchMap(mAccount => {
         if (mAccount == null) {
-          return of(errorState(walletId, 'No Accounts'));
+          return of(errorState(walletId, 'Not logged'));
         } else {
           return combineLatest([mAccount].map(address => accountStates(eth, address, token))).pipe(
             map(xs => readyState(walletId, eth, xs))
@@ -184,7 +184,7 @@ function singleAccountWallet(
       () => eth.accounts(),
       (accounts): Observable<WalletState> => {
         if (accounts.length === 0) {
-          return of(errorState(walletId, 'No Accounts'));
+          return of(errorState(walletId, 'Not logged'));
         } else {
           return combineLatest(accounts.map(address => accountStates(eth, address, token))).pipe(
             map(xs => readyState(walletId, eth, xs))
