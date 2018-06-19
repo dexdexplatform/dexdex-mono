@@ -11,6 +11,7 @@ import {
   networkCost,
 } from '../../model/widget-state/selectors';
 import { FormatAddress, FormatEth, FormatPrice, FormatToken, FormatTxHash } from '../Format';
+import { tokenBigImg } from '../../config';
 
 export interface TradeSuccessScreenProps {
   operation: Operation;
@@ -53,7 +54,7 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
     <h1 className="step-title">Total Sent/Obtained</h1>
     {/* token info start */}
     <div className="token-info">
-      <img className="token-icon" src="golem.png" alt="DAI Token Icon" />
+      <img className="token-icon" src={tokenBigImg(props.tradeable.symbol)} alt="Token Icon" />
       <p className="token-amount">
         <FormatToken value={props.effectiveVolume} token={props.tradeable} />
       </p>

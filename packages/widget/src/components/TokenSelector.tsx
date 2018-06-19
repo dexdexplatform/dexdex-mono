@@ -3,6 +3,7 @@ import Select, { Option } from 'react-select';
 import 'react-select/dist/react-select.css';
 import { Operation } from '@dexdex/model/lib/base';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
+import { tokenSmallImg } from '../config';
 
 export interface TokenSelectorProps {
   operation: Operation;
@@ -12,28 +13,14 @@ export interface TokenSelectorProps {
 }
 
 class TokenSelector extends React.PureComponent<TokenSelectorProps> {
-  valueRenderer = (option: Option<number>) => {
-    const token = this.props.tokens[option.value!];
-    return (
-      <div className="select-symbol-name">
-        <img
-          className="token-symbol"
-          src={`https://easytrade.io/assets/tokens/${token.symbol.toLowerCase()}.png`}
-        />
-        <span className="token-name"> {token.name}</span>
-      </div>
-    );
-  };
-
   optionRenderer = (option: Option<number>) => {
     const token = this.props.tokens[option.value!];
     return (
-      <div className="select-icon-name">
-        <img
-          className="token-symbol"
-          src={`https://easytrade.io/assets/tokens/${token.symbol.toLowerCase()}.png`}
-        />
-        <span className="token-name"> {token.name}</span>
+      <div className="select-symbol-name">
+        <img className="token-symbol" src={tokenSmallImg(token.symbol)} />
+        <span className="token-name">
+          {token.symbol} <small>({token.name})</small>
+        </span>
       </div>
     );
   };
@@ -48,7 +35,7 @@ class TokenSelector extends React.PureComponent<TokenSelectorProps> {
         clearable={false}
         searchable={true}
         optionRenderer={this.optionRenderer}
-        valueRenderer={this.valueRenderer}
+        valueRenderer={this.optionRenderer}
         value={selectedToken ? tokens.indexOf(selectedToken) : -1}
         onChange={selected => {
           if (selected && !Array.isArray(selected)) {
