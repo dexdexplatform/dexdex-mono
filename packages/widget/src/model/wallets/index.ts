@@ -12,6 +12,7 @@ export type WalletAccountRef = { wallet: WalletId; accountIdx: number };
 export enum WalletId {
   MetaMask = 'MetaMask',
   Ledger = 'Ledger',
+  Trezor = 'Trezor',
   Toshi = 'Toshi',
   Cipher = 'Cipher',
   Trust = 'Trust',
@@ -19,7 +20,7 @@ export enum WalletId {
   Unkown = 'Unkown',
 }
 
-export const DesktopWallets: WalletId[] = [WalletId.MetaMask, WalletId.Ledger];
+export const DesktopWallets: WalletId[] = [WalletId.MetaMask, WalletId.Ledger, WalletId.Trezor];
 
 export interface WalletInfo {
   icon: string;
@@ -34,6 +35,10 @@ export const WalletInfo: Record<WalletId, { icon: string; label: string }> = {
   [WalletId.Ledger]: {
     label: 'Ledger',
     icon: require('./icons/ledger.png'),
+  },
+  [WalletId.Trezor]: {
+    label: 'Trezor',
+    icon: require('./icons/trezor.jpg'),
   },
   [WalletId.Toshi]: {
     label: 'Toshi',
@@ -232,54 +237,10 @@ export function ledgerWallet(token: Observable<Tradeable>): Observable<WalletSta
   return futureWallet(WalletId.Ledger);
 }
 
+export function trezorWallet(token: Observable<Tradeable>): Observable<WalletState> {
+  return futureWallet(WalletId.Trezor);
+}
+
 export function futureWallet(walletId: WalletId) {
   return of(errorState(walletId, 'Coming soon...'));
 }
-
-/*
-
-Wallet => Ok | Error
-
-When Wallet Ok => get Accounts (once or several times)
-
-For each account => poll balance
-For each account => poll current token balance (need current token, react to token change)
-
-
-Operate over account:
- - approve allowance
- - dexdex buy
- - dexdex sell
-
-we need (web3 + account address)
-
-
-UI State:
-
-- Wallet List, each Wallet has:
-  - Accounts:
-    - address
-    - balance
-    - token balance
-- Current Account+Wallet
-
-- service(web3,AccountAddress)
-  - approveAllowance
-  - dexdexBuy
-  - dexdexSell
-
-
-Otra forma;
-
- - Wallets:
-  - walletId -> status
- - Accounts:
-  - accountAddress + walletId
- - balance
-  - accountAddress -> balance
- - tokens balance
-  - tokenAddress
-    -accountAddress -> balance
-
-
-*/
