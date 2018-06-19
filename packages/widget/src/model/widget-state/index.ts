@@ -4,14 +4,14 @@ import { Trade } from '@dexdex/model/lib/trade';
 import { TradePlan } from '@dexdex/model/lib/trade-plan';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
 import { BN } from 'bn.js';
+import { ErrorCode } from '../form-error';
 import { createApi } from '../server-api';
-import { getWallets, Wallet } from '../wallets';
+import { WalletAccountRef, WalletId, WalletState } from '../wallets/index';
 import { GasPrice, TxStage, WidgetConfig } from '../widget';
 import * as actions from './actions';
 import rootEpic from './epics';
 import { reducerWithDefaults } from './reducer';
 import { createStore, Store } from './store';
-import { ErrorCode } from '../form-error';
 
 //-------------------------------------------------------------------------------------------------
 // Types
@@ -37,12 +37,12 @@ export interface WidgetState {
   config: WidgetConfig;
   operation: Operation;
   tradeable: Tradeable;
-  wallet: null | Wallet;
+  wallets: Partial<Record<WalletId, WalletState>>;
+  selectedWallet: null | WalletAccountRef;
   amountPristine: boolean;
   amount: string; // expressed in Tokens #
   orderbook: OrderBook | null;
   gasPrice: GasPrice;
-  walletDetails: null | WalletDetails;
   errors: {
     amount: null | ErrorCode.VolumeTooBig | ErrorCode.VolumeTooSmall | ErrorCode.VolumeBadFormat;
     balance: null | ErrorCode.CantPayNetwork | ErrorCode.InsufficientFunds;
@@ -61,7 +61,7 @@ export type WidgetStore = Store<WidgetState, actions.Actions>;
 export interface Operations {
   setOperation: (operation: Operation) => void;
   setTradeable: (tradeable: Tradeable) => void;
-  setWallet: (wallet: Wallet | null) => void;
+  setWallet: (wallet: WalletAccountRef | null) => void;
   setAmount: (amount: string) => void;
   startTransaction: () => void;
 }
@@ -73,18 +73,17 @@ export interface Operations {
 export async function initWidget(widgetId: string): Promise<Store<WidgetState, actions.Actions>> {
   const api = createApi();
   const config: WidgetConfig = await api.getWidgetConfig(widgetId);
-  config.wallets = await getWallets();
 
   const initialState: WidgetState = {
     config,
     operation: 'buy',
     tradeable: config.tokens[0],
-    wallet: config.wallets.length > 0 ? config.wallets[0] : null,
+    wallets: {},
+    selectedWallet: null,
     amountPristine: true,
     amount: '0', // expressed in Tokens #
     orderbook: null,
     gasPrice: GasPrice.Normal,
-    walletDetails: null,
     errors: {
       amount: null,
       balance: null,

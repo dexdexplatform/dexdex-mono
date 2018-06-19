@@ -1,8 +1,7 @@
-import { WalletDetails } from '.';
 import { Operation } from '@dexdex/model/lib/base';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
 import { OrderBookEvent } from '../server-api';
-import { Wallet } from '../wallets';
+import { WalletAccountRef, WalletState } from '../wallets/index';
 import { TransactionState } from '../widget';
 
 //-------------------------------------------------------------------------------------------------
@@ -38,21 +37,21 @@ export const setOperation = (payload: Operation): SetOperationAction => ({
 
 export interface SetWalletAction {
   type: 'setWallet';
-  payload: Wallet | null;
+  payload: WalletAccountRef | null;
 }
 
-export const setWallet = (payload: Wallet | null): SetWalletAction => ({
+export const setWallet = (payload: WalletAccountRef | null): SetWalletAction => ({
   type: 'setWallet',
   payload,
 });
 
-export interface SetWalletDetailsAction {
-  type: 'setWalletDetails';
-  payload: WalletDetails | null;
+export interface SetWalletStateAction {
+  type: 'setWalletState';
+  payload: WalletState;
 }
 
-export const setWalletDetails = (payload: WalletDetails | null): SetWalletDetailsAction => ({
-  type: 'setWalletDetails',
+export const setWalletState = (payload: WalletState): SetWalletStateAction => ({
+  type: 'setWalletState',
   payload,
 });
 
@@ -101,7 +100,7 @@ export type Actions =
   | OrderbookEventAction
   | SetOperationAction
   | SetWalletAction
-  | SetWalletDetailsAction
+  | SetWalletStateAction
   | StartTransactionAction
   | SetTransactionStateAction
   | GoBackAction

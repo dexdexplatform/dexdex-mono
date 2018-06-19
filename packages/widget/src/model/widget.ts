@@ -1,8 +1,7 @@
+import { Trade } from '@dexdex/model/lib/trade';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
 import { toWei } from '@dexdex/utils/lib/units';
-import { Wallet } from './wallets';
 import { BN } from 'bn.js';
-import { Trade } from '@dexdex/model/lib/trade';
 
 export enum GasPrice {
   Slow = 'Slow',
@@ -22,7 +21,6 @@ export interface WidgetConfig {
   tokens: Tradeable[];
   featuredTokens: Tradeable[];
   ethers2usdER: number;
-  wallets: Wallet[];
 }
 
 export enum TxStage {

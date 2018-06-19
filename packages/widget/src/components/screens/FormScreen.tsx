@@ -1,26 +1,27 @@
-import * as React from 'react';
-import { RenderMapper } from '.';
 import { Operation } from '@dexdex/model/lib/base';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
-import { Wallet } from '../../model/wallets';
+import { fixDecimals } from '@dexdex/utils/lib/format';
+import { BN } from 'bn.js';
+import * as React from 'react';
+import { RenderMapper } from '.';
+import { ErrorMessage } from '../../model/form-error';
+import { WalletAccountRef, WalletState } from '../../model/wallets/index';
 import { GasPrice } from '../../model/widget';
-import { Operations, WalletDetails, WidgetState } from '../../model/widget-state';
+import { Operations, WidgetState } from '../../model/widget-state';
 import * as actions from '../../model/widget-state/actions';
 import {
-  networkCost,
-  expectedVolumeEth,
   expectedVolume,
+  expectedVolumeEth,
   getAmountError,
+  getWalletList,
+  networkCost,
 } from '../../model/widget-state/selectors';
-import { fixDecimals } from '@dexdex/utils/lib/format';
 import AmountField from '../AmountField';
+import { FormatEth, FormatPrice } from '../Format';
+import { FormField } from '../FormField';
 import OperationSelector from '../OperationSelector';
 import TokenSelector from '../TokenSelector';
 import WalletSelector from '../WalletSelector';
-import { BN } from 'bn.js';
-import { FormatEth, FormatPrice } from '../Format';
-import { ErrorMessage } from '../../model/form-error';
-import { FormField } from '../FormField';
 
 const DEXDEX_ICON = require('../icons/dexdex.svg');
 
@@ -28,9 +29,8 @@ export interface WidgetFormProps {
   actions: Operations;
   tradeableList: Tradeable[];
   tradeable: Tradeable;
-  walletList: Wallet[];
-  wallet: Wallet | null;
-  walletDetails: null | WalletDetails;
+  walletList: WalletState[];
+  wallet: WalletAccountRef | null;
   amountError: null | ErrorMessage;
   balanceError: null | ErrorMessage;
   canSubmit: boolean;
@@ -45,7 +45,7 @@ export interface WidgetFormProps {
 export const mapper: RenderMapper<WidgetFormProps> = store => {
   const setTradeable = (x: Tradeable) => store.dispatch(actions.setTradeable(x));
   const setOperation = (x: Operation) => store.dispatch(actions.setOperation(x));
-  const setWallet = (x: Wallet | null) => store.dispatch(actions.setWallet(x));
+  const setWallet = (x: WalletAccountRef | null) => store.dispatch(actions.setWallet(x));
   const startTransaction = () => store.dispatch(actions.startTransaction());
 
   const setAmount = (ws: WidgetState) => (x: string) => {
@@ -61,13 +61,15 @@ export const mapper: RenderMapper<WidgetFormProps> = store => {
     return {
       tradeableList: ws.config.tokens,
       tradeable: ws.tradeable,
-      walletList: ws.config.wallets,
-      wallet: ws.wallet,
-      walletDetails: ws.walletDetails,
+      walletList: getWalletList(ws),
+      wallet: ws.selectedWallet,
       amountError,
       balanceError,
       canSubmit:
-        amountError == null && balanceError == null && ws.wallet != null && ws.orderbook != null,
+        amountError == null &&
+        balanceError == null &&
+        ws.selectedWallet != null &&
+        ws.orderbook != null,
       amount: ws.amount,
       gasPrice: ws.gasPrice,
       operation: ws.operation,
@@ -99,7 +101,6 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
     </FormField>
     <WalletSelector
       selectedWallet={props.wallet}
-      walletDetails={props.walletDetails}
       wallets={props.walletList}
       tradeable={props.tradeable}
       onChange={props.actions.setWallet}

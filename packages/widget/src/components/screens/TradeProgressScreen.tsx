@@ -2,7 +2,12 @@ import { Address, Operation } from '@dexdex/model/lib/base';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
 import * as React from 'react';
 import { RenderMapper } from '.';
-import { expectedVolumeEth, networkCost, expectedVolume } from '../../model/widget-state/selectors';
+import {
+  expectedVolumeEth,
+  networkCost,
+  expectedVolume,
+  getCurrentAccountState,
+} from '../../model/widget-state/selectors';
 import { TokenInfo } from '../TokenInfo';
 import { SellSteps, BuySteps } from '../TradeSteps';
 import { BN } from 'bn.js';
@@ -20,7 +25,7 @@ export interface TradeProgressScreen {
 
 export const mapper: RenderMapper<TradeProgressScreen> = store => ws => ({
   tradeable: ws.tradeable,
-  fromAddress: ws.walletDetails!.address!,
+  fromAddress: getCurrentAccountState(ws)!.address,
   expectedVolume: expectedVolume(ws),
   operation: ws.operation,
   expectedVolumeEth: expectedVolumeEth(ws),

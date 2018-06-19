@@ -1,12 +1,14 @@
+import { getSide } from '@dexdex/model/lib/orderbook';
 import { Trade, TradeState } from '@dexdex/model/lib/trade';
 import { getFinalVolumeEth } from '@dexdex/model/lib/trade-plan';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
 import { getDecimalBase, toTokenDecimals } from '@dexdex/utils/lib/units';
 import { BN } from 'bn.js';
 import { WidgetState } from '.';
-import { computeGasPrice } from '../widget';
 import { ErrorCode, ErrorMessage } from '../form-error';
-import { getSide } from '@dexdex/model/lib/orderbook';
+import { WalletState, AccountState, DesktopWallets } from '../wallets/index';
+import { computeGasPrice } from '../widget';
+import { isMobile } from '../../config';
 
 const price = (volume: BN, volumeEth: BN, token: Tradeable) => {
   const DECIMAL_PLACES = 10000;
@@ -81,5 +83,34 @@ export const getAmountError = (ws: WidgetState): null | ErrorMessage => {
       return { code: ErrorCode.VolumeBadFormat };
     default:
       throw new Error(`Invalid amount error: ${ws.errors.amount}`);
+  }
+};
+
+export const getCurrentWalletState = (ws: WidgetState): WalletState | null =>
+  ws.selectedWallet == null ? null : ws.wallets[ws.selectedWallet.wallet] || null;
+
+export const getCurrentAccountState = (ws: WidgetState): AccountState | null => {
+  if (ws.selectedWallet == null) {
+    return null;
+  }
+  const walletState = ws.wallets[ws.selectedWallet.wallet];
+  if (walletState == null || walletState.status === 'error') {
+    return null;
+  }
+  const accountState = walletState.accounts[ws.selectedWallet.accountIdx];
+  return accountState;
+};
+
+function values<K>(obj: Record<any, K>): K[] {
+  return Object.keys(obj).map(key => obj[key]);
+}
+
+export const getWalletList = (ws: WidgetState): WalletState[] => {
+  if (isMobile) {
+    return values(ws.wallets) as WalletState[];
+  } else {
+    return DesktopWallets.map(id => ws.wallets[id]).filter(
+      wallet => wallet != null
+    ) as WalletState[];
   }
 };

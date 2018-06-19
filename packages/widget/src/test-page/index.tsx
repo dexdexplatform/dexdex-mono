@@ -10,7 +10,7 @@ import { Screen as RequestAllowanceScreen } from '../components/screens/RequestA
 import { Screen as TradeProgressScreen } from '../components/screens/TradeProgressScreen';
 import { Screen as TradeSuccessScreen } from '../components/screens/TradeSuccessScreen';
 import '../components/Widget.css';
-import { getWallets, Wallet } from '../model/wallets';
+import { WalletInfo, WalletId } from '../model/wallets/index';
 
 const tokenA: Tradeable = {
   address: '0xbc98051d2cd1eeaa4b396dcde34624e5cd4d50e3',
@@ -41,7 +41,7 @@ const ScreenTest: React.SFC<{ name: string }> = ({ name, children }) => (
     <div style={{ marginBottom: 200, borderTop: 'solid 1px #EEE' }}>{children}</div>
   </div>
 );
-const TestApp: React.SFC<{ wallet: Wallet }> = ({ wallet }) => (
+const TestApp: React.SFC = () => (
   <div>
     <h1>Widget Screen Stages</h1>
     <ScreenTest name="Request Allowance Screen - Signature">
@@ -85,7 +85,7 @@ const TestApp: React.SFC<{ wallet: Wallet }> = ({ wallet }) => (
         effectiveVolumeEth={data.expectedVolumeEth}
         effectiveVolume={data.expectedVolumeEth}
         tradeTxHash={data.tradeTxHash}
-        wallet={wallet}
+        wallet={WalletInfo[WalletId.MetaMask]}
       />
     </ScreenTest>
     <ScreenTest name="Error Screen">
@@ -98,9 +98,7 @@ const TestApp: React.SFC<{ wallet: Wallet }> = ({ wallet }) => (
 );
 
 async function main() {
-  const wallets = await getWallets();
-
-  ReactDOM.render(<TestApp wallet={wallets[0]} />, document.getElementById('root') as HTMLElement);
+  ReactDOM.render(<TestApp />, document.getElementById('root') as HTMLElement);
 }
 
 main().catch(err => {

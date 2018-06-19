@@ -3,10 +3,11 @@ import { Tradeable } from '@dexdex/model/lib/tradeable';
 import { BN } from 'bn.js';
 import * as React from 'react';
 import { RenderMapper } from '.';
-import { Wallet } from '../../model/wallets';
+import { WalletInfo } from '../../model/wallets/index';
 import {
   effectiveVolume,
   effectiveVolumeEth,
+  getCurrentAccountState,
   networkCost,
 } from '../../model/widget-state/selectors';
 import { FormatAddress, FormatEth, FormatPrice, FormatToken, FormatTxHash } from '../Format';
@@ -20,26 +21,30 @@ export interface TradeSuccessScreenProps {
   effectiveVolumeEth: BN;
   networkCost: BN | null;
   tradeTxHash: string;
-  wallet: Wallet;
+  wallet: WalletInfo;
 }
 
 export const mapper: RenderMapper<TradeSuccessScreenProps> = store => ws => {
+  const accountState = getCurrentAccountState(ws);
   if (ws.tradeExecution.tradeTxHash == null) {
     throw new Error('BUG: no tradetxhash on success screen');
   }
-  if (ws.walletDetails == null || ws.walletDetails.address == null) {
+  if (accountState == null) {
     throw new Error('BUG: no wallet address on success screen');
+  }
+  if (ws.selectedWallet == null) {
+    throw new Error('BUG: no selected wallet on success screen');
   }
   return {
     tradeable: ws.tradeable,
-    fromAddress: ws.walletDetails.address,
+    fromAddress: accountState.address,
     amount: ws.amount,
     operation: ws.operation,
     effectiveVolume: effectiveVolume(ws),
     effectiveVolumeEth: effectiveVolumeEth(ws),
     networkCost: networkCost(ws),
     tradeTxHash: ws.tradeExecution.tradeTxHash,
-    wallet: ws.wallet!,
+    wallet: WalletInfo[ws.selectedWallet.wallet],
   };
 };
 

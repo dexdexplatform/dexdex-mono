@@ -9,6 +9,13 @@ export function promiseFactory<A>(fn: () => Promise<A>): Observable<A> {
   return defer(() => from(fn()));
 }
 
+export function seqAsync<A1, B>(
+  f1: () => Promise<A1>,
+  fn: (v1: A1) => Observable<B>
+): Observable<B> {
+  return promiseFactory(f1).pipe(concatMap(fn));
+}
+
 export function pollDifferences<A>(opts: {
   period: number;
   poller: () => Promise<A>;

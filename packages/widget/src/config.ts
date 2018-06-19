@@ -46,3 +46,10 @@ const ETHERSCAN_URL =
 
 export const etherscanAddressUrl = (address: Address) => `${ETHERSCAN_URL}/address/${address}`;
 export const etherscanTxUrl = (txhash: string) => `${ETHERSCAN_URL}/tx/${txhash}`;
+
+function computeIsMobile() {
+  const ua = window.navigator.userAgent;
+  return ua.includes('iPhone') || ua.includes('Android');
+}
+
+export const isMobile = computeIsMobile();

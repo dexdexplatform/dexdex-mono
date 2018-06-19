@@ -99,9 +99,19 @@ function applySetters(state: WidgetState, action: Actions): WidgetState {
     case 'setOperation':
       return { ...state, operation: action.payload };
     case 'setWallet':
-      return { ...state, wallet: action.payload };
-    case 'setWalletDetails':
-      return { ...state, walletDetails: action.payload };
+      return { ...state, selectedWallet: action.payload };
+    case 'setWalletState':
+      return {
+        ...state,
+        wallets: {
+          ...state.wallets,
+          [action.payload.walletId]: action.payload,
+        },
+        selectedWallet:
+          state.selectedWallet == null && action.payload.status === 'ready'
+            ? { wallet: action.payload.walletId, accountIdx: 0 }
+            : state.selectedWallet,
+      };
     case 'setTradeable':
       return {
         ...state,
