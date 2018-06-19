@@ -30,7 +30,10 @@ export class TradePlan {
 
   get currentVolumeEthUpperBound() {
     // Current threshold is 5% extra
-    return this.currentVolumeEth.muln(105).divn(100);
+    // return this.currentVolumeEth.muln(105).divn(100);
+
+    // For now only trade with volumeEth
+    return this.currentVolumeEth;
   }
 
   canHandle(volume: BN): boolean {
