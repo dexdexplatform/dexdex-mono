@@ -500,6 +500,30 @@ input[type='checkbox']:checked + .hide3 .inner3 {
   font-weight: bold;
 }
 
+.token-trade {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.token-trade .left {
+  text-align: right;
+  flex: 3;
+}
+
+.token-trade .middle {
+  flex: 2;
+}
+
+.token-trade .middle img {
+  height: 30px;
+}
+
+.token-trade .right {
+  text-align: left;
+  flex: 3;
+}
+
 @media (max-width: 480px) {
   .wallet-name {
     display: none;

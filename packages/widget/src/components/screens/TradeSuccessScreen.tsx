@@ -52,7 +52,9 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
       <p className="token-amount">
         <FormatToken value={props.effectiveVolume} token={props.tradeable} />
       </p>
-      <p className="token-name">{props.tradeable.name}</p>
+      <p className="token-name">
+        {props.tradeable.name} ({props.tradeable.symbol})
+      </p>
       {/* wallet info - only success*/}
       <div className="wallet-info-success">
         <img className="wallet-icon" src={props.wallet.icon} alt="Wallet Icon" />
