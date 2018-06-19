@@ -13,6 +13,21 @@ import {
 import { FormatAddress, FormatEth, FormatPrice, FormatToken, FormatTxHash } from '../Format';
 import { tokenBigImg } from '../../config';
 
+const ItemList: React.SFC = ({ children }) => (
+  <ul className="transacion-details-list">{children}</ul>
+);
+
+const Item: React.SFC<{ kind?: 'title' | 'total'; title: string }> = ({
+  kind,
+  title,
+  children,
+}) => (
+  <li className={kind ? kind : ''}>
+    <div className="label">{title}</div>
+    <div className="value">{children}</div>
+  </li>
+);
+
 export interface TradeSuccessScreenProps {
   operation: Operation;
   tradeable: Tradeable;
@@ -51,8 +66,7 @@ export const mapper: RenderMapper<TradeSuccessScreenProps> = store => ws => {
 
 const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
   <div className="widget-status">
-    <h1 className="step-title">Total Sent/Obtained</h1>
-    {/* token info start */}
+    <h1 className="step-title">Total {props.operation === 'buy' ? 'Obtained' : 'Sent'}</h1>
     <div className="token-info">
       <img className="token-icon" src={tokenBigImg(props.tradeable.symbol)} alt="Token Icon" />
       <p className="token-amount">
@@ -61,67 +75,44 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
       <p className="token-name">
         {props.tradeable.name} ({props.tradeable.symbol})
       </p>
-      {/* wallet info - only success*/}
-      <div className="wallet-info-success">
-        <img className="wallet-icon" src={props.wallet.icon} alt="Wallet Icon" />
-        <FormatAddress className="wallet-address" value={props.fromAddress} />
-      </div>
-      {/* end wallet info - only success*/}
     </div>
-    {/* end token info */}
 
-    <ul className="transacion-details-list">
-      <li className="title">
-        <div className="label">Transaction details</div>
+    <ItemList>
+      <Item kind="title" title={`Transaction details`}>
         <div className="value">May-21-2018 07:36:55 AM +UTC</div>
-      </li>
-      <li>
-        <div className="label">Operation</div>
-        <div className="value">{props.operation}</div>
-      </li>
-      <li>
-        <div className="label">Transaction</div>
-        <div className="value">
-          <FormatTxHash className="link" value={props.tradeTxHash} />
-        </div>
-      </li>
-      <li>
-        <div className="label">Amount bought</div>
-        <div className="value">
-          <FormatToken value={props.effectiveVolume} token={props.tradeable} />
-        </div>
-      </li>
-      <li>
-        <div className="label">{props.tradeable.name} Price</div>
-        <div className="value">
-          <FormatPrice
-            volume={props.effectiveVolume}
-            volumeEth={props.effectiveVolumeEth}
-            token={props.tradeable}
-          />
-        </div>
-      </li>
-      <li>
-        <div className="label">Network Cost</div>
-        <div className="value">
-          <FormatEth value={props.networkCost} /> ETH
-        </div>
-      </li>
+      </Item>
+      <Item title="Account">
+        <FormatAddress className="wallet-address" value={props.fromAddress} />
+      </Item>
+      <Item title="Transaction">
+        <FormatTxHash className="link" value={props.tradeTxHash} />
+      </Item>
+      <Item title={`Amount ${props.operation === 'buy' ? 'Obtained' : 'Sent'}`}>
+        <FormatToken value={props.effectiveVolume} token={props.tradeable} />
+      </Item>
+      <Item title={`${props.tradeable.symbol} Price`}>
+        <FormatPrice
+          volume={props.effectiveVolume}
+          volumeEth={props.effectiveVolumeEth}
+          token={props.tradeable}
+        />{' '}
+        ETH
+      </Item>
+      <Item title="Network Cost">
+        <FormatEth value={props.networkCost} /> ETH
+      </Item>
       {/* <li>
-        <div className="label">Dexdex Fee</div>
-        <div className="value">Fee dexdex</div>
+        <div className="label">Service Fee</div>
+        <div className="value">COMPUTE THIS</div>
       </li>
       <li>
         <div className="label">Price Optimization</div>
         <div className="value">Price Optimization %</div>
       </li> */}
-      <li className="total">
-        <div className="label">Total</div>
-        <div className="value">
-          <FormatEth value={props.effectiveVolumeEth} /> ETH
-        </div>
-      </li>
-    </ul>
+      <Item kind="total" title={`Total ${props.operation === 'buy' ? 'Sent' : 'Obtained'}`}>
+        <FormatEth value={props.effectiveVolumeEth} /> ETH
+      </Item>
+    </ItemList>
   </div>
 );
 

@@ -114,7 +114,7 @@ export class FormatAddress extends React.PureComponent<FormatAddressProps> {
       return <span className={this.props.className}>{shortenAddress(address, 6, 6)}</span>;
     } else {
       return (
-        <a className={this.props.className} href={etherscanAddressUrl(address)}>
+        <a className={this.props.className} href={etherscanAddressUrl(address)} target="_blank">
           {shortenAddress(address, 6, 6)}
         </a>
       );
@@ -130,7 +130,7 @@ export class FormatTxHash extends React.PureComponent<FormatTxHashProps> {
   render() {
     const txhash = this.props.value;
     return (
-      <a className={this.props.className} href={etherscanTxUrl(txhash)}>
+      <a className={this.props.className} href={etherscanTxUrl(txhash)} target="_blank">
         {shortenAddress(txhash, 6, 6)}
       </a>
     );
