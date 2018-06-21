@@ -6,7 +6,11 @@ import {
   OrderBookSide,
   getSide,
   updateSide,
-  orderBookActions,
+  addOrder,
+  removeOrder,
+  updateOrder,
+  newOrderBook,
+  tradePlanFor,
 } from '@dexdex/model/lib/orderbook';
 import { OrderBookEvent, OrderEventKind } from '../server-api';
 import { fromTokenDecimals, toTokenDecimals } from '@dexdex/utils/lib/units';
@@ -14,21 +18,19 @@ import { TxStage } from '../widget';
 import { Actions } from './actions';
 import { ErrorCode } from '../form-error';
 
-const OB = orderBookActions();
-
 function applyEvent(ob: OrderBook, event: OrderBookEvent): OrderBook {
   switch (event.kind) {
     case OrderEventKind.Add:
-      return updateSide(ob, event.order.isSell)(OB.addOrder(event.order));
+      return updateSide(ob, event.order.isSell)(addOrder(event.order));
 
     case OrderEventKind.Delete:
-      return updateSide(ob, event.order.isSell)(OB.removeOrder(event.order));
+      return updateSide(ob, event.order.isSell)(removeOrder(event.order));
 
     case OrderEventKind.Update:
-      return updateSide(ob, event.order.isSell)(OB.updateOrder(event.order));
+      return updateSide(ob, event.order.isSell)(updateOrder(event.order));
 
     case OrderEventKind.Snapshot:
-      return OB.newOrderBook(event.snapshot);
+      return newOrderBook(event.snapshot);
     default:
       throw new Error(`invalid OrderEvent ${event}`);
   }
@@ -120,7 +122,7 @@ function applySetters(state: WidgetState, action: Actions): WidgetState {
     case 'orderbookEvent':
       return {
         ...state,
-        orderbook: applyEvent(state.orderbook || OB.newOrderBook(), action.payload),
+        orderbook: applyEvent(state.orderbook || newOrderBook(), action.payload),
       };
 
     case 'setTransactionState':
@@ -194,7 +196,7 @@ function reducer(oldState: WidgetState, action: Actions): WidgetState {
     st.tradePlan = null;
   } else if (oldSide !== currentSide) {
     // ordebookSide changed => (side orders changed OR operation changed) => recompute
-    st.tradePlan = OB.tradePlanFor(currentSide, toTokenDecimals(st.amount, st.tradeable.decimals));
+    st.tradePlan = tradePlanFor(currentSide, toTokenDecimals(st.amount, st.tradeable.decimals));
   } else if (anyChanged('amount')) {
     // only the amount changed. Maybe the current computed transaction is still valid
     const volumeTD = toTokenDecimals(st.amount, st.tradeable.decimals);
@@ -202,10 +204,7 @@ function reducer(oldState: WidgetState, action: Actions): WidgetState {
       st.tradePlan = st.tradePlan!.changeVolume(volumeTD);
     } else {
       // current is not valid => recompute
-      st.tradePlan = OB.tradePlanFor(
-        currentSide,
-        toTokenDecimals(st.amount, st.tradeable.decimals)
-      );
+      st.tradePlan = tradePlanFor(currentSide, toTokenDecimals(st.amount, st.tradeable.decimals));
     }
   }
 
