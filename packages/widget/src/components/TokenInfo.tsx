@@ -4,7 +4,7 @@ import { FormatToken } from './Format';
 import { BN } from 'bn.js';
 import { tokenBigImg } from '../config';
 
-const exchangeImgSrc = require('./icons/exchange.png');
+const exchangeImgSrc = require('./icons/exchange.svg');
 
 export const TokenInfo: React.SFC<{ token: Tradeable; volume: BN }> = ({ token, volume }) => (
   <div className="token-info">
