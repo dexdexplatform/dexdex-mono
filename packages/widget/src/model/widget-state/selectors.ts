@@ -85,6 +85,13 @@ export const getAmountError = (ws: WidgetState): null | ErrorMessage => {
       throw new Error(`Invalid amount error: ${ws.errors.amount}`);
   }
 };
+export const getBalanceError = (ws: WidgetState): null | ErrorMessage => {
+  if (ws.errors.balance == null) {
+    return null;
+  } else {
+    return { code: ws.errors.balance };
+  }
+};
 
 export const getCurrentWalletState = (ws: WidgetState): WalletState | null =>
   ws.selectedWallet == null ? null : ws.wallets[ws.selectedWallet.wallet] || null;

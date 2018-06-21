@@ -6,7 +6,8 @@ export enum ErrorCode {
   VolumeBadFormat = 'VolumeBadFormat',
   VolumeTooSmall = 'VolumeTooSmall',
   VolumeTooBig = 'VolumeTooBig',
-  InsufficientFunds = 'InsufficientFunds',
+  NotEnoughEther = 'NotEnoughEther',
+  NotEnoughTokens = 'NotEnoughTokens',
   CantPayNetwork = 'CantPayNetwork',
 }
 
@@ -14,11 +15,12 @@ export type ErrorMessage =
   | { code: ErrorCode.VolumeBadFormat }
   | { code: ErrorCode.VolumeTooSmall; minVolume: BN; token: Tradeable }
   | { code: ErrorCode.VolumeTooBig; maxVolume: BN; token: Tradeable }
-  | { code: ErrorCode.InsufficientFunds }
-  | { code: ErrorCode.CantPayNetwork };
+  | { code: ErrorCode.NotEnoughEther | ErrorCode.NotEnoughTokens | ErrorCode.CantPayNetwork };
 
 export const isAmountError = (errMsg: ErrorMessage) =>
   [ErrorCode.VolumeTooSmall, ErrorCode.VolumeTooBig].indexOf(errMsg.code) >= 0;
 
 export const isBalanceError = (errMsg: ErrorMessage) =>
-  [ErrorCode.InsufficientFunds, ErrorCode.CantPayNetwork].indexOf(errMsg.code) >= 0;
+  [ErrorCode.NotEnoughTokens, ErrorCode.NotEnoughEther, ErrorCode.CantPayNetwork].indexOf(
+    errMsg.code
+  ) >= 0;

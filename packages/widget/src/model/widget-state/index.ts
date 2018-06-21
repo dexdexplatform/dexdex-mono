@@ -45,7 +45,7 @@ export interface WidgetState {
   gasPrice: GasPrice;
   errors: {
     amount: null | ErrorCode.VolumeTooBig | ErrorCode.VolumeTooSmall | ErrorCode.VolumeBadFormat;
-    balance: null | ErrorCode.CantPayNetwork | ErrorCode.InsufficientFunds;
+    balance: null | ErrorCode.CantPayNetwork | ErrorCode.NotEnoughEther | ErrorCode.NotEnoughTokens;
   };
   tradePlan: TradePlan | null;
   tradeExecution: {

@@ -15,6 +15,7 @@ import {
   getAmountError,
   getWalletList,
   networkCost,
+  getBalanceError,
 } from '../../model/widget-state/selectors';
 import AmountField from '../AmountField';
 import { FormatEth, FormatPrice } from '../Format';
@@ -57,7 +58,7 @@ export const mapper: RenderMapper<WidgetFormProps> = store => {
 
   return ws => {
     const amountError = getAmountError(ws);
-    const balanceError = null;
+    const balanceError = getBalanceError(ws);
     return {
       tradeableList: ws.config.tokens,
       tradeable: ws.tradeable,
@@ -103,6 +104,7 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
       selectedWallet={props.wallet}
       wallets={props.walletList}
       tradeable={props.tradeable}
+      error={props.balanceError}
       onChange={props.actions.setWallet}
     />
     <div className="summary">

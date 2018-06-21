@@ -18,8 +18,9 @@ const ErrorFormatters: Formatters = {
     </div>
   ),
   [ErrorCode.VolumeBadFormat]: () => <div>Invalid Number</div>,
-  [ErrorCode.InsufficientFunds]: () => <div>Insuffient Balance to do the trade</div>,
-  [ErrorCode.CantPayNetwork]: () => <div>Insuffient Balance to pay network cost</div>,
+  [ErrorCode.NotEnoughEther]: () => <div>Insuffient Ethers</div>,
+  [ErrorCode.NotEnoughTokens]: () => <div>Insuffient Tokens</div>,
+  [ErrorCode.CantPayNetwork]: () => <div>Insuffient Ethers to pay network cost</div>,
 };
 
 export class FormatError extends React.PureComponent<{ msg: ErrorMessage }> {

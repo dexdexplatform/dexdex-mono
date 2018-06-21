@@ -12,11 +12,13 @@ import {
 } from '../model/wallets/index';
 import { FormatAddress, FormatEth, FormatToken } from './Format';
 import { FormField } from './FormField';
+import { ErrorMessage } from '../model/form-error';
 
 export interface WalletSelectorProps {
   wallets: WalletState[];
   selectedWallet: WalletAccountRef | null;
   tradeable: Tradeable;
+  error?: ErrorMessage | null;
   onChange: (selected: WalletAccountRef | null) => void;
 }
 
@@ -42,7 +44,7 @@ class WalletSelector extends React.Component<WalletSelectorProps> {
       ? `account-${selectedWallet.wallet}-${selectedWallet.accountIdx}`
       : undefined;
     return (
-      <FormField label="Wallet" htmlFor="account">
+      <FormField label="Wallet" htmlFor="account" error={this.props.error}>
         {wallets.length === 0 ? (
           <div className="select-symbol-name">
             <span>You don't have a connected wallet</span>

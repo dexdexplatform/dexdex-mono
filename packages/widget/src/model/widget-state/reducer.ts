@@ -1,22 +1,28 @@
-import { WidgetState } from '.';
-import { fixDecimals, removeExtraZeros } from '@dexdex/utils/lib/format';
 import { Operation } from '@dexdex/model/lib/base';
 import {
+  addOrder,
+  getSide,
+  newOrderBook,
   OrderBook,
   OrderBookSide,
-  getSide,
-  updateSide,
-  addOrder,
   removeOrder,
-  updateOrder,
-  newOrderBook,
   tradePlanFor,
+  updateOrder,
+  updateSide,
 } from '@dexdex/model/lib/orderbook';
-import { OrderBookEvent, OrderEventKind } from '../server-api';
+import { fixDecimals, removeExtraZeros } from '@dexdex/utils/lib/format';
 import { fromTokenDecimals, toTokenDecimals } from '@dexdex/utils/lib/units';
+import { WidgetState } from '.';
+import { ErrorCode } from '../form-error';
+import { OrderBookEvent, OrderEventKind } from '../server-api';
 import { TxStage } from '../widget';
 import { Actions } from './actions';
-import { ErrorCode } from '../form-error';
+import {
+  expectedVolume,
+  expectedVolumeEth,
+  getCurrentAccountState,
+  networkCost,
+} from './selectors';
 
 function applyEvent(ob: OrderBook, event: OrderBookEvent): OrderBook {
   switch (event.kind) {
@@ -206,6 +212,37 @@ function reducer(oldState: WidgetState, action: Actions): WidgetState {
       // current is not valid => recompute
       st.tradePlan = tradePlanFor(currentSide, toTokenDecimals(st.amount, st.tradeable.decimals));
     }
+  }
+
+  // Check Balance errors
+  const newNetworkCost = networkCost(st);
+  const newAccountState = getCurrentAccountState(st);
+  const newVolumeEth = expectedVolumeEth(st);
+  if (
+    st.errors.amount != null ||
+    newNetworkCost == null ||
+    newAccountState == null ||
+    newVolumeEth == null
+  ) {
+    // If invalid amount => no plan => can't check balance error
+    // If no trade plan => (no network cost Or volumeEth) => can't check balance error
+    // If no valid account state => can't check balance error
+    st.errors.balance = null;
+  } else if (newNetworkCost.gt(newAccountState.balance)) {
+    // can't pay network cost
+    st.errors.balance = ErrorCode.CantPayNetwork;
+  } else if (
+    st.operation === 'buy' &&
+    newVolumeEth.add(newNetworkCost).gt(newAccountState.balance)
+  ) {
+    // we don't have enough ether to buy those tokens
+    st.errors.balance = ErrorCode.NotEnoughEther;
+  } else if (st.operation === 'sell' && expectedVolume(st).gt(newAccountState.tokenBalance)) {
+    // we don't have enough tokens to sell
+    st.errors.balance = ErrorCode.NotEnoughTokens;
+  } else {
+    // All Good
+    st.errors.balance = null;
   }
 
   return st;
