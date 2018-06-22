@@ -151,7 +151,10 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
       </div>
       <div className="col-2">
         <p>
-          By clicking confirm, you agree to our <a href="https://dexdex.io/tos/">terms</a>
+          By clicking confirm, you agree to our{' '}
+          <a href="https://dexdex.io/tos/" target="_blank">
+            terms
+          </a>
         </p>
       </div>
     </div>
