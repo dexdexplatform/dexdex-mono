@@ -124,9 +124,15 @@ p {
   padding: 1rem;
   text-transform: uppercase;
   color: #fff;
+  cursor: pointer;
   border: 0;
   border-radius: 3px;
   background-color: #39f;
+}
+
+.btn-submit:disabled {
+  cursor: not-allowed;
+  background-color: #cccccc;
 }
 
 /* Footer */
