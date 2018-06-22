@@ -46,7 +46,7 @@ class WalletSelector extends React.Component<WalletSelectorProps> {
     return (
       <FormField label="Wallet" htmlFor="account" error={this.props.error}>
         {wallets.length === 0 ? (
-          <div className="select-symbol-name">
+          <div>
             <span>You don't have a connected wallet</span>
           </div>
         ) : (
@@ -70,7 +70,7 @@ class WalletSelector extends React.Component<WalletSelectorProps> {
     const wallet = WalletInfo[option.wallet.walletId];
     return (
       <div className="flex-grid">
-        <div className="col select-symbol-name">
+        <div className="col">
           <img className="wallet-symbol" src={wallet.icon} />
           <span className="wallet-name">{wallet.label} </span>
         </div>

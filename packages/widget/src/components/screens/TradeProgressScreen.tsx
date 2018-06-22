@@ -1,23 +1,23 @@
 import { Address, Operation } from '@dexdex/model/lib/base';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
+import { BN } from 'bn.js';
 import * as React from 'react';
 import { RenderMapper } from '.';
 import {
-  expectedVolumeEth,
-  networkCost,
   expectedVolume,
+  expectedVolumeEth,
   getCurrentAccountState,
+  networkCost,
 } from '../../model/widget-state/selectors';
-import { TokenInfo } from '../TokenInfo';
-import { SellSteps, BuySteps } from '../TradeSteps';
-import { BN } from 'bn.js';
+import { TradeInfo } from '../TokenInfo';
+import { BuySteps, SellSteps } from '../TradeSteps';
 
 export interface TradeProgressScreen {
   operation: Operation;
   tradeable: Tradeable;
   expectedVolume: BN;
   fromAddress: Address;
-  expectedVolumeEth: BN | null;
+  expectedVolumeEth: BN;
   networkCost: BN | null;
   txHash?: string | null;
   approvalHash?: string | null;
@@ -28,26 +28,35 @@ export const mapper: RenderMapper<TradeProgressScreen> = store => ws => ({
   fromAddress: getCurrentAccountState(ws)!.address,
   expectedVolume: expectedVolume(ws),
   operation: ws.operation,
-  expectedVolumeEth: expectedVolumeEth(ws),
+  expectedVolumeEth: expectedVolumeEth(ws)!,
   networkCost: networkCost(ws),
   txHash: ws.tradeExecution.tradeTxHash,
   approvalHash: ws.tradeExecution.approvalTxHash,
 });
 
 const TradeProgressScreen: React.SFC<TradeProgressScreen> = props => (
-  <div className="widget-status">
-    {props.txHash ? (
-      <h1 className="step-title">Waiting tx mining</h1>
-    ) : (
-      <h1 className="step-title">Please approve the trade</h1>
-    )}
-    <TokenInfo token={props.tradeable} volume={props.expectedVolume} />
-
-    {props.operation === 'sell' ? (
-      <SellSteps approvalHash={props.approvalHash} approvalMined={true} tradeHash={props.txHash} />
-    ) : (
-      <BuySteps tradeHash={props.txHash} />
-    )}
+  <div className="info-screen">
+    <h1 className="info-screen-title">
+      {props.txHash ? 'Waiting tx mining' : 'Please approve the trade'}
+    </h1>
+    <div className="info-screen-header">
+      <TradeInfo
+        token={props.tradeable}
+        volume={props.expectedVolume}
+        volumeEth={props.expectedVolumeEth}
+      />
+    </div>
+    <div className="info-screen-content">
+      {props.operation === 'sell' ? (
+        <SellSteps
+          approvalHash={props.approvalHash}
+          approvalMined={true}
+          tradeHash={props.txHash}
+        />
+      ) : (
+        <BuySteps tradeHash={props.txHash} />
+      )}
+    </div>
   </div>
 );
 

@@ -145,7 +145,7 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
         Confirm
       </button>
     </div>
-    <div className="footer flex-grid-responsive">
+    <div className="footer flex-grid">
       <div className="col-1">
         <img src={DEXDEX_ICON} alt="Powered by DEXDEX" />
       </div>

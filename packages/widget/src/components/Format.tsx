@@ -1,4 +1,5 @@
 import * as React from 'react';
+import classnames from 'classnames';
 import { BN } from 'bn.js';
 import { fromWei } from 'ethjs-unit';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
@@ -114,7 +115,11 @@ export class FormatAddress extends React.PureComponent<FormatAddressProps> {
       return <span className={this.props.className}>{shortenAddress(address, 6, 6)}</span>;
     } else {
       return (
-        <a className={this.props.className} href={etherscanAddressUrl(address)} target="_blank">
+        <a
+          className={classnames('address-link', this.props.className)}
+          href={etherscanAddressUrl(address)}
+          target="_blank"
+        >
           {shortenAddress(address, 6, 6)}
         </a>
       );
@@ -123,14 +128,18 @@ export class FormatAddress extends React.PureComponent<FormatAddressProps> {
 }
 export type FormatTxHashProps = {
   value: string;
-  className: string;
+  className?: string;
 };
 
 export class FormatTxHash extends React.PureComponent<FormatTxHashProps> {
   render() {
     const txhash = this.props.value;
     return (
-      <a className={this.props.className} href={etherscanTxUrl(txhash)} target="_blank">
+      <a
+        className={classnames('txhash-link', this.props.className)}
+        href={etherscanTxUrl(txhash)}
+        target="_blank"
+      >
         {shortenAddress(txhash, 6, 6)}
       </a>
     );

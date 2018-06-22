@@ -38,7 +38,7 @@ const data = {
 const ScreenTest: React.SFC<{ name: string }> = ({ name, children }) => (
   <div>
     <h4>{name}</h4>
-    <div style={{ marginBottom: 200, borderTop: 'solid 1px #EEE' }}>{children}</div>
+    <div style={{ maxWidth: 505, margin: '5px auto', border: 'solid 1px gray' }}>{children}</div>
   </div>
 );
 const TestApp: React.SFC = () => (
