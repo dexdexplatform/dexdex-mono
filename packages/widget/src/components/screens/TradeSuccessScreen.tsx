@@ -64,7 +64,9 @@ export const mapper: RenderMapper<TradeSuccessScreenProps> = store => ws => {
 
 const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
   <div className="info-screen">
-    <h1 className="info-screen-title">Total {props.operation === 'buy' ? 'Obtained' : 'Sent'}</h1>
+    <h1 className="info-screen-title">
+      {props.operation === 'buy' ? 'Total Obtained' : 'Total Sent'}
+    </h1>
     <div className="info-screen-header">
       <TokenInfo token={props.tradeable} volume={props.effectiveVolume} />
     </div>

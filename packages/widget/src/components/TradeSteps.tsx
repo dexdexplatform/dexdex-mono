@@ -1,29 +1,19 @@
 import * as React from 'react';
-import classname from 'classnames';
+import { FormatTxHash } from './Format';
 
-const Steps: React.SFC = ({ children }) => <ul className="status-steps">{children}</ul>;
+const Steps: React.SFC = ({ children }) => <ul className="trade-steps">{children}</ul>;
 
-const Step: React.SFC<{ status: 'completed' | 'pending' | 'current'; message: string }> = ({
-  status,
-  message,
-  children,
-}) => (
-  <li className={classname('step', status)}>
-    <p>{message}</p>
-    {children}
+type StepProps = {
+  status: 'completed' | 'pending' | 'current';
+  title: string | JSX.Element;
+  statusMessage?: string | JSX.Element;
+};
+
+const Step: React.SFC<StepProps> = ({ status, title, statusMessage }) => (
+  <li className={`trade-steps-${status}`}>
+    <div>{title}</div>
+    {statusMessage && <div>{statusMessage}</div>}
   </li>
-);
-
-const SubStep: React.SFC<{ status: 'completed' | 'pending' | 'current'; message: string }> = ({
-  status,
-  message,
-  children,
-}) => (
-  <ul className={classname('sub-step', status)}>
-    <li className="sub-step-message">
-      <p>{message}</p>
-    </li>
-  </ul>
 );
 
 export interface SellStepsProps {
@@ -38,23 +28,26 @@ export const SellSteps: React.SFC<SellStepsProps> = ({
   tradeHash,
 }) => (
   <Steps>
+    <Step title="Allowance Approval" status={approvalHash ? 'completed' : 'current'} />
+    {approvalHash ? (
+      <Step
+        title={<FormatTxHash value={approvalHash} />}
+        status={approvalMined ? 'completed' : 'current'}
+        statusMessage={approvalMined ? undefined : 'Waiting for mining the network'}
+      />
+    ) : (
+      <Step title="Process Allowance" status="pending" />
+    )}
+
     <Step
-      message="Approve us to trade on your behalf"
-      status={approvalHash ? 'completed' : 'current'}
-    />
-    <Step
-      message="Mining Approval"
-      status={approvalHash ? (approvalMined ? 'completed' : 'current') : 'pending'}
-    >
-      {approvalHash && <SubStep status="completed" message={approvalHash} />}
-    </Step>
-    <Step
-      message="Please approve the trade"
+      title="Sell Approval"
       status={approvalMined ? (tradeHash ? 'completed' : 'current') : 'pending'}
     />
-    <Step message="Mining Trade" status={tradeHash ? 'current' : 'pending'}>
-      {tradeHash && <SubStep status="completed" message={tradeHash} />}
-    </Step>
+    <Step
+      title={tradeHash ? <FormatTxHash value={tradeHash} /> : 'Process Sell'}
+      status={tradeHash ? 'current' : 'pending'}
+      statusMessage={tradeHash ? 'Waiting for mining the network' : undefined}
+    />
   </Steps>
 );
 
@@ -64,9 +57,11 @@ export interface BuyStepsProps {
 
 export const BuySteps: React.SFC<BuyStepsProps> = ({ tradeHash }) => (
   <Steps>
-    <Step message="Please approve the trade" status={tradeHash ? 'completed' : 'current'} />
-    <Step message="Mining Trade" status={tradeHash ? 'current' : 'pending'}>
-      {tradeHash && <SubStep status="completed" message={tradeHash} />}
-    </Step>
+    <Step title="Buy Approval" status={tradeHash ? 'completed' : 'current'} />
+    <Step
+      title={tradeHash ? <FormatTxHash value={tradeHash} /> : 'Process Buy'}
+      status={tradeHash ? 'current' : 'pending'}
+      statusMessage={tradeHash ? 'Waiting for mining the network' : undefined}
+    />
   </Steps>
 );

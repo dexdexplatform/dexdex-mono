@@ -37,7 +37,7 @@ export const mapper: RenderMapper<TradeProgressScreen> = store => ws => ({
 const TradeProgressScreen: React.SFC<TradeProgressScreen> = props => (
   <div className="info-screen">
     <h1 className="info-screen-title">
-      {props.txHash ? 'Waiting tx mining' : 'Please approve the trade'}
+      {props.txHash ? 'Working...' : `Please, approve to ${props.operation}`}
     </h1>
     <div className="info-screen-header">
       <TradeInfo

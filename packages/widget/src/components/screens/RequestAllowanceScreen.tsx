@@ -6,7 +6,7 @@ import { TokenInfo } from '../TokenInfo';
 const RequestAllowanceScreen: React.SFC<RequestAllowanceProps> = props => (
   <div className="info-screen">
     <h1 className="info-screen-title">
-      {props.txHash ? 'Waiting tx mining' : 'Approve us to trade on your behalf'}
+      {props.txHash ? 'Working...' : 'Approve us to trade on your behalf'}
     </h1>
     <div className="info-screen-header">
       <TokenInfo token={props.token} volume={props.volume} />

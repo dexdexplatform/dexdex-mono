@@ -418,65 +418,47 @@ p {
 }
 
 /*******************************************************************************************
-/* Steps
+/* Trade Steps
 /*******************************************************************************************/
 
-.status-steps {
-  margin: 0;
-  margin-top: auto;
+.trade-steps {
+  margin-top: auto; /* align to the bottom */
   padding: 0;
   list-style: none;
 }
 
-.status-steps .step {
+.trade-steps > li {
   position: relative;
-  margin-bottom: 40px;
+  height: 65px;
+  font-size: 15px;
+  line-height: 1.5;
 }
 
-.status-steps .step .sub-step {
-  margin-bottom: -25px;
-  padding: 0 40px;
-  list-style-type: none;
+.trade-steps > li > div {
+  margin-bottom: 3px;
+  margin-left: 40px;
 }
 
-.status-steps .step.pending {
+.trade-steps > li.trade-steps-pending {
+  color: #d8d8d8;
   background-image: url('./icons/pending.svg');
   background-repeat: no-repeat;
 }
 
-.status-steps .step.current {
+.trade-steps > li.trade-steps-current {
+  color: #124;
   background-image: url('./icons/current.svg');
   background-repeat: no-repeat;
 }
-.status-steps .step.completed {
+
+.trade-steps > li.trade-steps-completed {
+  color: #7d2;
   background-image: url('./icons/completed.svg');
   background-repeat: no-repeat;
 }
-.status-steps .step > p {
-  font-size: 15px;
-  line-height: 25px;
-  margin-left: 40px;
-}
 
-.status-steps .step.pending > p {
-  color: #d8d8d8;
-}
-
-.status-steps .step.current > p {
-  color: #124;
-}
-
-.status-steps .step.completed > p {
-  color: #7d2;
-}
-
-.status-steps .step .sub-step .sub-step-message {
-  margin-top: 5px;
-}
-
-.step:not(:last-child)::before {
+.trade-steps > li:not(:last-child)::before {
   position: absolute;
-  z-index: -1;
   top: 25px;
   left: 11px;
   width: 3px;
@@ -485,7 +467,7 @@ p {
   background: #ddd;
 }
 
-.step.completed:not(:last-child)::before {
+.trade-steps > li.trade-steps-completed:not(:last-child)::before {
   background: #7d2;
 }
 
