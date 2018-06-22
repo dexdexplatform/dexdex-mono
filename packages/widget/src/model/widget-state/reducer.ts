@@ -16,7 +16,7 @@ import { WidgetState } from '.';
 import { ErrorCode } from '../form-error';
 import { OrderBookEvent, OrderEventKind } from '../server-api';
 import { TxStage } from '../widget';
-import { Actions } from './actions';
+import { Actions, GoBackAction, SetTransactionStateAction } from './actions';
 import {
   expectedVolume,
   expectedVolumeEth,
@@ -44,7 +44,7 @@ function applyEvent(ob: OrderBook, event: OrderBookEvent): OrderBook {
 
 function tradeExecutionReducer(
   state: WidgetState['tradeExecution'],
-  action: Actions
+  action: GoBackAction | SetTransactionStateAction
 ): WidgetState['tradeExecution'] {
   if (action.type === 'goBack') {
     return {
@@ -132,6 +132,7 @@ function applySetters(state: WidgetState, action: Actions): WidgetState {
       };
 
     case 'setTransactionState':
+    case 'goBack':
       return {
         ...state,
         tradeExecution: tradeExecutionReducer(state.tradeExecution, action),
