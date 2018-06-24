@@ -383,7 +383,7 @@ p {
 
 /* TokenAmount */
 .token-amount-value {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: bold;
 }
 
@@ -499,7 +499,7 @@ p {
 .item-list li {
   display: flex;
   justify-content: space-between;
-  padding: 10px 0;
+  padding: 8px 0;
   border-bottom: 1px solid #eee;
 }
 

@@ -144,6 +144,7 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
         </Item>
       </ItemList>
     </div>
+    <button className="btn-submit">YEAH!</button>
   </div>
 );
 
