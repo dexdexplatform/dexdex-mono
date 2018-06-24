@@ -9,21 +9,21 @@ type Formatters = { [k in ErrorCode]: React.SFC<{ errMsg: MsgFor<k> }> };
 
 const ErrorFormatters: Formatters = {
   [ErrorCode.VolumeTooSmall]: ({ errMsg }) => (
-    <div>
+    <span>
       Minimun Amount is{' '}
       <FormatToken value={errMsg.minVolume} token={errMsg.token} mode={DivMode.Ceil} />
-    </div>
+    </span>
   ),
   [ErrorCode.VolumeTooBig]: ({ errMsg }) => (
-    <div>
+    <span>
       Maximum Amount is{' '}
       <FormatToken value={errMsg.maxVolume} token={errMsg.token} mode={DivMode.Floor} />
-    </div>
+    </span>
   ),
-  [ErrorCode.VolumeBadFormat]: () => <div>Invalid Number</div>,
-  [ErrorCode.NotEnoughEther]: () => <div>Insuffient Ethers</div>,
-  [ErrorCode.NotEnoughTokens]: () => <div>Insuffient Tokens</div>,
-  [ErrorCode.CantPayNetwork]: () => <div>Insuffient Ethers to pay network cost</div>,
+  [ErrorCode.VolumeBadFormat]: () => <span>Invalid Number</span>,
+  [ErrorCode.NotEnoughEther]: () => <span>Insuffient Ethers</span>,
+  [ErrorCode.NotEnoughTokens]: () => <span>Insuffient Tokens</span>,
+  [ErrorCode.CantPayNetwork]: () => <span>Insuffient Ethers to pay network cost</span>,
 };
 
 export class FormatError extends React.PureComponent<{ msg: ErrorMessage }> {
