@@ -136,6 +136,8 @@ const shortenAddress = (address: string, initial: number, final: number) => {
   return `${prefix}..${suffix}`;
 };
 
+const externalIcon = require('./icons/external-link.svg');
+
 export type FormatAddressProps = {
   value: string;
   className?: string;
@@ -154,7 +156,8 @@ export class FormatAddress extends React.PureComponent<FormatAddressProps> {
           href={etherscanAddressUrl(address)}
           target="_blank"
         >
-          {shortenAddress(address, 6, 6)}
+          <span>{shortenAddress(address, 6, 6)}</span>
+          <img src={externalIcon} className="external-link" />
         </a>
       );
     }
@@ -170,11 +173,12 @@ export class FormatTxHash extends React.PureComponent<FormatTxHashProps> {
     const txhash = this.props.value;
     return (
       <a
-        className={classnames('txhash-link external-link', this.props.className)}
+        className={classnames('txhash-link', this.props.className)}
         href={etherscanTxUrl(txhash)}
         target="_blank"
       >
-        {shortenAddress(txhash, 6, 6)}
+        <span>{shortenAddress(txhash, 6, 6)}</span>
+        <img src={externalIcon} className="external-link" />
       </a>
     );
   }
