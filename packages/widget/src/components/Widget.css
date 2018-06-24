@@ -487,6 +487,23 @@ p {
   background-repeat: no-repeat;
 }
 
+.trade-steps > li.trade-steps-current .status-message {
+  animation: blink-animation 1s steps(5, start) infinite;
+}
+
+/* blink animation */
+@keyframes blink-animation {
+  from {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .trade-steps > li.trade-steps-completed {
   color: #7d2;
   background-image: url('./icons/completed.svg');
