@@ -14,14 +14,16 @@ export const mapper: RenderMapper<RejectedSignatureScreenProps> = store => {
   return ws => props;
 };
 
+const rejectedIcon = require('../icons/rejected.svg');
+
 const RejectedSignatureScreen: React.SFC<RejectedSignatureScreenProps> = props => (
   <div className="info-screen error">
     <div className="error-screen-header">
-      <h1 className="symbol">:(</h1>
+      <img src={rejectedIcon} />
       <h1 className="message">You rejected us...</h1>
     </div>
     <div className="info-screen-content">
-      <p className="mb-2">should we start again?</p>
+      <p className="mb-2">Should we start again?</p>
     </div>
     <button onClick={props.goBack} className="btn-submit">
       Go Gack
