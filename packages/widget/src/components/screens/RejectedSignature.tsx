@@ -20,7 +20,9 @@ const RejectedSignatureScreen: React.SFC<RejectedSignatureScreenProps> = props =
       <h1 className="symbol">:(</h1>
       <h1 className="message">You rejected us...</h1>
     </div>
-    <p>should we start again?</p>
+    <div className="info-screen-content">
+      <p className="mb-2">should we start again?</p>
+    </div>
     <button onClick={props.goBack} className="btn-submit">
       Go Gack
     </button>

@@ -55,6 +55,10 @@ p {
   margin-bottom: 20px;
 }
 
+.mb-2 {
+  margin-bottom: 2rem;
+}
+
 .label {
   text-transform: uppercase;
   font-size: 11px;

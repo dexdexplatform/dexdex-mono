@@ -20,7 +20,9 @@ const ErrorScreen: React.SFC<ErrorScreenProps> = props => (
       <h1 className="symbol">Ohhh!!</h1>
       <h1 className="message">There was an error!</h1>
     </div>
-    <p>should we start again?</p>
+    <div className="info-screen-content">
+      <p className="mb-2">should we start again?</p>
+    </div>
     <button className="btn-submit">YEAH!</button>
   </div>
 );
