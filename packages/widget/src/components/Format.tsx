@@ -170,7 +170,7 @@ export class FormatTxHash extends React.PureComponent<FormatTxHashProps> {
     const txhash = this.props.value;
     return (
       <a
-        className={classnames('txhash-link', this.props.className)}
+        className={classnames('txhash-link external-link', this.props.className)}
         href={etherscanTxUrl(txhash)}
         target="_blank"
       >

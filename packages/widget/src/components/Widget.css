@@ -359,6 +359,22 @@ p {
   color: #39f;
 }
 
+.txhash-link.external-link {
+  position: relative;
+}
+
+.txhash-link.external-link:before {
+  position: absolute;
+  content: '';
+  right: -20px;
+  top: 3px;
+  width: 14px;
+  height: 14px;
+  background-image: url('./icons/external-link.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
 .txhash-link:hover {
   text-decoration: none;
   color: #159;
