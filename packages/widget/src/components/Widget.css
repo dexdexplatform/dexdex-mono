@@ -309,8 +309,14 @@ p {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  height: 100vh;
   padding: 10px 25px;
+  background-color: #fff;
+  height: 100%;
+  justify-content: space-between;
+}
+
+.error.info-screen {
+  text-align: center;
 }
 
 .info-screen-title {
@@ -324,8 +330,14 @@ p {
 .info-screen-header {
   flex: 0;
 }
+
 .info-screen-content {
   margin-top: auto;
+}
+
+.error-screen-header {
+  color: #d01;
+  margin-top: 5rem;
 }
 
 /*******************************************************************************************

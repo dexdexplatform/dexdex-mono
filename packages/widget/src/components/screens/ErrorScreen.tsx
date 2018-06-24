@@ -15,10 +15,13 @@ export const mapper: RenderMapper<ErrorScreenProps> = store => {
 };
 
 const ErrorScreen: React.SFC<ErrorScreenProps> = props => (
-  <div className="info-screen">
-    <h1 className="info-screen-title">Ohhh!! There was an error!</h1>
-    <h2>should we start again?</h2>
-    <button onClick={props.goBack}>YEAH!</button>
+  <div className="info-screen error">
+    <div className="error-screen-header">
+      <h1 className="symbol">Ohhh!!</h1>
+      <h1 className="message">There was an error!</h1>
+    </div>
+    <p>should we start again?</p>
+    <button className="btn-submit">YEAH!</button>
   </div>
 );
 
