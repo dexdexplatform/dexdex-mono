@@ -31,8 +31,8 @@ export class TradePlan {
     // Current threshold is 5% extra
     // return this.currentVolumeEth.muln(105).divn(100);
 
-    // For now only trade with volumeEth
-    return this.currentVolumeEth;
+    // Only 1% due to some error in math: TODO: Check
+    return this.currentVolumeEth.muln(101).divn(100);
   }
 
   canHandle(volume: BN): boolean {
