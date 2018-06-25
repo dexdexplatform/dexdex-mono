@@ -1,6 +1,6 @@
 {
   "name": "@dexdex/utils",
-  "version": "0.0.7",
+  "version": "0.0.13",
   "description": "DexDex Utils",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
