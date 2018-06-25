@@ -1,26 +1,30 @@
-import * as React from 'react';
-import classnames from 'classnames';
-import { BN } from 'bn.js';
-import { fromWei } from 'ethjs-unit';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
-import { fromTokenDecimals, getDecimalBase } from '@dexdex/utils/lib/units';
+import { changeDecimals, DivMode, getDecimalBase } from '@dexdex/utils/lib/units';
+import { BN } from 'bn.js';
+import classnames from 'classnames';
+import * as React from 'react';
 import { etherscanAddressUrl, etherscanTxUrl } from '../config';
 
-const formatEth = (volumeEth: null | BN, decimals: number, defaultValue: string): string =>
-  volumeEth ? Number(fromWei(volumeEth, 'ether')).toFixed(decimals) : defaultValue;
+const formatEth = (
+  volumeEth: null | BN,
+  decimals: number,
+  defaultValue: string,
+  mode: DivMode
+): string => (volumeEth ? changeDecimals(volumeEth, 18, decimals, mode) : defaultValue);
 
 const formatToken = (
   volume: null | BN,
   tokenDecimals: number,
   decimals: number,
-  defaultValue: string
-): string =>
-  volume ? Number(fromTokenDecimals(volume, tokenDecimals)).toFixed(decimals) : defaultValue;
+  defaultValue: string,
+  mode: DivMode
+): string => (volume ? changeDecimals(volume, tokenDecimals, decimals, mode) : defaultValue);
 
 export type BNFormatProps = {
   value: BN | null;
   displayDecimals?: number;
   defaultValue?: string;
+  mode?: DivMode;
 };
 export type FormatEthProps = BNFormatProps;
 
@@ -29,7 +33,8 @@ export class FormatEth extends React.PureComponent<FormatEthProps> {
     return formatEth(
       this.props.value,
       this.props.displayDecimals == null ? 6 : this.props.displayDecimals,
-      this.props.defaultValue || '--'
+      this.props.defaultValue || '--',
+      this.props.mode || DivMode.Round
     );
   }
 }
@@ -49,7 +54,8 @@ export class FormatToken extends React.PureComponent<FormatTokenProps> {
       this.props.value,
       decimals,
       displayDecimals,
-      this.props.defaultValue || '--'
+      this.props.defaultValue || '--',
+      this.props.mode || DivMode.Round
     );
   }
 }

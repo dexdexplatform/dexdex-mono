@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { ErrorMessage, ErrorCode } from '../model/form-error';
 import { FormatToken } from './Format';
+import { DivMode } from '@dexdex/utils/lib/units';
 
 type MsgFor<E extends ErrorCode, T = ErrorMessage> = T extends { code: E } ? T : never;
 
@@ -9,12 +10,14 @@ type Formatters = { [k in ErrorCode]: React.SFC<{ errMsg: MsgFor<k> }> };
 const ErrorFormatters: Formatters = {
   [ErrorCode.VolumeTooSmall]: ({ errMsg }) => (
     <div>
-      Minimun Amount is <FormatToken value={errMsg.minVolume} token={errMsg.token} />
+      Minimun Amount is{' '}
+      <FormatToken value={errMsg.minVolume} token={errMsg.token} mode={DivMode.Ceil} />
     </div>
   ),
   [ErrorCode.VolumeTooBig]: ({ errMsg }) => (
     <div>
-      Maximum Amount is <FormatToken value={errMsg.maxVolume} token={errMsg.token} />
+      Maximum Amount is{' '}
+      <FormatToken value={errMsg.maxVolume} token={errMsg.token} mode={DivMode.Floor} />
     </div>
   ),
   [ErrorCode.VolumeBadFormat]: () => <div>Invalid Number</div>,

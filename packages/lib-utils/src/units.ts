@@ -3,6 +3,11 @@ import { fromWei, numberToString } from 'ethjs-unit';
 
 export { fromWei, toWei } from 'ethjs-unit';
 
+export enum DivMode {
+  Ceil,
+  Round,
+  Floor,
+}
 const DecimalsMap: Record<string, string> = {
   0: '1',
   1: '10',
@@ -25,7 +30,6 @@ const DecimalsMap: Record<string, string> = {
   18: '1000000000000000000',
 };
 
-const zero = new BN(0);
 const negative1 = new BN(-1);
 
 function validateDecimals(tokenDecimals: number) {
@@ -90,13 +94,10 @@ export function toTokenDecimals(value: string | number | BN, tokenDecimals: numb
 export function fromTokenDecimals(value: BN, tokenDecimals: number): string {
   validateDecimals(tokenDecimals);
 
-  const negative = value.lt(zero);
+  const negative = value.isNeg();
+  value = value.abs();
   const base = new BN(DecimalsMap[tokenDecimals]);
   const baseLength = DecimalsMap[tokenDecimals].length - 1 || 1;
-
-  if (negative) {
-    value = value.mul(negative1);
-  }
 
   let fraction = value.mod(base).toString(10);
 
@@ -108,6 +109,34 @@ export function fromTokenDecimals(value: BN, tokenDecimals: number): string {
   const whole = value.div(base).toString(10);
 
   return `${negative ? '-' : ''}${whole}${fraction === '0' ? '' : `.${fraction}`}`;
+}
+
+export function changeDecimals(
+  value: BN,
+  inputDecimals: number,
+  outputDecimals: number,
+  divmode = DivMode.Round
+): string {
+  if (outputDecimals >= inputDecimals) {
+    return fromTokenDecimals(value, inputDecimals);
+  }
+  validateDecimals(inputDecimals);
+  const decimalToRemove = inputDecimals - outputDecimals;
+  const baseToRemove = new BN(DecimalsMap[decimalToRemove]);
+
+  switch (divmode) {
+    case DivMode.Round:
+      return fromTokenDecimals(value.divRound(baseToRemove), outputDecimals);
+    case DivMode.Floor:
+      return fromTokenDecimals(value.div(baseToRemove), outputDecimals);
+    case DivMode.Ceil:
+      const rest = value.mod(baseToRemove);
+      value = value.div(baseToRemove);
+      if (rest.gt(new BN(0))) {
+        value = value.add(new BN(1));
+      }
+      return fromTokenDecimals(value, outputDecimals);
+  }
 }
 
 export const toEther = (wei: BN) => fromWei(wei, 'ether');

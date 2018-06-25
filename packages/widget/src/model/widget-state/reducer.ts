@@ -11,7 +11,7 @@ import {
   updateSide,
 } from '@dexdex/model/lib/orderbook';
 import { fixDecimals, removeExtraZeros } from '@dexdex/utils/lib/format';
-import { fromTokenDecimals, toTokenDecimals } from '@dexdex/utils/lib/units';
+import { toTokenDecimals, changeDecimals, DivMode } from '@dexdex/utils/lib/units';
 import { WidgetState } from '.';
 import { ErrorCode } from '../form-error';
 import { OrderBookEvent, OrderEventKind } from '../server-api';
@@ -180,7 +180,12 @@ function reducer(oldState: WidgetState, action: Actions): WidgetState {
   // If amount is Pristine, we automatically set the amount to the minimun Buy/Sell amount
   if (st.amountPristine && st.orderbook && anyChanged('operation', 'orderbook')) {
     st.amount = removeExtraZeros(
-      fromTokenDecimals(getSide(st.orderbook, st.operation).minVolume, st.tradeable.decimals)
+      changeDecimals(
+        getSide(st.orderbook, st.operation).minVolume,
+        st.tradeable.decimals,
+        6,
+        DivMode.Ceil
+      )
     );
   }
 
