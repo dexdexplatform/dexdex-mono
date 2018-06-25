@@ -102,6 +102,34 @@ export class FormatPrice extends React.PureComponent<FormatPriceProps> {
   }
 }
 
+export type FormatPriceComparisonProps = {
+  volume: BN;
+  volumeEth: BN;
+  effectiveVolume: BN;
+  effectiveVolumeEth: BN;
+  token: Tradeable;
+  displayDecimals?: number;
+  defaultValue?: string;
+};
+
+export class FormatPriceComparison extends React.PureComponent<FormatPriceComparisonProps> {
+  render() {
+    const { volume, volumeEth, effectiveVolume, effectiveVolumeEth, token } = this.props;
+    const defaultValue = this.props.defaultValue || '--';
+    const displayDecimals = this.props.displayDecimals == null ? 6 : this.props.displayDecimals;
+
+    if (volume == null || volumeEth == null || volumeEth.isZero() || effectiveVolumeEth.isZero()) {
+      return defaultValue;
+    }
+
+    const expectedPrice = price(volume, volumeEth, token);
+    const effectivePrice = price(effectiveVolume, effectiveVolumeEth, token);
+
+    const deltaPercentage = (1 - effectivePrice / expectedPrice) * 100;
+    return <span>{deltaPercentage.toFixed(displayDecimals)} %</span>;
+  }
+}
+
 const shortenAddress = (address: string, initial: number, final: number) => {
   const prefix = address.slice(0, initial);
   const suffix = address.slice(address.length - final);

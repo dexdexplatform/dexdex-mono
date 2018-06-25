@@ -47,6 +47,14 @@ export const effectivePrice = withTrade((t, ws) => {
   return 0;
 }, 0);
 
+export const effectiveNetworkCost = (ws: WidgetState) => {
+  const trade = ws.tradeExecution.trade;
+  if (trade && trade.gasUsed) {
+    return trade.gasUsed.mul(trade.gasPrice);
+  } else {
+    throw new Error('BUG: cant get eff network cost on this stage');
+  }
+};
 export const networkCost = (ws: WidgetState) => {
   const transactionInfo = ws.tradePlan;
   const gasPrice = computeGasPrice(ws.config.gasprices, ws.gasPrice);

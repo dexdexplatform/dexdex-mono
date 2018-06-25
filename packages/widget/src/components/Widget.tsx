@@ -86,13 +86,12 @@ class Widget extends React.Component<WidgetProps, WidgetManagerState> {
           this.setState({ widgetState: change.state });
         },
         error: err => {
-          console.log('error in store');
-          console.log(err);
+          console.error('store-error', err);
           this.setState({ widgetError: true });
         },
       });
     } catch (err) {
-      console.log('There was an error:', err);
+      console.error('init-error:', err);
       this.setState({ widgetError: true });
     }
   }

@@ -5,12 +5,21 @@ import * as React from 'react';
 import { RenderMapper } from '.';
 import { WalletInfo } from '../../model/wallets/index';
 import {
+  effectiveNetworkCost,
   effectiveVolume,
   effectiveVolumeEth,
+  expectedVolume,
+  expectedVolumeEth,
   getCurrentAccountState,
-  networkCost,
 } from '../../model/widget-state/selectors';
-import { FormatAddress, FormatEth, FormatPrice, FormatToken, FormatTxHash } from '../Format';
+import {
+  FormatAddress,
+  FormatEth,
+  FormatPrice,
+  FormatPriceComparison,
+  FormatToken,
+  FormatTxHash,
+} from '../Format';
 import { TokenInfo } from '../TokenInfo';
 
 const ItemList: React.SFC = ({ children }) => <ul className="item-list">{children}</ul>;
@@ -31,8 +40,12 @@ export interface TradeSuccessScreenProps {
   tradeable: Tradeable;
   amount: string;
   fromAddress: Address;
+  volume: BN;
+  volumeEth: BN;
   effectiveVolume: BN;
   effectiveVolumeEth: BN;
+  serviceFee: BN;
+  executionDate: Date;
   networkCost: BN | null;
   tradeTxHash: string;
   wallet: WalletInfo;
@@ -40,6 +53,9 @@ export interface TradeSuccessScreenProps {
 
 export const mapper: RenderMapper<TradeSuccessScreenProps> = store => ws => {
   const accountState = getCurrentAccountState(ws);
+  if (ws.tradeExecution.trade == null) {
+    throw new Error('BUG: no trade on success screen');
+  }
   if (ws.tradeExecution.tradeTxHash == null) {
     throw new Error('BUG: no tradetxhash on success screen');
   }
@@ -49,14 +65,20 @@ export const mapper: RenderMapper<TradeSuccessScreenProps> = store => ws => {
   if (ws.selectedWallet == null) {
     throw new Error('BUG: no selected wallet on success screen');
   }
+  const effVolumeEth = effectiveVolumeEth(ws);
+
   return {
     tradeable: ws.tradeable,
     fromAddress: accountState.address,
     amount: ws.amount,
     operation: ws.operation,
+    volumeEth: expectedVolumeEth(ws)!,
+    volume: expectedVolume(ws),
     effectiveVolume: effectiveVolume(ws),
-    effectiveVolumeEth: effectiveVolumeEth(ws),
-    networkCost: networkCost(ws),
+    effectiveVolumeEth: effVolumeEth,
+    serviceFee: effVolumeEth.muln(ws.config.feePercentage).divn(10000),
+    networkCost: effectiveNetworkCost(ws),
+    executionDate: ws.tradeExecution.trade.executionDate!,
     tradeTxHash: ws.tradeExecution.tradeTxHash,
     wallet: WalletInfo[ws.selectedWallet.wallet],
   };
@@ -73,7 +95,7 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
     <div className="info-screen-content">
       <ItemList>
         <Item kind="title" title={`Transaction details`}>
-          <div className="value">May-21-2018 07:36:55 AM +UTC</div>
+          <div className="value">{props.executionDate.toISOString()}</div>
         </Item>
         <Item title="Account">
           <FormatAddress className="trade-success-address" value={props.fromAddress} />
@@ -81,8 +103,12 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
         <Item title="Transaction">
           <FormatTxHash className="trade-success-txhash" value={props.tradeTxHash} />
         </Item>
-        <Item title={props.operation === 'buy' ? 'Amount Obtained' : 'Amount Sent'}>
-          <FormatToken value={props.effectiveVolume} token={props.tradeable} />
+        <Item title="Amount Refunded">
+          {props.operation === 'buy' ? (
+            <FormatEth value={props.volumeEth.sub(props.effectiveVolumeEth)} />
+          ) : (
+            <FormatToken value={props.volume.sub(props.effectiveVolume)} token={props.tradeable} />
+          )}
         </Item>
         <Item title={`${props.tradeable.symbol} Price`}>
           <FormatPrice
@@ -95,14 +121,24 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
         <Item title="Network Cost">
           <FormatEth value={props.networkCost} /> ETH
         </Item>
-        {/* <li>
-        <div className="label">Service Fee</div>
-        <div className="value">COMPUTE THIS</div>
-      </li>
-      <li>
-        <div className="label">Price Optimization</div>
-        <div className="value">Price Optimization %</div>
-      </li> */}
+        <li>
+          <div className="label">Service Fee</div>
+          <div className="value">
+            <FormatEth value={props.serviceFee} />
+          </div>
+        </li>
+        <li>
+          <div className="label">Price Optimization</div>
+          <div className="value">
+            <FormatPriceComparison
+              effectiveVolume={props.effectiveVolume}
+              effectiveVolumeEth={props.effectiveVolumeEth}
+              volume={props.volume}
+              volumeEth={props.volumeEth}
+              token={props.tradeable}
+            />
+          </div>
+        </li>
         <Item kind="total" title={props.operation === 'buy' ? 'Total Sent' : 'Total Obtained'}>
           <FormatEth value={props.effectiveVolumeEth} /> ETH
         </Item>

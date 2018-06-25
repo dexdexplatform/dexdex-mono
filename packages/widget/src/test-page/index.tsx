@@ -82,8 +82,12 @@ const TestApp: React.SFC = () => (
         operation={data.operation}
         networkCost={data.networkCost}
         tradeable={data.tradeable}
-        effectiveVolumeEth={data.expectedVolumeEth}
-        effectiveVolume={data.expectedVolumeEth}
+        executionDate={new Date()}
+        serviceFee={new BN('1000000000')}
+        volumeEth={new BN('5000000000000000000')}
+        volume={new BN('20000000')}
+        effectiveVolumeEth={new BN('10000000000000000000')}
+        effectiveVolume={new BN('20000000')}
         tradeTxHash={data.tradeTxHash}
         wallet={WalletInfo[WalletId.MetaMask]}
       />
