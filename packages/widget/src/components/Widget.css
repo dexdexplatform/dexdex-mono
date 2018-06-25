@@ -329,7 +329,7 @@ p {
   justify-content: space-between;
 }
 
-.error.info-screen {
+.error-screen.info-screen {
   text-align: center;
 }
 
@@ -354,7 +354,7 @@ p {
   margin-top: 5rem;
 }
 
-.error-screen-header .message {
+.error-screen-header .error-screen-message {
   margin: 2.5rem 0 0;
 }
 
