@@ -1,7 +1,6 @@
-import { BN } from 'bn.js';
-import { Order, getOrdersData, getRequiredGas } from './order';
 import { assert } from '@dexdex/utils/lib/assert';
-import { percentage } from '@dexdex/utils/lib/bn-math';
+import { BN } from 'bn.js';
+import { getOrdersData, getRequiredGas, Order } from './order';
 
 export class TradePlan {
   /** The amount of extra volume already consumed (number between [0, extraVolume]) */
@@ -79,6 +78,11 @@ export function maxAvailableVolumeEth(set: OrderSet): BN {
   return set.baseVolumeEth.add(set.extraVolumeEth);
 }
 
-export function getFinalVolumeEth(trade: TradePlan, feePercentage: number): BN {
-  return percentage(1 + feePercentage, trade.currentVolumeEthUpperBound);
+/**
+ *
+ * @param trade
+ * @param feeParts fee expressed in parts / 10000
+ */
+export function getFinalVolumeEth(trade: TradePlan, feeParts: number): BN {
+  return trade.currentVolumeEthUpperBound.muln(10000 + feeParts).divn(10000);
 }
