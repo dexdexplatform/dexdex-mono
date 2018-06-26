@@ -55,6 +55,10 @@ p {
   margin-bottom: 20px;
 }
 
+.mb-2 {
+  margin-bottom: 2rem;
+}
+
 .label {
   text-transform: uppercase;
   font-size: 11px;
@@ -122,12 +126,17 @@ p {
   font-size: 1rem;
   font-weight: 700;
   padding: 1rem;
+  transition: 0.25s;
   text-transform: uppercase;
   color: #fff;
   cursor: pointer;
   border: 0;
   border-radius: 3px;
   background-color: #39f;
+}
+
+.btn-submit:hover {
+  background-color: #38e;
 }
 
 .btn-submit:disabled {
@@ -230,6 +239,11 @@ p {
   border-color: transparent;
   border-radius: 3px;
   background-color: rgba(17, 34, 68, 0.1);
+  cursor: pointer;
+}
+
+.OperationSelector button:hover {
+  background-color: rgba(17, 34, 68, 0.25);
 }
 
 .OperationSelector button.button-selected {
@@ -309,8 +323,14 @@ p {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  height: 100vh;
   padding: 10px 25px;
+  background-color: #fff;
+  height: 100%;
+  justify-content: space-between;
+}
+
+.error-screen.info-screen {
+  text-align: center;
 }
 
 .info-screen-title {
@@ -324,8 +344,18 @@ p {
 .info-screen-header {
   flex: 0;
 }
+
 .info-screen-content {
   margin-top: auto;
+}
+
+.error-screen-header {
+  color: #d01;
+  margin-top: 5rem;
+}
+
+.error-screen-header .error-screen-message {
+  margin: 2.5rem 0 0;
 }
 
 /*******************************************************************************************
@@ -336,12 +366,17 @@ p {
   margin-top: 1rem;
   transition: 0.25s;
   text-decoration: none;
-  color: #39f;
+  color: #124;
+}
+
+.external-link {
+  width: 15px;
+  margin-left: 5px;
 }
 
 .txhash-link:hover {
   text-decoration: none;
-  color: #159;
+  color: #39f;
 }
 
 /*******************************************************************************************
@@ -371,7 +406,7 @@ p {
 
 /* TokenAmount */
 .token-amount-value {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: bold;
 }
 
@@ -432,12 +467,11 @@ p {
 .trade-steps > li {
   position: relative;
   height: 65px;
-  font-size: 15px;
+  font-size: 1rem;
   line-height: 1.5;
 }
 
 .trade-steps > li > div {
-  margin-bottom: 3px;
   margin-left: 40px;
 }
 
@@ -451,6 +485,23 @@ p {
   color: #124;
   background-image: url('./icons/current.svg');
   background-repeat: no-repeat;
+}
+
+.trade-steps > li.trade-steps-current .status-message {
+  animation: blink-animation 1s steps(5, start) infinite;
+}
+
+/* blink animation */
+@keyframes blink-animation {
+  from {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .trade-steps > li.trade-steps-completed {
@@ -487,7 +538,7 @@ p {
 .item-list li {
   display: flex;
   justify-content: space-between;
-  padding: 10px 0;
+  padding: 8px 0;
   border-bottom: 1px solid #eee;
 }
 

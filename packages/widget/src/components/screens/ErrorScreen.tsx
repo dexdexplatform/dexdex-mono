@@ -14,11 +14,20 @@ export const mapper: RenderMapper<ErrorScreenProps> = store => {
   return ws => props;
 };
 
+const errorIcon = require('../icons/error.svg');
+
 const ErrorScreen: React.SFC<ErrorScreenProps> = props => (
-  <div className="info-screen">
-    <h1 className="info-screen-title">Ohhh!! There was an error!</h1>
-    <h2>should we start again?</h2>
-    <button onClick={props.goBack}>YEAH!</button>
+  <div className="info-screen error-screen">
+    <div className="error-screen-header">
+      <img src={errorIcon} />
+      <h1 className="error-screen-message">
+        Ohhh!! <br /> There was an error!
+      </h1>
+    </div>
+    <div className="info-screen-content">
+      <p className="mb-2">Should we start again?</p>
+    </div>
+    <button className="btn-submit">YEAH!</button>
   </div>
 );
 

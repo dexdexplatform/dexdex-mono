@@ -12,7 +12,7 @@ type StepProps = {
 const Step: React.SFC<StepProps> = ({ status, title, statusMessage }) => (
   <li className={`trade-steps-${status}`}>
     <div>{title}</div>
-    {statusMessage && <div>{statusMessage}</div>}
+    {statusMessage && <div className="status-message">{statusMessage}</div>}
   </li>
 );
 
