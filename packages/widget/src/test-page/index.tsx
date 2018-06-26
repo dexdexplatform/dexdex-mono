@@ -35,26 +35,46 @@ const data = {
   tradeTxHash: 'asdfsdfasdfsdfsdafsdafd',
 };
 
-const ScreenTest: React.SFC<{ name: string }> = ({ name, children }) => (
-  <div>
-    <h4>{name}</h4>
-    <div style={{ width: 400, height: 521, margin: '0 auto' }}>{children}</div>
-  </div>
-);
-const TestApp: React.SFC = () => (
-  <div>
-    <h1>Widget Screen Stages</h1>
-    <ScreenTest name="Request Allowance Screen - Signature">
+type SwitcherState = {
+  currentScreen: number;
+};
+class Switcher extends React.Component<{}, SwitcherState> {
+  state: SwitcherState = {
+    currentScreen: 0,
+  };
+
+  nextScreen = () => this.setState(st => ({ ...st, currentScreen: st.currentScreen + 1 }));
+  prevScreen = () => this.setState(st => ({ ...st, currentScreen: st.currentScreen - 1 }));
+
+  render() {
+    const children = React.Children.toArray(this.props.children);
+
+    const current = children[this.state.currentScreen % children.length];
+    return (
+      <div>
+        <div style={{ position: 'absolute', left: '40%' }}>
+          <button style={{ backgroundColor: 'blue' }} onClick={this.prevScreen}>
+            prev
+          </button>
+          <button style={{ backgroundColor: 'blue' }} onClick={this.nextScreen}>
+            next
+          </button>
+        </div>
+        <div>{current}</div>
+      </div>
+    );
+  }
+}
+
+const TestApp: React.SFC = () => {
+  return (
+    <Switcher>
       <RequestAllowanceScreen token={data.tradeable} volume={data.amountBN} />
-    </ScreenTest>
-    <ScreenTest name="Request Allowance Screen - Waiting Ethereum">
       <RequestAllowanceScreen
         token={data.tradeable}
         volume={data.amountBN}
         txHash={'asdfsdfasdfsdfsdafsdafd'}
       />
-    </ScreenTest>
-    <ScreenTest name="Trade Screen - Signature">
       <TradeProgressScreen
         expectedVolume={data.amountBN}
         fromAddress={data.fromAddress}
@@ -63,8 +83,6 @@ const TestApp: React.SFC = () => (
         tradeable={data.tradeable}
         expectedVolumeEth={data.expectedVolumeEth}
       />
-    </ScreenTest>
-    <ScreenTest name="Trade Screen - Waiting Ethereum">
       <TradeProgressScreen
         expectedVolume={data.amountBN}
         fromAddress={data.fromAddress}
@@ -74,8 +92,6 @@ const TestApp: React.SFC = () => (
         expectedVolumeEth={data.expectedVolumeEth}
         txHash={'asdfsdfasdfsdfsdafsdafd'}
       />
-    </ScreenTest>
-    <ScreenTest name="Trade Finished OK">
       <TradeSuccessScreen
         amount={data.amount}
         fromAddress={data.fromAddress}
@@ -91,15 +107,11 @@ const TestApp: React.SFC = () => (
         tradeTxHash={data.tradeTxHash}
         wallet={WalletInfo[WalletId.MetaMask]}
       />
-    </ScreenTest>
-    <ScreenTest name="Error Screen">
       <ErrorScreen goBack={() => console.log('go back cliked!')} />
-    </ScreenTest>
-    <ScreenTest name="Rejected Signature Screen">
       <RejectedSignature goBack={() => console.log('go back cliked!')} />
-    </ScreenTest>
-  </div>
-);
+    </Switcher>
+  );
+};
 
 async function main() {
   ReactDOM.render(<TestApp />, document.getElementById('root') as HTMLElement);
