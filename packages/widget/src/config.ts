@@ -32,7 +32,7 @@ function readConfig() {
     console.log('Using kovan network');
   }
 
-  const widgetId = searchParams.get('widgetId') || div.getAttribute('data-dexdex-is');
+  const widgetId = searchParams.get('widgetId') || div.getAttribute('data-dexdex-id');
   if (widgetId == null) {
     console.error('Missing widgetId (url param widgetId or data-dexdex-id attr');
     throw new Error('Bad Config');
