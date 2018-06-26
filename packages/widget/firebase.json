@@ -22,6 +22,24 @@
         ]
       },
       {
+        "source": "noiframe-widget.js",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=60"
+          }
+        ]
+      },
+      {
+        "source": "noiframe-widget.css",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=60"
+          }
+        ]
+      },
+      {
         "source": "content/media/**",
         "headers": [
           {
