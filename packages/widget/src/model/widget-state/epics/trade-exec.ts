@@ -8,7 +8,7 @@ import Eth, { Address, TransactionReceipt } from 'ethjs-query';
 import { empty, Observable, Observer } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { WidgetState } from '..';
-import { ContractAddress } from '../../../config';
+import { appConfig } from '../../../config';
 import DexDex from '../../contracts/dexdex';
 import { ServerApi } from '../../server-api';
 import { computeGasPrice, TransactionState, TxStage } from '../../widget';
@@ -32,7 +32,7 @@ async function dexdexBuy(opts: {
   gasPrice: BN;
 }): Promise<string> {
   try {
-    const dexdex = DexDex(opts.eth, ContractAddress);
+    const dexdex = DexDex(opts.eth, appConfig().ContractAddress);
     return await dexdex.buy(
       opts.token,
       opts.volume,
@@ -62,7 +62,7 @@ async function dexdexSell(opts: {
   gasPrice: BN;
 }): Promise<string> {
   try {
-    const dexdex = DexDex(opts.eth, ContractAddress);
+    const dexdex = DexDex(opts.eth, appConfig().ContractAddress);
     return await dexdex.sell(
       opts.token,
       opts.volume,
@@ -99,7 +99,7 @@ async function approveTokenAllowance(
   gasPrice: BN
 ): Promise<string> {
   const tokenContract = Erc20(eth, token.address);
-  return tokenContract.approve(ContractAddress, volume, { from: account, gasPrice });
+  return tokenContract.approve(appConfig().ContractAddress, volume, { from: account, gasPrice });
 }
 
 async function executeTrade(

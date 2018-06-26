@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import Widget from './components/Widget';
-import { widgetId } from './config';
+import { appConfig } from './config';
 
-ReactDOM.render(<Widget widgetId={widgetId} />, document.getElementById('root'));
+ReactDOM.render(<Widget widgetId={appConfig().widgetId} />, document.getElementById('dexdex-root'));

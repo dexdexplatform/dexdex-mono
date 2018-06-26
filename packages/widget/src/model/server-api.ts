@@ -5,7 +5,7 @@ import { Address } from '@dexdex/model/lib/base';
 import { JsonOrder, Order, fromJsonOrder } from '@dexdex/model/lib/order';
 import { WidgetConfig } from './widget';
 import { Trade, TradeJson, fromJson } from '@dexdex/model/lib/trade';
-import { ApiBase } from '../config';
+import { appConfig } from '../config';
 //-------------------------------------------------------------------------------------------------
 // Types
 //-------------------------------------------------------------------------------------------------
@@ -83,7 +83,7 @@ export function fromJsonOrderbookEvent(event: JsonOrderBookEvent): OrderBookEven
 //-------------------------------------------------------------------------------------------------
 
 const getWidgetConfig = async (widgetId: string): Promise<Exclude<WidgetConfig, 'wallets'>> => {
-  const res = await fetch(`${ApiBase}/api/v1/widgets/${widgetId}`);
+  const res = await fetch(`${appConfig().ApiBase}/api/v1/widgets/${widgetId}`);
   if (res.ok) {
     return await res.json();
   } else {
@@ -92,7 +92,7 @@ const getWidgetConfig = async (widgetId: string): Promise<Exclude<WidgetConfig, 
 };
 
 const getTrade = async (txhash: string): Promise<Trade | null> => {
-  const res = await fetch(`${ApiBase}/api/v1/trades/${txhash}`);
+  const res = await fetch(`${appConfig().ApiBase}/api/v1/trades/${txhash}`);
   if (res.ok) {
     const json: TradeJson = await res.json();
     return fromJson(json);
@@ -104,7 +104,7 @@ const getTrade = async (txhash: string): Promise<Trade | null> => {
 };
 
 const getOrderBook = async (tradeableAddress: string): Promise<OrderBookSnapshot> => {
-  const res = await fetch(`${ApiBase}/api/v1/orderbooks/${tradeableAddress}`);
+  const res = await fetch(`${appConfig().ApiBase}/api/v1/orderbooks/${tradeableAddress}`);
   if (res.ok) {
     return fromJsonOrderbookSnapshot(await res.json());
   } else {
@@ -228,7 +228,7 @@ const websocketApi = (socketUrl: string) => {
 };
 
 export function createApi(): ServerApi {
-  const wsApi = websocketApi(ApiBase);
+  const wsApi = websocketApi(appConfig().ApiBase);
 
   return {
     getWidgetConfig: getWidgetConfig,

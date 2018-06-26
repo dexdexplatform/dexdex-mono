@@ -2,17 +2,49 @@ import { Address } from '@dexdex/model/lib/base';
 
 export type EthNet = 'main' | 'kovan';
 
-const searchParams = new URLSearchParams(window.location.hash.slice(1));
+const once = <A>(f: () => A) => {
+  let called = false;
+  let cache: A;
+  return () => {
+    if (!called) {
+      cache = f();
+      called = true;
+    }
+    return cache;
+  };
+};
 
-function readNet(): EthNet {
-  const net = searchParams.get('net') || 'main';
+function readConfig() {
+  const searchParams = new URLSearchParams(window.location.hash.slice(1));
+  // parent window, search for div
+  const div = document.getElementById('dexdex-root');
+  if (div === null) {
+    console.error('<div id="dexdex-root"> is missing>');
+    throw new Error('Bad Config');
+  }
+
+  const net =
+    (searchParams.get('net') as EthNet) || (div.getAttribute('data-net') as EthNet) || 'main';
   if (['main', 'kovan'].indexOf(net) < 0) {
     throw new Error(`Invalid net param: ${net}`);
   }
   if (net === 'kovan') {
     console.log('Using kovan network');
   }
-  return net as any;
+
+  const widgetId = searchParams.get('widgetId') || div.getAttribute('data-dexdex-is');
+  if (widgetId == null) {
+    console.error('Missing widgetId (url param widgetId or data-dexdex-id attr');
+    throw new Error('Bad Config');
+  }
+
+  return {
+    widgetId,
+    network: net,
+    ApiBase: getAPIBase(net),
+    ContractAddress: getContractAddress(net),
+    EtherscanUrl: net === 'kovan' ? 'https://kovan.etherscan.io' : 'https://etherscan.io',
+  };
 }
 
 function getAPIBase(ethNet: EthNet) {
@@ -36,16 +68,11 @@ function getContractAddress(ethNet: EthNet) {
   }
 }
 
-export const widgetId: string = searchParams.get('widgetId')!;
-export const EthereumNetwork: EthNet = readNet();
-export const ApiBase: string = getAPIBase(EthereumNetwork);
-export const ContractAddress: string = getContractAddress(EthereumNetwork);
+export const appConfig = once(readConfig);
 
-const ETHERSCAN_URL =
-  EthereumNetwork === 'kovan' ? 'https://kovan.etherscan.io' : 'https://etherscan.io';
-
-export const etherscanAddressUrl = (address: Address) => `${ETHERSCAN_URL}/address/${address}`;
-export const etherscanTxUrl = (txhash: string) => `${ETHERSCAN_URL}/tx/${txhash}`;
+export const etherscanAddressUrl = (address: Address) =>
+  `${appConfig().EtherscanUrl}/address/${address}`;
+export const etherscanTxUrl = (txhash: string) => `${appConfig().EtherscanUrl}/tx/${txhash}`;
 
 function computeIsMobile() {
   const ua = window.navigator.userAgent;
