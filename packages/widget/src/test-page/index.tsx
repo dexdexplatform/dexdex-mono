@@ -114,7 +114,7 @@ const TestApp: React.SFC = () => {
 };
 
 async function main() {
-  ReactDOM.render(<TestApp />, document.getElementById('root') as HTMLElement);
+  ReactDOM.render(<TestApp />, document.getElementById('dexdex-root') as HTMLElement);
 }
 
 main().catch(err => {
