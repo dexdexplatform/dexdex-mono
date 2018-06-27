@@ -106,6 +106,7 @@ const TestApp: React.SFC = () => {
         effectiveVolume={new BN('20000000')}
         tradeTxHash={data.tradeTxHash}
         wallet={WalletInfo[WalletId.MetaMask]}
+        goBack={() => console.log('go back cliked!')}
       />
       <ErrorScreen goBack={() => console.log('go back cliked!')} />
       <RejectedSignature goBack={() => console.log('go back cliked!')} />

@@ -21,6 +21,7 @@ import {
   FormatTxHash,
 } from '../Format';
 import { TokenInfo } from '../TokenInfo';
+import { goBack } from '../../model/widget-state/actions';
 
 const ItemList: React.SFC = ({ children }) => <ul className="item-list">{children}</ul>;
 
@@ -49,6 +50,7 @@ export interface TradeSuccessScreenProps {
   networkCost: BN | null;
   tradeTxHash: string;
   wallet: WalletInfo;
+  goBack: () => void;
 }
 
 export const mapper: RenderMapper<TradeSuccessScreenProps> = store => ws => {
@@ -81,6 +83,7 @@ export const mapper: RenderMapper<TradeSuccessScreenProps> = store => ws => {
     executionDate: ws.tradeExecution.trade.executionDate!,
     tradeTxHash: ws.tradeExecution.tradeTxHash,
     wallet: WalletInfo[ws.selectedWallet.wallet],
+    goBack: () => store.dispatch(goBack()),
   };
 };
 
@@ -144,7 +147,9 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
         </Item>
       </ItemList>
     </div>
-    <button className="btn-submit">YEAH!</button>
+    <button className="btn-submit" onClick={props.goBack}>
+      YEAH!
+    </button>
   </div>
 );
 
