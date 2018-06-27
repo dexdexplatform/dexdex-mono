@@ -110,21 +110,21 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
     <div className="summary">
       <div className="summary-token margin-bottom">
         <div className="summary-token-price flex-grid">
-          <label className="col">{props.tradeable.symbol} Price</label>
+          <label className="col">Price</label>
           <div className="summary-token-price-value value col">
             <FormatPrice
               volume={props.expectedVolume}
               volumeEth={props.expectedVolumeEth}
               token={props.tradeable}
             />{' '}
-            ETH
+            ETH / {props.tradeable.symbol}
           </div>
         </div>
       </div>
       <div className="summary-total flex-grid">
         <label className="col">{props.operation === 'buy' ? 'You pay' : 'You get'}</label>
         <div className="summary-total-value value col">
-          <FormatEth value={props.expectedVolumeEth} />
+          <FormatEth value={props.expectedVolumeEth} /> ETH
         </div>
       </div>
     </div>

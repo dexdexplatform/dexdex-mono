@@ -108,9 +108,17 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
         </Item>
         <Item title="Amount Refunded">
           {props.operation === 'buy' ? (
-            <FormatEth value={props.volumeEth.sub(props.effectiveVolumeEth)} />
+            <>
+              <FormatEth value={props.volumeEth.sub(props.effectiveVolumeEth)} /> ETH
+            </>
           ) : (
-            <FormatToken value={props.volume.sub(props.effectiveVolume)} token={props.tradeable} />
+            <>
+              <FormatToken
+                value={props.volume.sub(props.effectiveVolume)}
+                token={props.tradeable}
+              />{' '}
+              {props.tradeable.symbol}
+            </>
           )}
         </Item>
         <Item title={`${props.tradeable.symbol} Price`}>
@@ -127,7 +135,7 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
         <li>
           <div className="label">Service Fee</div>
           <div className="value">
-            <FormatEth value={props.serviceFee} />
+            <FormatEth value={props.serviceFee} /> ETH
           </div>
         </li>
         <li>
