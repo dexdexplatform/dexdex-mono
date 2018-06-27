@@ -3,7 +3,7 @@ import { Tradeable } from '@dexdex/model/lib/tradeable';
 import * as React from 'react';
 import Select, { Option } from 'react-select';
 import 'react-select/dist/react-select.css';
-import { tokenDefaultSmallImg, tokenSmallImg } from '../config';
+import { tokenDefaultSmallImg, tokenSmallImg, isMobile } from '../config';
 import { SafeImage } from './ImageLoader';
 
 export type TokenImageProps = {
@@ -46,7 +46,7 @@ class TokenSelector extends React.PureComponent<TokenSelectorProps> {
         className="token-selector col"
         name="token"
         clearable={false}
-        searchable={true}
+        searchable={!isMobile}
         optionRenderer={this.optionRenderer}
         valueRenderer={this.optionRenderer}
         value={selectedToken ? tokens.indexOf(selectedToken) : -1}
