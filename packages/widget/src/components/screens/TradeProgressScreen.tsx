@@ -44,6 +44,8 @@ const TradeProgressScreen: React.SFC<TradeProgressScreen> = props => (
         token={props.tradeable}
         volume={props.expectedVolume}
         volumeEth={props.expectedVolumeEth}
+        inProgress
+        operation={props.operation}
       />
     </div>
     <div className="info-screen-content">

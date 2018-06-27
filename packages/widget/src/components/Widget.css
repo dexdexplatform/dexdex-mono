@@ -412,8 +412,7 @@ p {
 /* Token Info & Trade Info
 /*******************************************************************************************/
 
-.token-info,
-.trade-info {
+.token-info {
   text-align: center;
 }
 
@@ -439,32 +438,31 @@ p {
 }
 
 /* Trade Details */
-.trade-details {
+.trade-info-section {
+  margin-bottom: 1rem;
+}
+
+.trade-info-section img {
+  height: 20px;
+  margin: 0 15px;
+}
+
+.trade-info-details {
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 1rem;
 }
 
-.trade-details-left,
-.trade-details-right {
-  flex: 1;
+.trade-info-details .trade-info-token-amount > div:first-child {
+  text-transform: uppercase;
+  font-size: 0.5rem;
+  margin-bottom: 0.2rem;
 }
-.trade-details-left {
-  text-align: right;
+.trade-info-details .trade-info-token-amount > div:nth-child(2) {
+  font-weight: 700;
 }
-.trade-details-right {
-  text-align: left;
-}
-
-.trade-details-middle {
-  text-align: center;
-  margin: 0 15px;
-  flex: 0;
-}
-
-.trade-details-middle img {
-  height: 30px;
+.trade-info-details .trade-info-token-amount > div:nth-child(3) {
+  line-height: 1.5;
+  font-size: 0.7rem;
 }
 
 /*******************************************************************************************
@@ -562,11 +560,6 @@ p {
 .item-list li.item-list-title {
   padding: 5px 0;
   border-bottom: 2px solid #124;
-}
-
-.item-list li.item-list-total {
-  font-size: 16px;
-  font-weight: bold;
 }
 
 .item-list-label {

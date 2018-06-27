@@ -49,7 +49,7 @@ class Switcher extends React.Component<{}, SwitcherState> {
   render() {
     const children = React.Children.toArray(this.props.children);
 
-    const current = children[this.state.currentScreen % children.length];
+    const current = children[Math.abs(this.state.currentScreen % children.length)];
     return (
       <div>
         <div style={{ position: 'absolute', left: '40%' }}>

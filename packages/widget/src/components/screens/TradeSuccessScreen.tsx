@@ -19,7 +19,7 @@ import {
   FormatToken,
   FormatTxHash,
 } from '../Format';
-import { TokenInfo } from '../TokenInfo';
+import { TradeInfo } from '../TokenInfo';
 
 const ItemList: React.SFC = ({ children }) => <ul className="item-list">{children}</ul>;
 
@@ -91,7 +91,12 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
       {props.operation === 'buy' ? 'Total Obtained' : 'Total Sent'}
     </h1>
     <div className="info-screen-header">
-      <TokenInfo token={props.tradeable} volume={props.effectiveVolume} />
+      <TradeInfo
+        token={props.tradeable}
+        volume={props.effectiveVolume}
+        volumeEth={props.effectiveVolumeEth}
+        operation={props.operation}
+      />
     </div>
     <div className="info-screen-content">
       <ItemList>
@@ -148,9 +153,6 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
             />
           </div>
         </li>
-        <Item kind="total" title={props.operation === 'buy' ? 'Total Sent' : 'Total Obtained'}>
-          <FormatEth value={props.effectiveVolumeEth} /> ETH
-        </Item>
       </ItemList>
     </div>
     <button className="btn-submit" onClick={props.goBack}>
