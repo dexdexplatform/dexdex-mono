@@ -4,12 +4,11 @@ import { BN } from 'bn.js';
 import * as React from 'react';
 import { RenderMapper } from '.';
 import { WalletInfo } from '../../model/wallets/index';
+import { goBack } from '../../model/widget-state/actions';
 import {
   effectiveNetworkCost,
   effectiveVolume,
   effectiveVolumeEth,
-  expectedVolume,
-  expectedVolumeEth,
   getCurrentAccountState,
 } from '../../model/widget-state/selectors';
 import {
@@ -21,7 +20,6 @@ import {
   FormatTxHash,
 } from '../Format';
 import { TokenInfo } from '../TokenInfo';
-import { goBack } from '../../model/widget-state/actions';
 
 const ItemList: React.SFC = ({ children }) => <ul className="item-list">{children}</ul>;
 
@@ -74,8 +72,8 @@ export const mapper: RenderMapper<TradeSuccessScreenProps> = store => ws => {
     fromAddress: accountState.address,
     amount: ws.amount,
     operation: ws.operation,
-    volumeEth: expectedVolumeEth(ws)!,
-    volume: expectedVolume(ws),
+    volumeEth: ws.tradeExecution.trade.volumeEth,
+    volume: ws.tradeExecution.trade.volume,
     effectiveVolume: effectiveVolume(ws),
     effectiveVolumeEth: effVolumeEth,
     serviceFee: effVolumeEth.muln(ws.config.feePercentage).divn(10000),
