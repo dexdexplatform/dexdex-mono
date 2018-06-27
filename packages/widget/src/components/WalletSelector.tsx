@@ -13,6 +13,7 @@ import {
 import { FormatAddress, FormatEth, FormatToken } from './Format';
 import { FormField } from './FormField';
 import { ErrorMessage } from '../model/form-error';
+import { isMobile } from '../config';
 
 export interface WalletSelectorProps {
   wallets: WalletState[];
@@ -43,12 +44,21 @@ class WalletSelector extends React.Component<WalletSelectorProps> {
     const selectedValue = selectedWallet
       ? `account-${selectedWallet.wallet}-${selectedWallet.accountIdx}`
       : undefined;
-    return (
-      <FormField label="Wallet" htmlFor="account" error={this.props.error}>
-        {wallets.length === 0 ? (
+
+    if (wallets.length === 0) {
+      return (
+        <FormField label="Wallet" htmlFor="account" error={this.props.error}>
           <div>
             <span>You don't have a connected wallet</span>
           </div>
+        </FormField>
+      );
+    }
+
+    return (
+      <FormField label="Wallet" htmlFor="account" error={this.props.error}>
+        {isMobile ? (
+          <div className="wallet-single-container">{this.optionRenderer(this.entryList()[0])}</div>
         ) : (
           <Select
             className="col"
@@ -70,7 +80,7 @@ class WalletSelector extends React.Component<WalletSelectorProps> {
     const wallet = WalletInfo[option.wallet.walletId];
     return (
       <div className="flex-grid">
-        <div className="col">
+        <div className="wallet-name-container">
           <img className="wallet-symbol" src={wallet.icon} />
           <span className="wallet-name">{wallet.label} </span>
         </div>
