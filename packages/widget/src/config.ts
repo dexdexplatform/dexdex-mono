@@ -81,12 +81,12 @@ function computeIsMobile() {
 
 export const isMobile = computeIsMobile();
 
-export const tokenSmallImg = (symbol: string) =>
+const tokenImage = (size: 23 | 64, name: string) =>
   `https://firebasestorage.googleapis.com/v0/b/easytrade-00001.appspot.com/o/` +
-  encodeURIComponent(`tokens/${23}/${symbol.toLowerCase()}.png`) +
+  encodeURIComponent(`tokens/${size}/${name}.png`) +
   '?alt=media';
 
-export const tokenBigImg = (symbol: string) =>
-  `https://firebasestorage.googleapis.com/v0/b/easytrade-00001.appspot.com/o/` +
-  encodeURIComponent(`tokens/${64}/${symbol.toLowerCase()}.png`) +
-  '?alt=media';
+export const tokenDefaultSmallImg = tokenImage(23, '_default');
+export const tokenDefaultBigImg = tokenImage(64, '_default');
+export const tokenSmallImg = (symbol: string) => tokenImage(23, symbol.toLowerCase());
+export const tokenBigImg = (symbol: string) => tokenImage(64, symbol.toLowerCase());
