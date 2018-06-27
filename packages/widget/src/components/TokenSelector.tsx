@@ -1,24 +1,21 @@
+import { Operation } from '@dexdex/model/lib/base';
+import { Tradeable } from '@dexdex/model/lib/tradeable';
 import * as React from 'react';
 import Select, { Option } from 'react-select';
 import 'react-select/dist/react-select.css';
-import { Operation } from '@dexdex/model/lib/base';
-import { Tradeable } from '@dexdex/model/lib/tradeable';
-import { tokenSmallImg, tokenDefaultSmallImg } from '../config';
-import { ImageLoader, ImageState } from './ImageLoader';
+import { tokenDefaultSmallImg, tokenSmallImg } from '../config';
+import { SafeImage } from './ImageLoader';
 
 export type TokenImageProps = {
   token: Tradeable;
 };
 const TokenImage: React.SFC<TokenImageProps> = ({ token }) => (
-  <ImageLoader src={tokenSmallImg(token.symbol)} fallback={tokenDefaultSmallImg}>
-    {(src, status) =>
-      status === ImageState.Ok || status === ImageState.Loading ? (
-        <img className="token-symbol" src={src} alt={`${token.symbol}`} />
-      ) : (
-        <div className="token-symbol" />
-      )
-    }
-  </ImageLoader>
+  <SafeImage
+    src={tokenSmallImg(token.symbol)}
+    fallback={tokenDefaultSmallImg}
+    className="token-symbol"
+    alt={`${token.symbol}`}
+  />
 );
 
 export interface TokenSelectorProps {

@@ -113,6 +113,25 @@ export class ImageLoader extends React.Component<ImageLoaderProps, ImageLoaderSt
   }
 }
 
+export type SafeImageProps = {
+  className?: string;
+  alt?: string;
+  src: string;
+  fallback: string;
+};
+
+export const SafeImage: React.SFC<SafeImageProps> = ({ className, alt, src, fallback }) => (
+  <ImageLoader src={src} fallback={fallback}>
+    {(safeSrc, status) =>
+      status === ImageState.Ok || status === ImageState.Loading ? (
+        <img className={className} src={safeSrc} alt={alt} />
+      ) : (
+        <div className={className} />
+      )
+    }
+  </ImageLoader>
+);
+
 // export interface DivImageLoaderProps {
 //   className?: string;
 //   src: string;

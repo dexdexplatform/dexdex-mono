@@ -2,14 +2,19 @@ import * as React from 'react';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
 import { FormatToken, FormatEth } from './Format';
 import { BN } from 'bn.js';
-import { tokenBigImg } from '../config';
+import { tokenBigImg, tokenDefaultBigImg } from '../config';
 import classNames from 'classnames';
+import { SafeImage } from './ImageLoader';
 
 const exchangeImgSrc = require('./icons/exchange.svg');
 
 const TokenImage: React.SFC<{ token: Tradeable }> = ({ token }) => (
   <div className="token-big-icon">
-    <img src={tokenBigImg(token.symbol)} alt={`Token ${token.symbol}`} />
+    <SafeImage
+      src={tokenBigImg(token.symbol)}
+      fallback={tokenDefaultBigImg}
+      alt={`${token.symbol}`}
+    />
   </div>
 );
 
