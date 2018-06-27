@@ -152,7 +152,9 @@ const computeAmountError = (amount: string, decimals: number, obside: OrderBookS
   }
 
   const volume = toTokenDecimals(amount, decimals);
-  if (volume.lt(obside.minVolume)) {
+  if (obside.orders.length === 0) {
+    return ErrorCode.NoOrders;
+  } else if (volume.lt(obside.minVolume)) {
     return ErrorCode.VolumeTooSmall;
   } else if (volume.gt(obside.maxVolume)) {
     return ErrorCode.VolumeTooBig;

@@ -4,7 +4,7 @@ import { Trade } from '@dexdex/model/lib/trade';
 import { TradePlan } from '@dexdex/model/lib/trade-plan';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
 import { BN } from 'bn.js';
-import { ErrorCode } from '../form-error';
+import { AmountError, BalanceError } from '../form-error';
 import { createApi } from '../server-api';
 import { WalletAccountRef, WalletId, WalletState } from '../wallets/index';
 import { GasPrice, TxStage, WidgetConfig } from '../widget';
@@ -44,8 +44,8 @@ export interface WidgetState {
   orderbook: OrderBook | null;
   gasPrice: GasPrice;
   errors: {
-    amount: null | ErrorCode.VolumeTooBig | ErrorCode.VolumeTooSmall | ErrorCode.VolumeBadFormat;
-    balance: null | ErrorCode.CantPayNetwork | ErrorCode.NotEnoughEther | ErrorCode.NotEnoughTokens;
+    amount: null | AmountError;
+    balance: null | BalanceError;
   };
   tradePlan: TradePlan | null;
   tradeExecution: {

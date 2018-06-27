@@ -5,7 +5,7 @@ import { Tradeable } from '@dexdex/model/lib/tradeable';
 import { getDecimalBase, toTokenDecimals } from '@dexdex/utils/lib/units';
 import { BN } from 'bn.js';
 import { WidgetState } from '.';
-import { ErrorCode, ErrorMessage } from '../form-error';
+import { ErrorCode, ErrorMessage, AmountError } from '../form-error';
 import { WalletState, AccountState, DesktopWallets } from '../wallets/index';
 import { computeGasPrice } from '../widget';
 import { isMobile } from '../../config';
@@ -78,19 +78,23 @@ export const getTokenAllowanceInfo = (state: WidgetState): RequestAllowanceProps
 });
 
 export const getAmountError = (ws: WidgetState): null | ErrorMessage => {
-  switch (ws.errors.amount) {
-    case null:
-      return null;
-    case ErrorCode.VolumeTooBig:
+  const toMessage: Record<AmountError, () => ErrorMessage> = {
+    [ErrorCode.VolumeTooBig]: () => {
       const maxVolume = getSide(ws.orderbook!, ws.operation).maxVolume;
       return { code: ErrorCode.VolumeTooBig, token: ws.tradeable, maxVolume };
-    case ErrorCode.VolumeTooSmall:
+    },
+    [ErrorCode.VolumeTooSmall]: () => {
       const minVolume = getSide(ws.orderbook!, ws.operation).minVolume;
       return { code: ErrorCode.VolumeTooSmall, token: ws.tradeable, minVolume };
-    case ErrorCode.VolumeBadFormat:
-      return { code: ErrorCode.VolumeBadFormat };
-    default:
-      throw new Error(`Invalid amount error: ${ws.errors.amount}`);
+    },
+    [ErrorCode.VolumeBadFormat]: () => ({ code: ErrorCode.VolumeBadFormat }),
+    [ErrorCode.NoOrders]: () => ({ code: ErrorCode.NoOrders }),
+  };
+
+  if (ws.errors.amount) {
+    return toMessage[ws.errors.amount]();
+  } else {
+    return null;
   }
 };
 export const getBalanceError = (ws: WidgetState): null | ErrorMessage => {

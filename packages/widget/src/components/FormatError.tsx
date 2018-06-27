@@ -20,6 +20,7 @@ const ErrorFormatters: Formatters = {
       <FormatToken value={errMsg.maxVolume} token={errMsg.token} mode={DivMode.Floor} />
     </span>
   ),
+  [ErrorCode.NoOrders]: () => <span>No orders available</span>,
   [ErrorCode.VolumeBadFormat]: () => <span>Invalid Number</span>,
   [ErrorCode.NotEnoughEther]: () => <span>Insuffient Ethers</span>,
   [ErrorCode.NotEnoughTokens]: () => <span>Insuffient Tokens</span>,
