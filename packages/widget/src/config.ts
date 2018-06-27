@@ -1,6 +1,5 @@
 import { Address } from '@dexdex/model/lib/base';
-
-export type EthNet = 'main' | 'kovan';
+import { EthNet } from './model/wallets';
 
 const once = <A>(f: () => A) => {
   let called = false;
@@ -23,13 +22,18 @@ function readConfig() {
     throw new Error('Bad Config');
   }
 
-  const net =
-    (searchParams.get('net') as EthNet) || (div.getAttribute('data-net') as EthNet) || 'main';
-  if (['main', 'kovan'].indexOf(net) < 0) {
-    throw new Error(`Invalid net param: ${net}`);
-  }
-  if (net === 'kovan') {
-    console.log('Using kovan network');
+  let net: EthNet;
+  if (process.env.NODE_ENV === 'production') {
+    net =
+      (searchParams.get('net') as EthNet) || (div.getAttribute('data-net') as EthNet) || 'mainnet';
+    if (['mainnet', 'kovan'].indexOf(net) < 0) {
+      throw new Error(`Invalid net param: ${net}`);
+    }
+    if (net === 'kovan') {
+      console.log('Using kovan network');
+    }
+  } else {
+    net = 'devnet';
   }
 
   const widgetId = searchParams.get('widgetId') || div.getAttribute('data-dexdex-id');
@@ -56,9 +60,9 @@ function getAPIBase(ethNet: EthNet) {
 }
 
 function getContractAddress(ethNet: EthNet) {
-  const Contracts: Record<EthNet, string> = {
+  const Contracts: Record<string, string> = {
     kovan: '0x7cdb67d0bdad0244dc2580678dfc09d84f81d163',
-    main: '0x0c577fbf29f8797d9d29a33de59001b872a1d4dc',
+    mainnet: '0x0c577fbf29f8797d9d29a33de59001b872a1d4dc',
   };
 
   if (process.env.NODE_ENV === 'production') {

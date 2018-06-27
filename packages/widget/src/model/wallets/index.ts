@@ -6,9 +6,11 @@ import { promiseFactory, seqAsync, pollDifferences } from '@dexdex/rx';
 import { share, concatMap, switchMap, startWith, map } from 'rxjs/operators';
 import Eth from 'ethjs-query';
 import Erc20 from '@dexdex/erc20';
+import { appConfig } from '../../config';
 
 export type WalletAccountRef = { wallet: WalletId; accountIdx: number };
 
+export type EthNet = 'mainnet' | 'kovan' | 'ropsten' | 'morden' | 'rinkeby' | 'devnet';
 export enum WalletId {
   MetaMask = 'MetaMask',
   Ledger = 'Ledger',
@@ -25,6 +27,25 @@ export const DesktopWallets: WalletId[] = [WalletId.MetaMask, WalletId.Ledger, W
 export interface WalletInfo {
   icon: string;
   label: string;
+}
+
+async function getNetwork(eth: Eth): Promise<EthNet> {
+  const netId = await eth.net_version();
+  switch (netId) {
+    case '1':
+      return 'mainnet';
+
+    case '2':
+      return 'morden';
+
+    case '3':
+      return 'ropsten';
+
+    case '4':
+      return 'rinkeby';
+    default:
+      return 'devnet';
+  }
 }
 
 export const WalletInfo: Record<WalletId, { icon: string; label: string }> = {
@@ -149,6 +170,41 @@ const accountStates = (
   }));
 };
 
+const withNetworkCheck = (
+  eth: Eth,
+  walletId: WalletId,
+  wallet$: Observable<WalletState>
+): Observable<WalletState> =>
+  seqAsync(
+    () => getNetwork(eth),
+    network => {
+      if (network === appConfig().network) {
+        return wallet$;
+      } else {
+        return of(errorState(walletId, `Please connect to ${appConfig().network}`));
+      }
+    }
+  );
+
+function compareArrays(a: Array<any>, b: Array<any>) {
+  if (a === b) {
+    return true;
+  }
+  if (a == null || b == null) {
+    return false;
+  }
+  if (a.length !== b.length) {
+    return false;
+  }
+
+  for (var i = 0; i < a.length; ++i) {
+    if (a[i] !== b[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
 function singleAccountWallet(
   walletId: WalletId,
   token: Observable<Tradeable>,
@@ -157,42 +213,28 @@ function singleAccountWallet(
 ): Observable<WalletState> {
   const eth = new Eth(provider);
 
+  const accounts2States = (accounts: string[]): Observable<WalletState> => {
+    if (accounts.length === 0) {
+      return of(errorState(walletId, 'Not logged'));
+    } else {
+      return combineLatest(accounts.map(address => accountStates(eth, address, token))).pipe(
+        map(xs => readyState(walletId, eth, xs))
+      );
+    }
+  };
+
+  let wallet$: Observable<WalletState>;
   if (pollAccount) {
-    return pollDifferences({
-      poller: async () => {
-        const accounts = await eth.accounts();
-        if (accounts && accounts.length === 1) {
-          return accounts[0];
-        } else {
-          return null;
-        }
-      },
+    wallet$ = pollDifferences({
+      poller: () => eth.accounts(),
+      compareFn: compareArrays,
       period: 100,
-    }).pipe(
-      switchMap(mAccount => {
-        if (mAccount == null) {
-          return of(errorState(walletId, 'Not logged'));
-        } else {
-          return combineLatest([mAccount].map(address => accountStates(eth, address, token))).pipe(
-            map(xs => readyState(walletId, eth, xs))
-          );
-        }
-      })
-    );
+    }).pipe(switchMap(accounts2States));
   } else {
-    return seqAsync(
-      () => eth.accounts(),
-      (accounts): Observable<WalletState> => {
-        if (accounts.length === 0) {
-          return of(errorState(walletId, 'Not logged'));
-        } else {
-          return combineLatest(accounts.map(address => accountStates(eth, address, token))).pipe(
-            map(xs => readyState(walletId, eth, xs))
-          );
-        }
-      }
-    );
+    wallet$ = seqAsync(() => eth.accounts(), accounts2States);
   }
+
+  return withNetworkCheck(eth, walletId, wallet$);
 }
 
 export function metmaskWallet(token: Observable<Tradeable>): Observable<WalletState> {

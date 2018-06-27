@@ -186,6 +186,8 @@ declare module 'ethjs-query' {
     newPendingTransactionFilter(): Promise<string>;
     uninstallFilter(filterId: string): Promise<boolean>;
     getFilterChanges(filterId: string): Promise<BlockHash[] | TxHash[] | LogObject[]>;
+
+    net_version(): Promise<string>;
   }
 
   export default Eth;
