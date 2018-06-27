@@ -1,11 +1,11 @@
+import { Address } from '@dexdex/model/lib/base';
+import { fromJsonOrder, JsonOrder, Order } from '@dexdex/model/lib/order';
+import { fromJson, Trade, TradeJson } from '@dexdex/model/lib/trade';
 import { Observable, Observer } from 'rxjs';
 import { filter, map, share, withLatestFrom } from 'rxjs/operators';
 import * as io from 'socket.io-client';
-import { Address } from '@dexdex/model/lib/base';
-import { JsonOrder, Order, fromJsonOrder } from '@dexdex/model/lib/order';
-import { WidgetConfig } from './widget';
-import { Trade, TradeJson, fromJson } from '@dexdex/model/lib/trade';
 import { appConfig } from '../config';
+import { WidgetConfig } from './widget';
 //-------------------------------------------------------------------------------------------------
 // Types
 //-------------------------------------------------------------------------------------------------
@@ -82,10 +82,12 @@ export function fromJsonOrderbookEvent(event: JsonOrderBookEvent): OrderBookEven
 // Api Impl
 //-------------------------------------------------------------------------------------------------
 
-const getWidgetConfig = async (widgetId: string): Promise<Exclude<WidgetConfig, 'wallets'>> => {
+const getWidgetConfig = async (widgetId: string): Promise<WidgetConfig> => {
   const res = await fetch(`${appConfig().ApiBase}/api/v1/widgets/${widgetId}`);
   if (res.ok) {
-    return await res.json();
+    const widgetConfig: WidgetConfig = await res.json();
+    widgetConfig.tokens.sort((tkA, tkB) => tkA.symbol.localeCompare(tkB.symbol));
+    return widgetConfig;
   } else {
     throw new Error(`Error with request: ${res.status}`);
   }
