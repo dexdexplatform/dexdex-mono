@@ -101,7 +101,7 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
     <div className="info-screen-content">
       <ItemList>
         <Item kind="title" title={`Transaction details`}>
-          <div className="value">{props.executionDate.toISOString()}</div>
+          <div className="value trade-success-timestamp">{props.executionDate.toISOString()}</div>
         </Item>
         <Item title="Account">
           <FormatAddress className="trade-success-address" value={props.fromAddress} />

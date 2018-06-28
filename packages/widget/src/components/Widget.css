@@ -597,6 +597,11 @@ p {
   color: #124;
 }
 
+.trade-success-timestamp {
+  font-size: 0.5rem;
+  margin-top: 0.2rem;
+}
+
 .screen-success-btn-close {
   position: fixed;
   top: 0;
