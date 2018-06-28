@@ -68,19 +68,30 @@ p {
 }
 
 /*******************************************************************************************
-/* Form Screen
+/* Screens General Layout 
 /*******************************************************************************************/
 
 /* root size */
 #dexdex-root {
-  height: 100%;
+  height: 100%; /* this is to use the total height of the iframe */
 }
 
-/* widget */
-.widget {
+.screen {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
   padding: 1rem;
   background-color: #fff;
+  height: 100%;
+  justify-content: space-between;
 }
+
+.screen-error {
+  text-align: center;
+}
+/*******************************************************************************************
+/* Form Screen
+/*******************************************************************************************/
 
 /* Amount Field */
 .AmountField {
@@ -337,20 +348,6 @@ p {
 /*******************************************************************************************
 /* Other Screens (Info Screens)
 /*******************************************************************************************/
-
-.info-screen {
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  padding: 10px 25px;
-  background-color: #fff;
-  height: 100%;
-  justify-content: space-between;
-}
-
-.error-screen.info-screen {
-  text-align: center;
-}
 
 .info-screen-title {
   font-size: 14px;
