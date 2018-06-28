@@ -14,7 +14,11 @@ const OperationSelector: React.SFC<OperationSelectorProps> = ({ value, onChange 
       <button
         key={op}
         className={className('col', value === op && 'button-selected')}
-        onClick={() => onChange(op)}
+        onClick={() => {
+          if (value !== op) {
+            onChange(op);
+          }
+        }}
       >
         {op}
       </button>
