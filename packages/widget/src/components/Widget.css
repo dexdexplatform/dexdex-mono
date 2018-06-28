@@ -605,14 +605,18 @@
   position: fixed;
   top: 0;
   right: 0;
-  font-size: 2rem;
-  background-color: #39f;
+  font-size: 1rem;
+  background-color: #999;
   border: none;
   color: #fff;
   border-radius: 100%;
-  width: 44px;
-  height: 44px;
+  width: 30px;
+  height: 30px;
   margin: 1rem;
   padding: 0;
   cursor: pointer;
+}
+
+.screen-success-btn-close:hover {
+  background-color: rgb(82, 79, 79);
 }
