@@ -1,8 +1,9 @@
 import { Address } from '@dexdex/model/lib/base';
 import { fromJsonOrder, JsonOrder, Order } from '@dexdex/model/lib/order';
 import { fromJson, Trade, TradeJson } from '@dexdex/model/lib/trade';
-import { Observable, Observer } from 'rxjs';
-import { filter, map, share, withLatestFrom } from 'rxjs/operators';
+import { accumulateUntil } from '@dexdex/rx';
+import { merge, Observable, Observer, Subject, Subscription, using } from 'rxjs';
+import { filter, map, share, startWith, switchMapTo, withLatestFrom } from 'rxjs/operators';
 import * as io from 'socket.io-client';
 import { appConfig } from '../config';
 import { WidgetConfig } from './widget';
@@ -128,16 +129,6 @@ const eventListener = <A>(socket: SocketIOClient.Socket, eventName: string): Obs
   });
 };
 
-const socketEvent$ = (socket: SocketIOClient.Socket, eventName: string): Observable<any> =>
-  Observable.create((observer: Observer<any>) => {
-    const handler = (val: any) => observer.next(val);
-    socket.on(eventName, handler);
-
-    return () => {
-      socket.off(eventName, handler);
-    };
-  });
-
 const websocketApi = (socketUrl: string) => {
   // TODO handle reconnection, disconnect, connect failure...
   const socket = io.connect(
@@ -145,15 +136,15 @@ const websocketApi = (socketUrl: string) => {
     { path: '/socket' }
   );
 
-  const connects$ = socketEvent$(socket, 'connect').pipe(map(() => Date.now()));
-  const disconnects$ = socketEvent$(socket, 'disconnect').pipe(map(() => Date.now()));
+  const connects$ = eventListener(socket, 'connect').pipe(map(() => Date.now()));
+  const disconnects$ = eventListener(socket, 'disconnect').pipe(map(() => Date.now()));
 
-  const reconnect$ = connects$.pipe(
+  const reconnectDelays$ = connects$.pipe(
     withLatestFrom(disconnects$),
     map(([connected, disconnected]) => (connected - disconnected) / 1000)
   );
 
-  reconnect$.subscribe(delay => {
+  reconnectDelays$.subscribe(delay => {
     console.log('reconnect in :', delay, 'seconds');
   });
 
@@ -168,60 +159,53 @@ const websocketApi = (socketUrl: string) => {
   // socket.on('pong', (latency: number) => console.log('pong', latency));
 
   const updates$ = eventListener<JsonOrderBookEvent>(socket, 'ob::update').pipe(share());
+  const reconnects$ = eventListener(socket, 'reconnect');
 
   const watchTradeable = (tokenAddress: string): Observable<OrderBookEvent> => {
-    const events = updates$.pipe(filter(obe => obe.tradeableAddress === tokenAddress));
+    const events = updates$.pipe(
+      filter(obe => obe.tradeableAddress === tokenAddress),
+      map(fromJsonOrderbookEvent)
+    );
 
-    return Observable.create((observer: Observer<OrderBookEvent>) => {
-      let orderbookReady = false;
-      let savedEvents: OrderBookEvent[] = [];
-
-      const eventSubscription = events.subscribe({
-        next: orderEvent => {
-          if (orderbookReady) {
-            observer.next(fromJsonOrderbookEvent(orderEvent));
-          } else {
-            savedEvents.push(fromJsonOrderbookEvent(orderEvent));
-          }
-        },
-        error: err => {
-          console.error('ob::Event error', err);
-          socket.emit('unsubscribe', { tradeable: tokenAddress });
-          observer.error(err);
-        },
+    const watcher$ = Observable.create((observer: Observer<OrderBookEvent>) => {
+      const tokenUnsubsribe = new Subscription(() => {
+        socket.emit('unsubscribe', { tradeable: tokenAddress });
       });
 
-      const unsubscribe = () => {
-        socket.emit('unsubscribe', { tradeable: tokenAddress });
-        eventSubscription.unsubscribe();
-      };
+      // subject with only one value: the initial snapshot
+      const snapshot$ = new Subject<OrderBookEvent>();
+      // all delta events, but we buffer all events before the initial snapshot.
+      const deltas$ = events.pipe(accumulateUntil(snapshot$));
 
+      // we want to emit 'unsubscribe' on error|completed|unsubscibe
+      const allWithTeardown$ = using(() => tokenUnsubsribe, () => merge(snapshot$, deltas$));
+
+      const subscription = allWithTeardown$.subscribe(observer);
+
+      // do the subscription
       socket.emit(
         'subscribe',
         { tradeable: tokenAddress, withSnapshot: true },
         (snapshotJson: any) => {
           try {
-            const snapshot = fromJsonOrderbookSnapshot(snapshotJson);
-            observer.next({
+            snapshot$.next({
               kind: OrderEventKind.Snapshot,
               tradeableAddress: tokenAddress,
-              snapshot,
+              snapshot: fromJsonOrderbookSnapshot(snapshotJson),
             });
-            orderbookReady = true;
-            savedEvents.forEach(e => {
-              observer.next(e);
-            });
-            savedEvents = [];
           } catch (err) {
-            console.error('ob::Subscribe error', err);
-            unsubscribe();
-            observer.error(err);
+            snapshot$.error(err);
           }
         }
       );
 
-      return unsubscribe;
+      return subscription;
     });
+
+    return reconnects$.pipe(
+      startWith(0),
+      switchMapTo(watcher$)
+    );
   };
 
   return {

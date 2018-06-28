@@ -1,5 +1,15 @@
-import { Observable, OperatorFunction, defer, from, interval } from 'rxjs';
-import { concatMap, distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
+import { concat, defer, from, interval, Observable, OperatorFunction } from 'rxjs';
+import {
+  bufferWhen,
+  concatAll,
+  concatMap,
+  distinctUntilChanged,
+  filter,
+  first,
+  map,
+  share,
+  startWith,
+} from 'rxjs/operators';
 
 export const removeNull = <A>(input$: Observable<A | null>): Observable<A> =>
   input$.pipe(filter(x => x != null)) as Observable<A>;
@@ -83,4 +93,23 @@ export function select<S>(...args: Array<keyof S>) {
       ),
       distinctUntilChanged()
     );
+}
+
+export function accumulateUntil(notifier: Observable<any>) {
+  return <A>(input: Observable<A>): Observable<A> => {
+    const sharedNotifier = notifier.pipe(
+      first(),
+      share()
+    );
+    const sharedInput = input.pipe(share());
+
+    return concat(
+      sharedInput.pipe(
+        bufferWhen(() => sharedNotifier),
+        first(),
+        concatAll()
+      ),
+      sharedInput
+    );
+  };
 }
