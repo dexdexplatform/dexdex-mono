@@ -584,3 +584,19 @@ p {
 .trade-success-address {
   color: #124;
 }
+
+.screen-success-btn-close {
+  position: fixed;
+  top: 0;
+  right: 0;
+  font-size: 2rem;
+  background-color: #39f;
+  border: none;
+  color: #fff;
+  border-radius: 100%;
+  width: 44px;
+  height: 44px;
+  margin: 1rem;
+  padding: 0;
+  cursor: pointer;
+}

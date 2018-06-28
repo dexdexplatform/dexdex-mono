@@ -155,8 +155,8 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
         </li>
       </ItemList>
     </div>
-    <button className="btn-submit" onClick={props.goBack}>
-      YEAH!
+    <button className="screen-success-btn-close" onClick={props.goBack}>
+      ✕
     </button>
   </div>
 );
