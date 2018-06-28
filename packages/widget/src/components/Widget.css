@@ -8,6 +8,7 @@ body {
   font-family: 'Montserrat', sans-serif;
   margin: 0;
   padding: 0;
+  height: 100vh;
 }
 
 p {
@@ -44,19 +45,12 @@ p {
 /* Misc :S
 /*******************************************************************************************/
 
-@media (max-width: 320px) {
-  body,
-  html {
-    font-size: 12px;
-  }
-}
-
 .margin-bottom {
   margin-bottom: 20px;
 }
 
 .mb-2 {
-  margin-bottom: 2rem;
+  margin-bottom: 2rem !important;
 }
 
 .label {
@@ -67,14 +61,30 @@ p {
 }
 
 /*******************************************************************************************
-/* Form Screen
+/* Screens General Layout 
 /*******************************************************************************************/
 
-/* widget */
-.widget {
+/* root size */
+#dexdex-root {
+  height: 100%; /* this is to use the total height of the iframe */
+}
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
   padding: 1rem;
   background-color: #fff;
+  height: 100%;
+  justify-content: space-between;
 }
+
+.screen-error {
+  text-align: center;
+}
+/*******************************************************************************************
+/* Form Screen
+/*******************************************************************************************/
 
 /* Amount Field */
 .AmountField {
@@ -332,26 +342,12 @@ p {
 /* Other Screens (Info Screens)
 /*******************************************************************************************/
 
-.info-screen {
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  padding: 10px 25px;
-  background-color: #fff;
-  height: 100%;
-  justify-content: space-between;
-}
-
-.error-screen.info-screen {
-  text-align: center;
-}
-
 .info-screen-title {
-  font-size: 14px;
-  font-weight: 600;
-  padding-top: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0;
   text-align: center;
-  margin: 0;
+  margin: 0 0 1rem;
   text-transform: uppercase;
 }
 .info-screen-header {
@@ -442,6 +438,10 @@ p {
   margin-bottom: 1rem;
 }
 
+.trade-info-section:first-child {
+  margin-top: 1rem;
+}
+
 .trade-info-section img {
   height: 20px;
   margin: 0 15px;
@@ -455,14 +455,16 @@ p {
 .trade-info-details .trade-info-token-amount > div:first-child {
   text-transform: uppercase;
   font-size: 0.5rem;
-  margin-bottom: 0.2rem;
+  margin-bottom: 4px;
+  font-weight: 700;
+  color: #999;
 }
 .trade-info-details .trade-info-token-amount > div:nth-child(2) {
   font-weight: 700;
+  font-size: 1rem;
 }
 .trade-info-details .trade-info-token-amount > div:nth-child(3) {
-  line-height: 1.5;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
 }
 
 /*******************************************************************************************
@@ -470,16 +472,21 @@ p {
 /*******************************************************************************************/
 
 .trade-steps {
-  margin-top: auto; /* align to the bottom */
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .trade-steps > li {
   position: relative;
-  height: 65px;
   font-size: 1rem;
-  line-height: 1.5;
+  line-height: 25px;
+  height: 50px;
+  overflow: hidden;
+}
+
+.trade-steps > li:last-child {
+  padding-bottom: 0;
 }
 
 .trade-steps > li > div {
@@ -500,6 +507,13 @@ p {
 
 .trade-steps > li.trade-steps-current .status-message {
   animation: blink-animation 1s steps(5, start) infinite;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  position: absolute;
+}
+
+.trade-steps > li.trade-steps-current:last-child .status-message {
+  position: relative;
 }
 
 /* blink animation */
@@ -526,7 +540,7 @@ p {
   top: 25px;
   left: 11px;
   width: 3px;
-  height: 40px;
+  height: 25px;
   content: '';
   background: #ddd;
 }
@@ -555,6 +569,7 @@ p {
 
 .item-list li:last-child {
   border-bottom: none;
+  padding-bottom: 0;
 }
 
 .item-list li.item-list-title {
@@ -580,4 +595,25 @@ p {
 .trade-success-txhash,
 .trade-success-address {
   color: #124;
+}
+
+.trade-success-timestamp {
+  font-size: 0.5rem;
+  margin-top: 0.2rem;
+}
+
+.screen-success-btn-close {
+  position: fixed;
+  top: 0;
+  right: 0;
+  font-size: 2rem;
+  background-color: #39f;
+  border: none;
+  color: #fff;
+  border-radius: 100%;
+  width: 44px;
+  height: 44px;
+  margin: 1rem;
+  padding: 0;
+  cursor: pointer;
 }

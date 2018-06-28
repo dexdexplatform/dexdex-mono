@@ -86,9 +86,9 @@ export const mapper: RenderMapper<TradeSuccessScreenProps> = store => ws => {
 };
 
 const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
-  <div className="info-screen">
+  <div className="screen">
     <h1 className="info-screen-title">
-      {props.operation === 'buy' ? 'Total Obtained' : 'Total Sent'}
+      {props.operation === 'buy' ? 'Transaction Succesful' : 'Transaction Succesful'}
     </h1>
     <div className="info-screen-header">
       <TradeInfo
@@ -101,7 +101,7 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
     <div className="info-screen-content">
       <ItemList>
         <Item kind="title" title={`Transaction details`}>
-          <div className="value">{props.executionDate.toISOString()}</div>
+          <div className="value trade-success-timestamp">{props.executionDate.toISOString()}</div>
         </Item>
         <Item title="Account">
           <FormatAddress className="trade-success-address" value={props.fromAddress} />
@@ -155,8 +155,8 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
         </li>
       </ItemList>
     </div>
-    <button className="btn-submit" onClick={props.goBack}>
-      YEAH!
+    <button className="screen-success-btn-close" onClick={props.goBack}>
+      ✕
     </button>
   </div>
 );

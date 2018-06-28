@@ -51,7 +51,7 @@ class Switcher extends React.Component<{}, SwitcherState> {
 
     const current = children[Math.abs(this.state.currentScreen % children.length)];
     return (
-      <div>
+      <div style={{ height: '100%' }}>
         <div style={{ position: 'absolute', left: '40%' }}>
           <button style={{ backgroundColor: 'blue' }} onClick={this.prevScreen}>
             prev
@@ -60,7 +60,7 @@ class Switcher extends React.Component<{}, SwitcherState> {
             next
           </button>
         </div>
-        <div>{current}</div>
+        <div style={{ height: '100%' }}>{current}</div>
       </div>
     );
   }

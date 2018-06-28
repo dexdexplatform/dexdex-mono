@@ -17,7 +17,7 @@ export const mapper: RenderMapper<ErrorScreenProps> = store => {
 const errorIcon = require('../icons/error.svg');
 
 const ErrorScreen: React.SFC<ErrorScreenProps> = props => (
-  <div className="info-screen error-screen">
+  <div className="screen screen-error">
     <div className="error-screen-header">
       <img src={errorIcon} />
       <h1 className="error-screen-message">

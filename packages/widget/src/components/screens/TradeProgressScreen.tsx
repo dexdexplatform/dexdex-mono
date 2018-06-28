@@ -35,7 +35,7 @@ export const mapper: RenderMapper<TradeProgressScreen> = store => ws => ({
 });
 
 const TradeProgressScreen: React.SFC<TradeProgressScreen> = props => (
-  <div className="info-screen">
+  <div className="screen">
     <h1 className="info-screen-title">
       {props.txHash ? 'Working...' : `Please, approve to ${props.operation}`}
     </h1>

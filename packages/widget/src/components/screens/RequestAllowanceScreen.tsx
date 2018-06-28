@@ -4,7 +4,7 @@ import { SellSteps } from '../TradeSteps';
 import { TokenInfo } from '../TokenInfo';
 
 const RequestAllowanceScreen: React.SFC<RequestAllowanceProps> = props => (
-  <div className="info-screen">
+  <div className="screen">
     <h1 className="info-screen-title">
       {props.txHash ? 'Working...' : 'Approve us to trade on your behalf'}
     </h1>

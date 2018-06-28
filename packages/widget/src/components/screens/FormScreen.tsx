@@ -89,7 +89,7 @@ export const mapper: RenderMapper<WidgetFormProps> = store => {
 };
 
 const WidgetForm: React.SFC<WidgetFormProps> = props => (
-  <div className="widget">
+  <div className="screen form">
     <OperationSelector value={props.operation} onChange={props.actions.setOperation} />
     <FormField label={`${props.operation} Amount`} htmlFor="token" error={props.amountError}>
       <AmountField amount={props.amount} onChange={props.actions.setAmount} />
@@ -128,14 +128,6 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
         <div className="summary-total-value value col">
           <FormatEth value={props.expectedVolumeEth} /> ETH
         </div>
-      </div>
-    </div>
-    <div className="gas-info flex-grid">
-      <label className="label col" htmlFor="item-3">
-        Network Cost
-      </label>
-      <div className="gas-price-value col">
-        <FormatEth value={props.networkCost} /> ETH
       </div>
     </div>
     <div className="flex-grid">
