@@ -9,6 +9,7 @@ import {
   tradePlanFor,
   updateOrder,
   updateSide,
+  Sort,
 } from '@dexdex/model/lib/orderbook';
 import { fixDecimals, removeExtraZeros } from '@dexdex/utils/lib/format';
 import { toTokenDecimals, changeDecimals, DivMode } from '@dexdex/utils/lib/units';
@@ -27,7 +28,9 @@ import {
 function applyEvent(ob: OrderBook, event: OrderBookEvent): OrderBook {
   switch (event.kind) {
     case OrderEventKind.Add:
-      return updateSide(ob, event.order.isSell)(addOrder(event.order));
+      return updateSide(ob, event.order.isSell)(
+        addOrder(event.order, event.order.isSell ? Sort.ASC : Sort.DES)
+      );
 
     case OrderEventKind.Delete:
       return updateSide(ob, event.order.isSell)(removeOrder(event.order));

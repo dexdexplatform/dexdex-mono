@@ -8,7 +8,7 @@ import { TradePlan } from './trade-plan';
 /** Minimun Ether we allow to trade */
 const MIN_VOLUME_ETH = toWei(0.001, 'ether');
 /** Maximun number of orders we can fit on a TradePlan */
-const MAX_PLAN_ORDERS = 2;
+const MAX_PLAN_ORDERS = 8;
 
 export interface OrderBookSide {
   orders: Order[];
@@ -62,8 +62,23 @@ export const newOBSide = (orders: Order[] = []): OrderBookSide => ({
   maxVolume: obmath.getMaxVolume(orders, MAX_PLAN_ORDERS),
 });
 
-export const addOrder = (o: Order): Updater<OrderBookSide> => obside =>
-  newOBSide(obside.orders.concat([o]));
+export enum Sort {
+  ASC,
+  DES,
+}
+export const addOrder = (o: Order, sort: Sort): Updater<OrderBookSide> => obside => {
+  const orders = obside.orders;
+  const idx = orders.findIndex(
+    sort === Sort.ASC ? order => o.price.lt(order.price) : order => o.price.gt(order.price)
+  );
+  if (idx >= 0) {
+    const newOrders = orders.concat([]);
+    newOrders.splice(idx, 0, o);
+    return newOBSide(newOrders);
+  } else {
+    return newOBSide(obside.orders.concat([o]));
+  }
+};
 
 export const removeOrder = (o: Order): Updater<OrderBookSide> => obside => {
   const orders = obside.orders;

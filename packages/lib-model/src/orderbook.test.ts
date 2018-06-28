@@ -14,7 +14,7 @@ function createOrder(
 ): Order {
   const volume = opts.volume || new BN(10);
   const volumeEth = opts.volumeEth || new BN(1);
-  const fee = opts.fee || new BN(0);
+  const fee = opts.fee || volumeEth.muln(50).divn(10000);
   return {
     id: `order-${nextId++}`,
     token: '0x0000000000000000000000000000000000000000',
@@ -66,8 +66,9 @@ describe('orderbook:side', () => {
 
     beforeEach(() => {
       sideBefore = ob.newOBSide();
-      o1 = createOrder();
-      sideAfter = ob.addOrder(o1)(sideBefore);
+      // order w/price = 10
+      o1 = createOrder({ volume: new BN('1'), volumeEth: new BN('10'), fee: new BN(0) });
+      sideAfter = ob.addOrder(o1, ob.Sort.ASC)(sideBefore);
     });
 
     test('adds an order', () => {
@@ -80,6 +81,44 @@ describe('orderbook:side', () => {
       expect(sideAfter).not.toBe(sideBefore); // diff obj
       expect(sideAfter.orders).not.toBe(sideBefore.orders); // diff orders arr
     });
+
+    test('keeps orders sorted by price', () => {
+      // price = 5
+      const cheapOrder = createOrder({
+        volume: new BN('2'),
+        volumeEth: new BN('10'),
+        fee: new BN(0),
+      });
+
+      sideAfter = ob.addOrder(cheapOrder, ob.Sort.ASC)(sideAfter);
+
+      expect(sideAfter.orders.map(o => o.id)).toEqual([cheapOrder.id, o1.id]);
+
+      // price = 20
+      const expensiveOrder = createOrder({
+        volume: new BN('1'),
+        volumeEth: new BN('20'),
+        fee: new BN(0),
+      });
+
+      sideAfter = ob.addOrder(expensiveOrder, ob.Sort.ASC)(sideAfter);
+      expect(sideAfter.orders.map(o => o.id)).toEqual([cheapOrder.id, o1.id, expensiveOrder.id]);
+
+      // price = 15
+      const middlePriceOrder = createOrder({
+        volume: new BN('1'),
+        volumeEth: new BN('15'),
+        fee: new BN(0),
+      });
+
+      sideAfter = ob.addOrder(middlePriceOrder, ob.Sort.ASC)(sideAfter);
+      expect(sideAfter.orders.map(o => o.id)).toEqual([
+        cheapOrder.id,
+        o1.id,
+        middlePriceOrder.id,
+        expensiveOrder.id,
+      ]);
+    });
   });
 
   describe('removeOrder()', () => {
@@ -88,7 +127,7 @@ describe('orderbook:side', () => {
 
     beforeEach(() => {
       o1 = createOrder();
-      sideBefore = ob.addOrder(o1)(ob.newOBSide());
+      sideBefore = ob.addOrder(o1, ob.Sort.ASC)(ob.newOBSide());
     });
 
     test('removes an order', () => {
@@ -120,7 +159,7 @@ describe('orderbook:side', () => {
 
     beforeEach(() => {
       o1 = createOrder();
-      sideBefore = ob.addOrder(o1)(ob.newOBSide());
+      sideBefore = ob.addOrder(o1, ob.Sort.ASC)(ob.newOBSide());
     });
 
     test('updates an order', () => {
@@ -155,7 +194,7 @@ describe('orderbook', () => {
     test('updates the specified side only', () => {
       const book = ob.newOrderBook();
 
-      const bookAfter = ob.updateSide(book, true)(ob.addOrder(createOrder()));
+      const bookAfter = ob.updateSide(book, true)(ob.addOrder(createOrder(), ob.Sort.ASC));
 
       expect(bookAfter.buys).toBe(book.buys); // didnt change
       expect(bookAfter.sells).not.toBe(book.sells); // changed
@@ -165,7 +204,7 @@ describe('orderbook', () => {
     test('doesnt mutate existing orderbook', () => {
       const book = ob.newOrderBook();
 
-      const bookAfter = ob.updateSide(book, true)(ob.addOrder(createOrder()));
+      const bookAfter = ob.updateSide(book, true)(ob.addOrder(createOrder(), ob.Sort.ASC));
 
       expect(bookAfter).not.toBe(book);
     });
