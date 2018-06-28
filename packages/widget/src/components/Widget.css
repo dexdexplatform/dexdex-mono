@@ -1,25 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,700');
 
 /*******************************************************************************************
-/* Reset Styles
-/*******************************************************************************************/
-
-body {
-  font-family: 'Montserrat', sans-serif;
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-}
-
-p {
-  margin: 0;
-}
-
-* {
-  outline: 0;
-}
-
-/*******************************************************************************************
 /* Grid System
 /*******************************************************************************************/
 
@@ -64,9 +45,27 @@ p {
 /* Screens General Layout
 /*******************************************************************************************/
 
+/* style for body when inside iframe */
+.content-root {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+}
+
+#dexdex-root p {
+  margin: 0;
+}
+
+#dexdex-root * {
+  outline: 0;
+}
+
 /* root size */
 #dexdex-root {
+  font-family: 'Montserrat', sans-serif;
   height: 100%; /* this is to use the total height of the iframe */
+  margin: 0;
+  padding: 0;
 }
 
 .screen {
