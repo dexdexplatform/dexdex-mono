@@ -1,6 +1,6 @@
 {
   "name": "@dexdex/widget",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "DexDex Widget",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -21,7 +21,7 @@
     ]
   },
   "devDependencies": {
-    "@dexdex/typescript-typings": "^0.0.7",
+    "@dexdex/typescript-typings": "^0.0.14",
     "@types/jest": "^22.2.2",
     "@types/node": "^7.0.60",
     "@types/react": "16.3.14",
@@ -58,10 +58,10 @@
     "webpack-manifest-plugin": "1.3.2"
   },
   "dependencies": {
-    "@dexdex/erc20": "^0.0.13",
-    "@dexdex/model": "^0.0.13",
-    "@dexdex/rx": "^0.0.9",
-    "@dexdex/utils": "^0.0.13",
+    "@dexdex/erc20": "^0.0.14",
+    "@dexdex/model": "^0.0.14",
+    "@dexdex/rx": "^0.0.14",
+    "@dexdex/utils": "^0.0.14",
     "@types/react-dom": "^16.0.5",
     "bn.js": "^4.11.8",
     "ethjs": "^0.4.0",
