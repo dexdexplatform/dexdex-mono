@@ -62,6 +62,7 @@
 
 /* root size */
 #dexdex-root {
+  position: relative; /* to serve as an anchor for position absolute later */
   font-family: 'Montserrat', sans-serif;
   height: 100%; /* this is to use the total height of the iframe */
   margin: 0;
@@ -602,9 +603,9 @@
 }
 
 .screen-success-btn-close {
-  position: fixed;
-  top: 0;
-  right: 0;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
   font-size: 1rem;
   background-color: #999;
   border: none;
@@ -612,7 +613,6 @@
   border-radius: 100%;
   width: 30px;
   height: 30px;
-  margin: 1rem;
   padding: 0;
   cursor: pointer;
 }
