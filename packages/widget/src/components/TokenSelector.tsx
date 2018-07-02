@@ -43,7 +43,7 @@ class TokenSelector extends React.PureComponent<TokenSelectorProps> {
 
     return (
       <Select
-        className="token-selector col"
+        className="token-selector col-2"
         name="token"
         clearable={false}
         searchable={!isMobile}

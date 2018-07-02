@@ -204,7 +204,8 @@
 .Select-placeholder,
 .Select--single > .Select-control .Select-value {
   line-height: 30px !important;
-  padding: 8px 10px !important;
+  padding: 8px 25px 8px 0 !important;
+  text-align: right;
 }
 .Select.is-focused:not(.is-open) > .Select-control {
   border: 1px solid #ccc !important;
@@ -227,8 +228,13 @@
   vertical-align: middle;
 }
 .select-symbol-name .token-name {
-  margin-left: 10px;
+  margin-left: 5px;
   vertical-align: middle;
+}
+
+.select-symbol-name .token-name small {
+  font-size: 0.75 rem;
+  color: #11224440;
 }
 
 .error-msg {
