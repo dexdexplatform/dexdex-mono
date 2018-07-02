@@ -1,6 +1,6 @@
 {
   "name": "@dexdex/model",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "DexDex Model",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
