@@ -665,6 +665,9 @@ input[type='number'] {
   .btn-submit {
     padding: 0.5rem;
   }
+  .footer {
+    margin-top: 0.5rem;
+  }
   .footer .footer-logo span {
     display: none;
   }
