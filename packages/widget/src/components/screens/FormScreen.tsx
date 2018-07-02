@@ -108,7 +108,7 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
       onChange={props.actions.setWallet}
     />
     <div className="summary">
-      <div className="summary-token margin-bottom">
+      <div className="summary-token">
         <div className="summary-token-price flex-grid">
           <label>Price</label>
           <div className="summary-token-price-value">

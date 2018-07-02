@@ -122,32 +122,26 @@ input[type='number'] {
   padding: 1rem;
   border-radius: 4px;
   background: rgba(28, 42, 70, 0.05);
-  font-size: 14px;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: #124;
 }
 
 .summary .summary-total {
   font-weight: 700;
-  margin-top: 16px;
-}
-
-.summary .summary-total .summary-total-label {
-  font-size: 0.75rem;
 }
 
 .summary .summary-total .summary-total-value {
   text-align: right;
   margin-left: auto;
-  line-height: 1rem;
+  font-size: 1rem;
 }
 
 .summary-token {
-  margin-bottom: 0.5rem;
-  color: #124;
   font-size: 0.75rem;
+  margin-bottom: 1rem;
 }
-.summary-token-price {
-  color: inherit;
-}
+
 .summary-token-price-value {
   text-align: right;
   margin-left: auto;
