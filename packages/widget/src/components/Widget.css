@@ -217,7 +217,6 @@ input[type='number'] {
 
 .Select-placeholder,
 .Select--single > .Select-control .Select-value {
-  line-height: 30px !important;
   padding: 8px 25px 8px 0 !important;
   text-align: right;
 }
@@ -320,29 +319,26 @@ input[type='number'] {
 /*******************************************************************************************/
 
 .wallet-info {
-  margin-right: 15px;
   text-align: right;
   font-size: 0.8rem;
   line-height: 0.9rem;
   color: #124;
+  margin-left: auto;
 }
 
 .wallet-name-container {
-  flex: 1;
-  /* margin-top: 2px;  to center text baseline with wallet info. TODO review */
+  padding: 0 10px;
 }
 
 .wallet-single-container {
   width: 100%;
   border: 1px solid #ccc;
   padding: 8px 10px;
-  border: 1px solid #ccc;
   border-radius: 4px;
 }
 
 .wallet-info .wallet-amount-value {
   color: #124;
-  display: inline-flex;
 }
 
 .wallet-info .wallet-amount-value:nth-child(2) {
