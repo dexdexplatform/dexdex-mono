@@ -171,12 +171,21 @@ input[type='number'] {
   margin-top: 1rem;
 }
 
-.footer .col-1 {
+.footer p {
+  margin: 0;
+}
+
+.footer .footer-logo {
   text-align: left;
 }
 
-.footer .col-2 {
+.footer .footer-logo img {
+  vertical-align: top;
+}
+
+.footer .footer-agreement {
   text-align: right;
+  margin-left: auto;
 }
 
 /*******************************************************************************************

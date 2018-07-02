@@ -140,10 +140,11 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
       </button>
     </div>
     <div className="footer flex-grid">
-      <div className="col-1">
+      <div className="footer-logo">
+        <span>Powered by </span>
         <img src={DEXDEX_ICON} alt="Powered by DEXDEX" />
       </div>
-      <div className="col-2">
+      <div className="footer-agreement">
         <p>
           By clicking confirm, you agree to our{' '}
           <a href="https://dexdex.io/tos/" target="_blank">
