@@ -469,7 +469,8 @@ input[type='number'] {
 }
 
 .trade-info-section img {
-  height: 20px;
+  height: 32px;
+  width: 32px;
   margin: 0 15px;
 }
 
