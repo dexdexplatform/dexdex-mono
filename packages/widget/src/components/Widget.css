@@ -243,11 +243,14 @@ input[type='number'] {
 .select-symbol-name .token-name {
   margin-left: 5px;
   vertical-align: middle;
+  font-size: 0.9rem;
+  font-weight: 700;
 }
 
 .select-symbol-name .token-name small {
-  font-size: 0.75 rem;
+  font-size: 0.7 rem;
   color: #11224440;
+  font-weight: 400;
 }
 
 .error-msg {

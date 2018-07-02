@@ -32,7 +32,7 @@ class TokenSelector extends React.PureComponent<TokenSelectorProps> {
       <div className="select-symbol-name">
         <TokenImage token={token} />
         <span className="token-name">
-          {token.symbol} <small>({token.name})</small>
+          {token.symbol} <small>{token.name}</small>
         </span>
       </div>
     );
