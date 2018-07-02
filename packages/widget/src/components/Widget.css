@@ -341,10 +341,16 @@ input[type='number'] {
 }
 
 .wallet-info .wallet-amount-value {
-  color: #39f;
+  color: #124;
+  display: inline-flex;
 }
 
-.wallet-info .wallet-id {
+.wallet-info .wallet-amount-value:nth-child(2) {
+  color: #39f;
+  margin-left: 5px;
+}
+
+.wallet-info .wallet-address {
   font-size: 10px;
   color: rgba(28, 42, 70, 0.4);
 }
