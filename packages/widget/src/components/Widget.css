@@ -50,9 +50,10 @@ input[type='number'] {
 
 .label {
   text-transform: uppercase;
-  font-size: 11px;
+  font-size: 0.75rem;
   font-weight: bold;
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
+  white-space: nowrap;
 }
 
 /*******************************************************************************************
@@ -253,7 +254,8 @@ input[type='number'] {
 .error-msg {
   color: #ce0b24;
   font-size: 0.75rem;
-  flex-basis: 100%;
+  margin-bottom: 0.5rem;
+  margin-left: auto;
   text-align: right;
 }
 
