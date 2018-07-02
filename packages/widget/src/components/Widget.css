@@ -36,6 +36,7 @@ input[type='number']::-webkit-outer-spin-button {
 
 input[type='number'] {
   -moz-appearance: textfield;
+  box-shadow: none; /* remove red outline on firefox */
 }
 
 /* TODO replace margin-bottom with mb-2 */
