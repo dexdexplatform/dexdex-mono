@@ -533,7 +533,6 @@ input[type='number'] {
 }
 
 .trade-steps > li.trade-steps-current .status-message {
-  animation: blink-animation 1s steps(5, start) infinite;
   font-size: 0.75rem;
   line-height: 1rem;
   position: absolute;
@@ -541,6 +540,10 @@ input[type='number'] {
 
 .trade-steps > li.trade-steps-current:last-child .status-message {
   position: relative;
+}
+
+.animate {
+  animation: blink-animation 1s steps(5, start) infinite;
 }
 
 /* blink animation */
