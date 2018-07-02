@@ -111,7 +111,7 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
       <div className="summary-token margin-bottom">
         <div className="summary-token-price flex-grid">
           <label>Price</label>
-          <div className="summary-token-price-value value">
+          <div className="summary-token-price-value">
             <FormatPrice
               volume={props.expectedVolume}
               volumeEth={props.expectedVolumeEth}
@@ -123,7 +123,7 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
       </div>
       <div className="summary-total flex-grid">
         <label>{props.operation === 'buy' ? 'You will exchange' : 'You will receive'}</label>
-        <div className="summary-total-value value">
+        <div className="summary-total-value">
           <FormatEth value={props.expectedVolumeEth} /> ETH
         </div>
       </div>
