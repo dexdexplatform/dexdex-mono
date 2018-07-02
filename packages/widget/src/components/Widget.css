@@ -232,10 +232,9 @@ input[type='number'] {
 /* Token Selector
 /*******************************************************************************************/
 
-.token-symbol,
-.wallet-symbol {
-  height: 20px;
-  width: 20px;
+.token-symbol {
+  height: 23px;
+  width: 23px;
   vertical-align: middle;
 }
 .select-symbol-name .token-name {
