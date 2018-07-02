@@ -66,10 +66,6 @@ input[type='number'] {
   height: 100vh;
 }
 
-#dexdex-root p {
-  margin: 0;
-}
-
 #dexdex-root * {
   outline: 0;
 }
@@ -90,7 +86,6 @@ input[type='number'] {
   padding: 1rem;
   background-color: #fff;
   height: 100%;
-  justify-content: space-between;
 }
 
 .screen-error {
@@ -211,7 +206,7 @@ input[type='number'] {
 
 .Select-placeholder,
 .Select--single > .Select-control .Select-value {
-  padding: 8px 25px 8px 0 !important;
+  padding: 8px 30px 8px 0 !important;
   text-align: right;
 }
 .Select.is-focused:not(.is-open) > .Select-control {
