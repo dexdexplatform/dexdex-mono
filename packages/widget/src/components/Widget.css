@@ -26,6 +26,19 @@
 /* Misc :S
 /*******************************************************************************************/
 
+/* remove spinners from input type number */
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+/* TODO replace margin-bottom with mb-2 */
 .margin-bottom {
   margin-bottom: 20px;
 }
