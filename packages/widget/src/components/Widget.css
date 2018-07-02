@@ -118,6 +118,7 @@
 
 .summary .summary-total .summary-total-value {
   text-align: right;
+  margin-left: auto;
 }
 
 .summary-token {
