@@ -84,5 +84,5 @@ export function maxAvailableVolumeEth(set: OrderSet): BN {
  * @param feeParts fee expressed in parts / 10000
  */
 export function getFinalVolumeEth(trade: TradePlan, feeParts: number): BN {
-  return trade.currentVolumeEthUpperBound.muln(10000 + feeParts).divn(10000);
+  return trade.currentVolumeEth.muln(10000 + feeParts).divn(10000);
 }

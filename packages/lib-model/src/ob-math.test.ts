@@ -1,7 +1,7 @@
 import { fromTokenDecimals, toTokenDecimals, toWei } from '@dexdex/utils/lib/units';
 import { BN } from 'bn.js';
 import * as obmath from './ob-math';
-import { Order, getOrderRemainingVolumeEth } from './order';
+import { computePrice, getOrderRemainingVolumeEth, Order } from './order';
 
 let nextId = 1;
 let TokenDecimals = 10;
@@ -41,6 +41,7 @@ function createOrder(opts: Pick<Order, 'volume' | 'volumeEth' | 'fee' | 'remaini
   const volume = opts.volume;
   const volumeEth = opts.volumeEth;
   const fee = opts.fee;
+
   return {
     id: `order-${nextId++}`,
     token: '0x0000000000000000000000000000000000000000',
@@ -49,7 +50,7 @@ function createOrder(opts: Pick<Order, 'volume' | 'volumeEth' | 'fee' | 'remaini
     volume,
     volumeEth,
     fee,
-    price: volumeEth.add(fee).div(volume),
+    price: computePrice(volumeEth, volume, TokenDecimals),
     remaining: opts.remaining || 1,
     ordersData: '',
   };

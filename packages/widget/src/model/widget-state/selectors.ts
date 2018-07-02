@@ -1,25 +1,14 @@
 import { getSide } from '@dexdex/model/lib/orderbook';
-import { Trade, TradeState } from '@dexdex/model/lib/trade';
+import { Trade } from '@dexdex/model/lib/trade';
 import { getFinalVolumeEth } from '@dexdex/model/lib/trade-plan';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
-import { getDecimalBase, toTokenDecimals } from '@dexdex/utils/lib/units';
+import { toTokenDecimals } from '@dexdex/utils/lib/units';
 import { BN } from 'bn.js';
 import { WidgetState } from '.';
-import { ErrorCode, ErrorMessage, AmountError } from '../form-error';
-import { WalletState, AccountState, DesktopWallets } from '../wallets/index';
-import { computeGasPrice } from '../widget';
 import { isMobile } from '../../config';
-
-const price = (volume: BN, volumeEth: BN, token: Tradeable) => {
-  const DECIMAL_PLACES = 10000;
-  return (
-    volume // value without decimals
-      .muln(DECIMAL_PLACES)
-      .div(getDecimalBase(token.decimals)) // div by base => to decimals
-      .div(volumeEth) // get price
-      .toNumber() / DECIMAL_PLACES
-  );
-};
+import { AmountError, ErrorCode, ErrorMessage } from '../form-error';
+import { AccountState, DesktopWallets, WalletState } from '../wallets/index';
+import { computeGasPrice } from '../widget';
 
 const withTrade = <A>(f: (t: Trade, ws: WidgetState) => A, defaultValue: A) => (
   ws: WidgetState
@@ -36,16 +25,6 @@ export const expectedVolumeEth = (ws: WidgetState) => {
 export const effectiveVolumeEth = withTrade(t => t.volumeEthEffective!, new BN(0));
 
 export const effectiveVolume = withTrade(t => t.volumeEffective!, new BN(0));
-export const effectivePrice = withTrade((t, ws) => {
-  if (
-    t.state === TradeState.Completed &&
-    t.volumeEffective != null &&
-    t.volumeEthEffective != null
-  ) {
-    return price(t.volumeEffective, t.volumeEthEffective, ws.tradeable);
-  }
-  return 0;
-}, 0);
 
 export const effectiveNetworkCost = (ws: WidgetState) => {
   const trade = ws.tradeExecution.trade;

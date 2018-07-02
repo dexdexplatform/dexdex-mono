@@ -1,5 +1,6 @@
+import { computePrice } from '@dexdex/model/lib/order';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
-import { changeDecimals, DivMode, getDecimalBase } from '@dexdex/utils/lib/units';
+import { changeDecimals, DivMode } from '@dexdex/utils/lib/units';
 import { BN } from 'bn.js';
 import classnames from 'classnames';
 import * as React from 'react';
@@ -60,27 +61,6 @@ export class FormatToken extends React.PureComponent<FormatTokenProps> {
   }
 }
 
-const ETHBASE = new BN('1000000000000000000'); // 18 decimals
-const DECIMAL_PLACES = 100000000; // 8 decimal places
-
-const price = (volume: BN, volumeEth: BN, token: Tradeable) => {
-  // To get ETH, we move from token base to Eth base (token decimals -> 18 decimals)
-  // since we want our result in ETH.
-
-  // volume = X * 10^{tokendecimals}
-  // volume in eth = X * 10^{tokendecimals} * 10^18 / 10^{tokendecimals}
-  let volumeInEthBase = volume.mul(ETHBASE).div(getDecimalBase(token.decimals));
-
-  // since BN doesn't have decimal, we add some 0s and later we remove them
-  let res = volumeEth.mul(new BN(DECIMAL_PLACES));
-
-  // get the price, it will be: price_in_eth * 10^8 (decimal places)
-  res = res.div(volumeInEthBase);
-
-  // convert to number & divide to get correct decimals
-  return res.toNumber() / DECIMAL_PLACES;
-};
-
 export type FormatPriceProps = {
   volume: BN | null;
   volumeEth: BN | null;
@@ -98,7 +78,7 @@ export class FormatPrice extends React.PureComponent<FormatPriceProps> {
       return defaultValue;
     }
 
-    return price(volume, volumeEth, token).toFixed(displayDecimals);
+    return computePrice(volume, volumeEth, token.decimals).toFixed(displayDecimals);
   }
 }
 
@@ -122,8 +102,8 @@ export class FormatPriceComparison extends React.PureComponent<FormatPriceCompar
       return defaultValue;
     }
 
-    const expectedPrice = price(volume, volumeEth, token);
-    const effectivePrice = price(effectiveVolume, effectiveVolumeEth, token);
+    const expectedPrice = computePrice(volume, volumeEth, token.decimals);
+    const effectivePrice = computePrice(effectiveVolume, effectiveVolumeEth, token.decimals);
 
     const deltaPercentage = (1 - effectivePrice / expectedPrice) * 100;
     return <span>{deltaPercentage.toFixed(displayDecimals)} %</span>;

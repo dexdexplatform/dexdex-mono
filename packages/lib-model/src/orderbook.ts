@@ -69,7 +69,7 @@ export enum Sort {
 export const addOrder = (o: Order, sort: Sort): Updater<OrderBookSide> => obside => {
   const orders = obside.orders;
   const idx = orders.findIndex(
-    sort === Sort.ASC ? order => o.price.lt(order.price) : order => o.price.gt(order.price)
+    sort === Sort.ASC ? order => o.price < order.price : order => o.price > order.price
   );
   if (idx >= 0) {
     const newOrders = orders.concat([]);

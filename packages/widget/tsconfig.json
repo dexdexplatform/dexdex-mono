@@ -5,7 +5,8 @@
     "module": "esnext",
     "target": "es5",
     "lib": ["es6", "dom"],
-    "jsx": "react"
+    "jsx": "react",
+    "declaration": false
   },
   "include": ["./src/**/*"],
   "exclude": ["src/setupTests.ts"]

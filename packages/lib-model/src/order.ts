@@ -1,6 +1,7 @@
 import { BN } from 'bn.js';
 import { percentage } from '@dexdex/utils/lib/bn-math';
 import { Address } from './base';
+import { getDecimalBase, fromWei } from '@dexdex/utils/lib/units';
 
 export interface Order {
   id: string;
@@ -20,15 +21,16 @@ export interface Order {
 
   /** fee in ether (in wei) */
   fee: BN;
-  /** exhange rate considering the fee: (volumeEth + fee) / volume (wei/td) */
-  price: BN;
+
+  /** exhange rate considering the fee: volumeEth / volume */
+  price: number;
   /** remaining % [0,1] */
   remaining: number;
 
   ordersData: string;
 }
 
-export type BNFields = 'fee' | 'volume' | 'volumeEth' | 'price';
+export type BNFields = 'fee' | 'volume' | 'volumeEth';
 export type OtherFields = Exclude<keyof Order, BNFields>;
 export type JsonOrder = Pick<Order, OtherFields> & Record<BNFields, string>;
 
@@ -36,13 +38,17 @@ export const getOrderRemainingVolume = (o: Order) => percentage(o.remaining, o.v
 
 export const getOrderRemainingVolumeEth = (o: Order) => percentage(o.remaining, o.volumeEth);
 
+export const computePrice = (volumeEth: BN, volume: BN, tokenDecimals: number) => {
+  const priceWei = volumeEth.mul(getDecimalBase(tokenDecimals)).div(volume);
+  return Number(fromWei(priceWei, 'ether'));
+};
+
 export function fromJsonOrder(orderS: JsonOrder): Order {
-  const { fee, volume, volumeEth, price, ...others } = orderS;
+  const { fee, volume, volumeEth, ...others } = orderS;
   return {
     fee: new BN(fee, 16),
     volume: new BN(volume, 16),
     volumeEth: new BN(volumeEth, 16),
-    price: new BN(price, 16),
     ...others,
   };
 }

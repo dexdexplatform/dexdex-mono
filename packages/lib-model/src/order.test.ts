@@ -12,7 +12,7 @@ describe('Order Model', () => {
         volume: new BN('100000000000000000000'),
         volumeEth: new BN('60000000000000000000'),
         fee: new BN('6000000'),
-        price: new BN('10'),
+        price: 10,
         remaining: 0.5,
         ordersData: '',
       };
@@ -30,7 +30,7 @@ describe('Order Model', () => {
       expect(o.volume.eq(obis.volume)).toBeTruthy();
       expect(o.volumeEth.eq(obis.volumeEth)).toBeTruthy();
       expect(o.fee.eq(obis.fee)).toBeTruthy();
-      expect(o.price.eq(obis.price)).toBeTruthy();
+      expect(o.price).toBe(obis.price);
     });
   });
 });

@@ -1,5 +1,5 @@
 import * as ob from './orderbook';
-import { Order, fromJsonOrder } from './order';
+import { Order, fromJsonOrder, computePrice } from './order';
 import { BN } from 'bn.js';
 
 let nextId = 1;
@@ -23,7 +23,7 @@ function createOrder(
     volume,
     volumeEth,
     fee,
-    price: volumeEth.add(fee).div(volume),
+    price: computePrice(volumeEth.add(fee), volume, TokenDecimals),
     remaining: opts.remaining || 1,
     ordersData: '',
   };
