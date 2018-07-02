@@ -122,14 +122,16 @@
 }
 
 .summary-token {
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
   color: #124;
+  font-size: 0.75rem;
 }
 .summary-token-price {
   color: inherit;
 }
 .summary-token-price-value {
   text-align: right;
+  margin-left: auto;
 }
 
 /* Submit Button */

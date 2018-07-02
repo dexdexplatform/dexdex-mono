@@ -110,8 +110,8 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
     <div className="summary">
       <div className="summary-token margin-bottom">
         <div className="summary-token-price flex-grid">
-          <label className="col">Price</label>
-          <div className="summary-token-price-value value col">
+          <label>Price</label>
+          <div className="summary-token-price-value value">
             <FormatPrice
               volume={props.expectedVolume}
               volumeEth={props.expectedVolumeEth}
