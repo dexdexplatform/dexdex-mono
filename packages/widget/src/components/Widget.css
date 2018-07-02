@@ -116,9 +116,14 @@
   margin-top: 16px;
 }
 
+.summary .summary-total .summary-total-label {
+  font-size: 0.75rem;
+}
+
 .summary .summary-total .summary-total-value {
   text-align: right;
   margin-left: auto;
+  line-height: 1rem;
 }
 
 .summary-token {
