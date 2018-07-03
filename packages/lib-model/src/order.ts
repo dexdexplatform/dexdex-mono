@@ -46,9 +46,19 @@ export const computePrice = (volumeEth: BN, volume: BN, tokenDecimals: number) =
 export function fromJsonOrder(orderS: JsonOrder): Order {
   const { fee, volume, volumeEth, ...others } = orderS;
   return {
-    fee: new BN(fee, 16),
-    volume: new BN(volume, 16),
-    volumeEth: new BN(volumeEth, 16),
+    fee: new BN(fee, 10),
+    volume: new BN(volume, 10),
+    volumeEth: new BN(volumeEth, 10),
+    ...others,
+  };
+}
+
+export function toJsonOrder(order: Order): JsonOrder {
+  const { fee, volume, volumeEth, ...others } = order;
+  return {
+    fee: fee.toString(10),
+    volume: volume.toString(10),
+    volumeEth: volumeEth.toString(10),
     ...others,
   };
 }

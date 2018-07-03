@@ -1,5 +1,5 @@
 import * as ob from './orderbook';
-import { Order, fromJsonOrder, computePrice } from './order';
+import { Order, fromJsonOrder, computePrice, toJsonOrder } from './order';
 import { BN } from 'bn.js';
 
 let nextId = 1;
@@ -29,7 +29,7 @@ function createOrder(
   };
 }
 
-const cloneOrder = (o: Order) => fromJsonOrder(JSON.parse(JSON.stringify(o)));
+const cloneOrder = (o: Order) => fromJsonOrder(JSON.parse(JSON.stringify(toJsonOrder(o))));
 
 expect.extend({
   toEqualBN(received: any, argument: BN) {

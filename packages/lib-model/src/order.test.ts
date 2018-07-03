@@ -1,5 +1,5 @@
 import { BN } from 'bn.js';
-import { Order, fromJsonOrder } from './order';
+import { Order, fromJsonOrder, toJsonOrder } from './order';
 
 describe('Order Model', () => {
   describe('fromJsonOrder()', () => {
@@ -17,7 +17,7 @@ describe('Order Model', () => {
         ordersData: '',
       };
 
-      const obis = fromJsonOrder(JSON.parse(JSON.stringify(o)));
+      const obis = fromJsonOrder(JSON.parse(JSON.stringify(toJsonOrder(o))));
 
       // simple fields
       expect(o.id).toBe(obis.id);
