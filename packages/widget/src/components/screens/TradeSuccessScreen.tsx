@@ -11,14 +11,7 @@ import {
   effectiveVolumeEth,
   getCurrentAccountState,
 } from '../../model/widget-state/selectors';
-import {
-  FormatAddress,
-  FormatEth,
-  FormatPrice,
-  FormatPriceComparison,
-  FormatToken,
-  FormatTxHash,
-} from '../Format';
+import { FormatAddress, FormatEth, FormatPrice, FormatToken, FormatTxHash } from '../Format';
 import { TradeInfo } from '../TokenInfo';
 import { Screen, ScreenHeader, ScreenContent } from '../Screen';
 
