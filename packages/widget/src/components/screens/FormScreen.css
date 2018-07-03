@@ -2,6 +2,10 @@
 /* Form Screen
 /*******************************************************************************************/
 
+.flexWrapper {
+  display: flex;
+}
+
 /* Trade Plan Summary */
 
 .summary {
@@ -15,7 +19,11 @@
 
   & .summaryItem {
     display: flex;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
+
+    & label {
+      margin-bottom: 0; /* reset bootstrap margin */
+    }
 
     &:last-child {
       margin-bottom: 0;

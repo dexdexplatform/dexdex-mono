@@ -94,13 +94,15 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
   <Screen kind="form">
     <OperationSelector value={props.operation} onChange={props.actions.setOperation} />
     <FormField label={`${props.operation} Amount`} htmlFor="token" error={props.amountError}>
-      <AmountField amount={props.amount} onChange={props.actions.setAmount} />
-      <TokenSelector
-        operation={props.operation}
-        tokens={props.tradeableList}
-        selectedToken={props.tradeable}
-        onChange={props.actions.setTradeable}
-      />
+      <div className={classes.flexWrapper}>
+        <AmountField amount={props.amount} onChange={props.actions.setAmount} />
+        <TokenSelector
+          operation={props.operation}
+          tokens={props.tradeableList}
+          selectedToken={props.tradeable}
+          onChange={props.actions.setTradeable}
+        />
+      </div>
     </FormField>
     <WalletSelector
       selectedWallet={props.wallet}
