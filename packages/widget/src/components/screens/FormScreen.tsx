@@ -128,15 +128,13 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
         </div>
       </div>
     </div>
-    <div className="flex-grid">
-      <button
-        className={classes.btnSubmit}
-        disabled={!props.canSubmit}
-        onClick={props.actions.startTransaction}
-      >
-        Confirm
-      </button>
-    </div>
+    <button
+      className={classes.btnSubmit}
+      disabled={!props.canSubmit}
+      onClick={props.actions.startTransaction}
+    >
+      Confirm
+    </button>
     <div className={classes.footer}>
       <div>
         <span>Powered by </span>

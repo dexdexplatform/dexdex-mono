@@ -63,7 +63,6 @@ class WalletSelector extends React.Component<WalletSelectorProps> {
           <div className={classes.singleContainer}>{this.optionRenderer(this.entryList()[0])}</div>
         ) : (
           <Select
-            className="col"
             name="account"
             clearable={false}
             searchable={false}

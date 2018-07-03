@@ -2,21 +2,6 @@
 /* Form Screen
 /*******************************************************************************************/
 
-/* Amount Field */
-:global .AmountField {
-  font-family: 'Open Sans', sans-serif;
-  font-size: 1rem;
-  line-height: 54px;
-  box-sizing: border-box;
-  width: 102%;
-  height: 54px;
-  padding: 0 10px;
-  border: 1px solid #ccc;
-  border-right: transparent;
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
-}
-
 /* Trade Plan Summary */
 
 .summary {
@@ -53,7 +38,6 @@
 
 /* Submit Button */
 .btnSubmit {
-  flex: 1;
   font-size: 1rem;
   font-weight: 700;
   padding: 1rem;
