@@ -80,7 +80,7 @@ export class FormatPrice extends React.PureComponent<FormatPriceProps> {
       return defaultValue;
     }
 
-    return computePrice(volume, volumeEth, token.decimals).toFixed(displayDecimals);
+    return computePrice(volumeEth, volume, token.decimals).toFixed(displayDecimals);
   }
 }
 
@@ -104,8 +104,8 @@ export class FormatPriceComparison extends React.PureComponent<FormatPriceCompar
       return defaultValue;
     }
 
-    const expectedPrice = computePrice(volume, volumeEth, token.decimals);
-    const effectivePrice = computePrice(effectiveVolume, effectiveVolumeEth, token.decimals);
+    const expectedPrice = computePrice(volumeEth, volume, token.decimals);
+    const effectivePrice = computePrice(effectiveVolumeEth, effectiveVolume, token.decimals);
 
     const deltaPercentage = (1 - effectivePrice / expectedPrice) * 100;
     return <span>{deltaPercentage.toFixed(displayDecimals)} %</span>;
