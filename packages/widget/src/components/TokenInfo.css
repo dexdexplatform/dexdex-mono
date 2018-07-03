@@ -26,6 +26,7 @@
 
   & img {
     height: 32px;
+    width: 32px;
   }
 }
 
@@ -46,7 +47,7 @@
 
   & .amount > div:first-child {
     text-transform: uppercase;
-    font-size: 0.5rem;
+    font-size: 0.75rem;
     margin-bottom: 4px;
     font-weight: 700;
     color: #999;
@@ -54,7 +55,7 @@
 
   & .amount > div:nth-child(2) {
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 1.25rem;
   }
   & .amount > div:nth-child(3) {
     font-size: 0.75rem;

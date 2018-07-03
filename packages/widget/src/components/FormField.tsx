@@ -13,7 +13,7 @@ export const FormField: React.SFC<FormFieldProps> = props => {
   return (
     <>
       <div className="flex-grid">
-        <label className="label col-1" htmlFor={props.htmlFor}>
+        <label className="label" htmlFor={props.htmlFor}>
           {props.label}
         </label>
         <div className={classes.errorMsg}>{props.error && <FormatError msg={props.error} />}</div>

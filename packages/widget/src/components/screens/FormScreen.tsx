@@ -138,7 +138,8 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
     </div>
     <div className={classes.footer}>
       <div>
-        <img src={DEXDEX_ICON} alt="Powered by DEXDEX" />
+        <span>Powered by </span>
+        <img src={DEXDEX_ICON} alt="DEXDEX" />
       </div>
       <div>
         By clicking confirm, you agree to our{' '}

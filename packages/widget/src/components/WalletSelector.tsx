@@ -96,7 +96,7 @@ class WalletSelector extends React.Component<WalletSelectorProps> {
               {this.props.tradeable.symbol}
             </div>
 
-            <FormatAddress value={option.account.address} noLink />
+            <FormatAddress className={classes.address} value={option.account.address} noLink />
           </div>
         ) : (
           <div>{option.wallet.reason}</div>

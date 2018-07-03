@@ -3,18 +3,27 @@
 /*******************************************************************************************/
 
 .tokenSymbol {
-  height: 20px;
-  width: 20px;
+  height: 23px;
+  width: 23px;
   vertical-align: middle;
 }
 
 .row .name {
-  margin-left: 10px;
+  margin-left: 5px;
   vertical-align: middle;
+  font-size: 0.9rem;
+  font-weight: 700;
+
+  & small {
+    font-size: 0.7 rem;
+    color: #11224440;
+    font-weight: 400;
+  }
 }
 
 .tokenSelector {
-  flex: 1;
+  flex-basis: 66.667%;
+  max-width: 66.667%;
 
   & :global(.Select-control) {
     border-left: transparent;
