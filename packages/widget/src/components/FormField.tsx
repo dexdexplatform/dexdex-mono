@@ -11,14 +11,14 @@ export type FormFieldProps = {
 };
 export const FormField: React.SFC<FormFieldProps> = props => {
   return (
-    <>
-      <div className="flex-grid">
-        <label className="label" htmlFor={props.htmlFor}>
+    <div className={classes.formField}>
+      <div className={classes.name}>
+        <label className={classes.label} htmlFor={props.htmlFor}>
           {props.label}
         </label>
         <div className={classes.errorMsg}>{props.error && <FormatError msg={props.error} />}</div>
       </div>
-      <div className="flex-grid margin-bottom">{props.children}</div>
-    </>
+      {props.children}
+    </div>
   );
 };

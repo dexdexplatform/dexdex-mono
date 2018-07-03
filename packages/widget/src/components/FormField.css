@@ -1,7 +1,22 @@
-.errorMsg {
-  color: #ce0b24;
-  font-size: 0.75rem;
-  text-align: right;
-  margin-bottom: 0.5rem;
-  margin-left: auto;
+.formField {
+  margin-bottom: 1rem;
+
+  & .name {
+    display: flex;
+    font-size: 0.75rem;
+    margin-bottom: 0.5rem;
+    white-space: nowrap;
+
+    & .label {
+      font-weight: bold;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    & .errorMsg {
+      color: #ce0b24;
+      text-align: right;
+      margin-left: auto;
+    }
+  }
 }
