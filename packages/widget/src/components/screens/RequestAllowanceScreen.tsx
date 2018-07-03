@@ -2,19 +2,17 @@ import * as React from 'react';
 import { RequestAllowanceProps } from '../../model/widget-state/selectors';
 import { SellSteps } from '../TradeSteps';
 import { TokenInfo } from '../TokenInfo';
+import { ScreenHeader, ScreenContent, Screen } from '../Screen';
 
 const RequestAllowanceScreen: React.SFC<RequestAllowanceProps> = props => (
-  <div className="screen">
-    <h1 className="info-screen-title">
-      {props.txHash ? 'Working...' : 'Approve us to trade on your behalf'}
-    </h1>
-    <div className="info-screen-header">
+  <Screen kind="info" title={props.txHash ? 'Working...' : 'Approve us to trade on your behalf'}>
+    <ScreenHeader>
       <TokenInfo token={props.token} volume={props.volume} />
-    </div>
-    <div className="info-screen-content">
+    </ScreenHeader>
+    <ScreenContent>
       <SellSteps approvalHash={props.txHash} />
-    </div>
-  </div>
+    </ScreenContent>
+  </Screen>
 );
 
 export { RequestAllowanceScreen as Screen };

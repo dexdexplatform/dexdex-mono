@@ -11,6 +11,7 @@ import {
 } from '../../model/widget-state/selectors';
 import { TradeInfo } from '../TokenInfo';
 import { BuySteps, SellSteps } from '../TradeSteps';
+import { Screen, ScreenHeader, ScreenContent } from '../Screen';
 
 export interface TradeProgressScreen {
   operation: Operation;
@@ -35,11 +36,8 @@ export const mapper: RenderMapper<TradeProgressScreen> = store => ws => ({
 });
 
 const TradeProgressScreen: React.SFC<TradeProgressScreen> = props => (
-  <div className="screen">
-    <h1 className="info-screen-title">
-      {props.txHash ? 'Working...' : `Please, approve to ${props.operation}`}
-    </h1>
-    <div className="info-screen-header">
+  <Screen kind="info" title={props.txHash ? 'Working...' : `Please, approve to ${props.operation}`}>
+    <ScreenHeader>
       <TradeInfo
         token={props.tradeable}
         volume={props.expectedVolume}
@@ -47,8 +45,8 @@ const TradeProgressScreen: React.SFC<TradeProgressScreen> = props => (
         inProgress
         operation={props.operation}
       />
-    </div>
-    <div className="info-screen-content">
+    </ScreenHeader>
+    <ScreenContent>
       {props.operation === 'sell' ? (
         <SellSteps
           approvalHash={props.approvalHash}
@@ -58,8 +56,8 @@ const TradeProgressScreen: React.SFC<TradeProgressScreen> = props => (
       ) : (
         <BuySteps tradeHash={props.txHash} />
       )}
-    </div>
-  </div>
+    </ScreenContent>
+  </Screen>
 );
 
 export { TradeProgressScreen as Screen };

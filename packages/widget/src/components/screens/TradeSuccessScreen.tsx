@@ -20,6 +20,7 @@ import {
   FormatTxHash,
 } from '../Format';
 import { TradeInfo } from '../TokenInfo';
+import { Screen, ScreenHeader, ScreenContent } from '../Screen';
 
 const classes = require('./TradeSuccessScreen.css');
 
@@ -88,19 +89,19 @@ export const mapper: RenderMapper<TradeSuccessScreenProps> = store => ws => {
 };
 
 const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
-  <div className="screen">
-    <h1 className="info-screen-title">
-      {props.operation === 'buy' ? 'Transaction Succesful' : 'Transaction Succesful'}
-    </h1>
-    <div className="info-screen-header">
+  <Screen
+    kind="info"
+    title={props.operation === 'buy' ? 'Transaction Succesful' : 'Transaction Succesful'}
+  >
+    <ScreenHeader>
       <TradeInfo
         token={props.tradeable}
         volume={props.effectiveVolume}
         volumeEth={props.effectiveVolumeEth}
         operation={props.operation}
       />
-    </div>
-    <div className="info-screen-content">
+    </ScreenHeader>
+    <ScreenContent>
       <ItemList>
         <Item kind="title" title={`Transaction details`}>
           <div className={classes.timestamp}>{props.executionDate.toISOString()}</div>
@@ -156,11 +157,11 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
           </div>
         </li>
       </ItemList>
-    </div>
+    </ScreenContent>
     <button className={classes.btnClose} onClick={props.goBack}>
       ✕
     </button>
-  </div>
+  </Screen>
 );
 
 export { TradeSuccessScreen as Screen };

@@ -1,19 +1,5 @@
-.errorScreen {
-  text-align: center;
-}
-
-.header {
-  color: #d01;
-  margin-top: 5rem;
-
-  & h1 {
-    margin: 2.5rem 0 0;
-  }
-}
-
-.content {
-  margin-top: auto;
-  margin-bottom: 2rem;
+.headerTitle {
+  margin: 2.5rem 0 0;
 }
 
 .btn {

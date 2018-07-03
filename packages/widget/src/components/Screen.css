@@ -1,0 +1,41 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 1rem;
+  background-color: #fff;
+  height: 100%;
+}
+
+.screen.info {
+  & .screenTitle {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0;
+    text-align: center;
+    margin: 0 0 1rem;
+    text-transform: uppercase;
+  }
+
+  & .screenHeader {
+    flex: 0;
+  }
+
+  & .screenContent {
+    margin-top: auto;
+  }
+}
+
+.screen.error {
+  text-align: center;
+
+  & .screenHeader {
+    color: #d01;
+    margin-top: 5rem;
+  }
+
+  & .screenContent {
+    margin-top: auto;
+    margin-bottom: 2rem;
+  }
+}

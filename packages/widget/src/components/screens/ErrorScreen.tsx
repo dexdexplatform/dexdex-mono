@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { RenderMapper } from '.';
 import { goBack } from '../../model/widget-state/actions';
+import { Screen, ScreenContent, ScreenHeader } from '../Screen';
 
 const classes = require('./ErrorScreen.css');
 
@@ -33,16 +34,16 @@ const BaseErrorScreen: React.SFC<BaseErrorScreenProps> = ({
   contentMsg,
   btnLabel,
 }) => (
-  <div className={`screen ${classes.errorScreen}`}>
-    <div className={classes.header}>
+  <Screen kind="error">
+    <ScreenHeader>
       <img src={imageSrc} />
-      <h1>{headerMsg}</h1>
-    </div>
-    <div className={classes.content}>{contentMsg}</div>
+      <h1 className={classes.headerTitle}>{headerMsg}</h1>
+    </ScreenHeader>
+    <ScreenContent>{contentMsg}</ScreenContent>
     <button onClick={onClick} className={classes.btn}>
       {btnLabel}
     </button>
-  </div>
+  </Screen>
 );
 
 const ErrorScreen: React.SFC<ErrorScreenProps> = props => (

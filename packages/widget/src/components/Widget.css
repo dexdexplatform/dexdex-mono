@@ -12,15 +12,6 @@
   & .col {
     flex: 1;
   }
-  & .col-1 {
-    flex-basis: 33.333%;
-    max-width: 33.333%;
-  }
-
-  & .col-2 {
-    flex-basis: 66.667%;
-    max-width: 66.667%;
-  }
 }
 
 /*******************************************************************************************
@@ -88,15 +79,6 @@
   }
 }
 
-:global .screen {
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  padding: 1rem;
-  background-color: #fff;
-  height: 100%;
-}
-
 /*******************************************************************************************
 /* React Select Overrides
 /*******************************************************************************************/
@@ -128,24 +110,4 @@
 :global .Select-menu-outer {
   border-bottom-right-radius: 0 !important;
   border-bottom-left-radius: 0 !important;
-}
-
-/*******************************************************************************************
-/* Other Screens (Info Screens)
-/*******************************************************************************************/
-
-:global .info-screen-title {
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 0;
-  text-align: center;
-  margin: 0 0 1rem;
-  text-transform: uppercase;
-}
-:global .info-screen-header {
-  flex: 0;
-}
-
-:global .info-screen-content {
-  margin-top: auto;
 }

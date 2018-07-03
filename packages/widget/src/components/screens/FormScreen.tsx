@@ -23,6 +23,7 @@ import { FormField } from '../FormField';
 import OperationSelector from '../OperationSelector';
 import TokenSelector from '../TokenSelector';
 import WalletSelector from '../WalletSelector';
+import { Screen } from '../Screen';
 
 const classes = require('./FormScreen.css');
 const DEXDEX_ICON = require('../icons/dexdex.svg');
@@ -90,7 +91,7 @@ export const mapper: RenderMapper<WidgetFormProps> = store => {
 };
 
 const WidgetForm: React.SFC<WidgetFormProps> = props => (
-  <div className="screen form">
+  <Screen kind="form">
     <OperationSelector value={props.operation} onChange={props.actions.setOperation} />
     <FormField label={`${props.operation} Amount`} htmlFor="token" error={props.amountError}>
       <AmountField amount={props.amount} onChange={props.actions.setAmount} />
@@ -148,7 +149,7 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
         </a>
       </div>
     </div>
-  </div>
+  </Screen>
 );
 
 export { WidgetForm as Screen };
