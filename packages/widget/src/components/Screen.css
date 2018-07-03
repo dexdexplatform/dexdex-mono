@@ -39,3 +39,9 @@
     margin-bottom: 2rem;
   }
 }
+
+@media (max-height: 480px) {
+  .screen {
+    padding: 0.5rem 1rem;
+  }
+}
