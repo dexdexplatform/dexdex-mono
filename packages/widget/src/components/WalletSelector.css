@@ -1,6 +1,27 @@
 /*******************************************************************************************
 /* Wallet Selector
 /*******************************************************************************************/
+.walletSelector {
+  display: flex;
+
+  & .walletReason {
+    margin-left: auto;
+  }
+}
+.nameContainer {
+  margin: auto 0;
+
+  & .icon {
+    height: 23px;
+    width: 23px;
+    vertical-align: middle;
+  }
+
+  & .name {
+    margin-left: 5px;
+    vertical-align: middle;
+  }
+}
 
 .info {
   text-align: right;
@@ -16,21 +37,6 @@
   & .address {
     font-size: 10px;
     color: rgba(28, 42, 70, 0.4);
-  }
-}
-
-.nameContainer {
-  padding: 0 10px;
-
-  & .icon {
-    height: 23px;
-    width: 23px;
-    vertical-align: middle;
-  }
-
-  & .name {
-    margin-left: 5px;
-    vertical-align: middle;
   }
 }
 

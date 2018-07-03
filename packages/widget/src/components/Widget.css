@@ -1,20 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,700');
 
 /*******************************************************************************************
-/* Grid System
-/*******************************************************************************************/
-
-:global {
-  & .flex-grid {
-    display: flex;
-  }
-
-  & .col {
-    flex: 1;
-  }
-}
-
-/*******************************************************************************************
 /* Misc :S
 /*******************************************************************************************/
 
@@ -84,7 +70,7 @@
 /*******************************************************************************************/
 
 :global .Select-control {
-  height: 54px !important;
+  height: 59px !important;
 }
 :global .Select-control:hover {
   box-shadow: none !important;
@@ -98,7 +84,7 @@
 
 :global .Select-placeholder,
 :global .Select--single > .Select-control .Select-value {
-  padding: 8px 30px 8px 0 !important;
+  padding: 8px 30px 8px 10px !important;
   text-align: right;
 }
 

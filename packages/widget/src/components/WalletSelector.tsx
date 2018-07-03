@@ -80,7 +80,7 @@ class WalletSelector extends React.Component<WalletSelectorProps> {
   private optionRenderer = (option: SelectorOption) => {
     const wallet = WalletInfo[option.wallet.walletId];
     return (
-      <div className="flex-grid">
+      <div className={classes.walletSelector}>
         <div className={classes.nameContainer}>
           <img className={classes.icon} src={wallet.icon} />
           <span className={classes.name}>{wallet.label} </span>
@@ -98,7 +98,7 @@ class WalletSelector extends React.Component<WalletSelectorProps> {
             <FormatAddress className={classes.address} value={option.account.address} noLink />
           </div>
         ) : (
-          <div>{option.wallet.reason}</div>
+          <div className={classes.walletReason}>{option.wallet.reason}</div>
         )}
       </div>
     );
