@@ -4,72 +4,71 @@
 /* Grid System
 /*******************************************************************************************/
 
-.flex-grid {
-  display: flex;
-}
+:global {
+  & .flex-grid {
+    display: flex;
+  }
 
-.col {
-  flex: 1;
-}
+  & .col {
+    flex: 1;
+  }
+  & .col-1 {
+    flex-basis: 33.333%;
+    max-width: 33.333%;
+  }
 
-.col-1 {
-  flex-basis: 33.333%;
-  max-width: 33.333%;
-}
-
-.col-2 {
-  flex-basis: 66.667%;
-  max-width: 66.667%;
+  & .col-2 {
+    flex-basis: 66.667%;
+    max-width: 66.667%;
+  }
 }
 
 /*******************************************************************************************
 /* Misc :S
 /*******************************************************************************************/
 
-.margin-bottom {
-  margin-bottom: 20px;
-}
+:global {
+  & .margin-bottom {
+    margin-bottom: 20px;
+  }
 
-.mb-2 {
-  margin-bottom: 2rem !important;
-}
+  & .mb-2 {
+    margin-bottom: 2rem !important;
+  }
 
-.label {
-  text-transform: uppercase;
-  font-size: 11px;
-  font-weight: bold;
-  margin-bottom: 8px;
+  & .label {
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
 }
-
 /*******************************************************************************************
 /* Screens General Layout
 /*******************************************************************************************/
 
 /* style for body when inside iframe */
-.content-root {
+:global .content-root {
   margin: 0;
   padding: 0;
   height: 100vh;
 }
 
-#dexdex-root p {
-  margin: 0;
-}
-
-#dexdex-root * {
-  outline: 0;
-}
-
-/* root size */
-#dexdex-root {
+:global #dexdex-root {
   position: relative; /* to serve as an anchor for position absolute later */
   font-family: 'Montserrat', sans-serif;
   height: 100%; /* this is to use the total height of the iframe */
   margin: 0;
   padding: 0;
+  & p {
+    margin: 0;
+  }
+  & * {
+    outline: 0;
+  }
 }
 
-.screen {
+:global .screen {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -79,270 +78,43 @@
   justify-content: space-between;
 }
 
-.screen-error {
-  text-align: center;
-}
-/*******************************************************************************************
-/* Form Screen
-/*******************************************************************************************/
-
-/* Amount Field */
-.AmountField {
-  font-family: 'Open Sans', sans-serif;
-  font-size: 1rem;
-  line-height: 54px;
-  box-sizing: border-box;
-  width: 102%;
-  height: 54px;
-  padding: 0 10px;
-  border: 1px solid #ccc;
-  border-right: transparent;
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
-}
-
-/* Trade Plan Summary */
-
-.summary {
-  margin-bottom: 1rem;
-  padding: 1rem;
-  border-radius: 4px;
-  background: rgba(28, 42, 70, 0.05);
-  font-size: 14px;
-}
-
-.summary .summary-total {
-  font-weight: 700;
-  margin-top: 16px;
-}
-
-.summary .summary-total .summary-total-value {
-  text-align: right;
-}
-
-.summary-token {
-  margin-bottom: 8px;
-  color: #124;
-}
-.summary-token-price {
-  color: inherit;
-}
-.summary-token-price-value {
-  text-align: right;
-}
-
-/* Submit Button */
-.btn-submit {
-  font-size: 1rem;
-  font-weight: 700;
-  padding: 1rem;
-  transition: 0.25s;
-  text-transform: uppercase;
-  color: #fff;
-  cursor: pointer;
-  border: 0;
-  border-radius: 3px;
-  background-color: #39f;
-}
-
-.btn-submit:hover {
-  background-color: #38e;
-}
-
-.btn-submit:disabled {
-  cursor: not-allowed;
-  background-color: #cccccc;
-}
-
-/* Footer */
-.footer {
-  font-size: 10px;
-  margin-top: 1rem;
-}
-
-.footer .col-1 {
-  text-align: left;
-}
-
-.footer .col-2 {
-  text-align: right;
-}
-
 /*******************************************************************************************
 /* React Select Overrides
 /*******************************************************************************************/
 
-.Select-control {
+:global .Select-control {
   height: 54px !important;
 }
-.Select-control:hover {
+:global .Select-control:hover {
   box-shadow: none !important;
 }
 
-.Select.token-selector.is-focused:not(.is-open) > .Select-control {
-  border-left: none !important;
-}
-
-.Select.token-selector.is-focused.is-open .Select-value {
-  display: none;
-}
-
-.Select-input > input {
+:global .Select-input > input {
   height: 54px !important;
   padding: 0 !important;
   line-height: 54px !important;
 }
 
-.Select-placeholder,
-.Select--single > .Select-control .Select-value {
+:global .Select-placeholder,
+:global .Select--single > .Select-control .Select-value {
   line-height: 30px !important;
   padding: 8px 10px !important;
 }
-.Select.is-focused:not(.is-open) > .Select-control {
+:global .Select.is-focused:not(.is-open) > .Select-control {
   border: 1px solid #ccc !important;
   background: #fff;
   box-shadow: none !important;
 }
-.Select-menu-outer {
+:global .Select-menu-outer {
   border-bottom-right-radius: 0 !important;
   border-bottom-left-radius: 0 !important;
-}
-
-/*******************************************************************************************
-/* Token Selector
-/*******************************************************************************************/
-
-.token-symbol,
-.wallet-symbol {
-  height: 20px;
-  width: 20px;
-  vertical-align: middle;
-}
-.select-symbol-name .token-name {
-  margin-left: 10px;
-  vertical-align: middle;
-}
-
-.error-msg {
-  color: #ce0b24;
-  font-size: 0.75rem;
-  flex-basis: 100%;
-  text-align: right;
-}
-
-.token-selector .Select-control {
-  border-left: transparent;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
-
-/*******************************************************************************************
-/* Operation Selector
-/*******************************************************************************************/
-
-.OperationSelector button {
-  font-size: 1rem;
-  font-weight: 700;
-  padding: 1rem;
-  transition: 0.25s;
-  text-transform: uppercase;
-  border-color: transparent;
-  border-radius: 3px;
-  background-color: rgba(17, 34, 68, 0.1);
-  cursor: pointer;
-}
-
-.OperationSelector button:hover {
-  background-color: rgba(17, 34, 68, 0.25);
-}
-
-.OperationSelector button.button-selected {
-  color: #fff;
-  background-color: #124;
-}
-
-.OperationSelector button:first-child {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
-.OperationSelector button:last-child {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
-
-.OperationSelector button:focus {
-  outline: 0;
-}
-
-/*******************************************************************************************
-/* Gas Price
-/*******************************************************************************************/
-
-.gas-info {
-  margin-bottom: 20px;
-}
-.gas-price-value {
-  text-align: right;
-  font-size: 11px;
-}
-
-/*******************************************************************************************
-/* Wallet Selector
-/*******************************************************************************************/
-
-.wallet-info {
-  margin-right: 15px;
-  text-align: right;
-  font-size: 0.8rem;
-  line-height: 0.9rem;
-  color: #124;
-}
-
-.wallet-name-container {
-  flex: 1;
-  /* margin-top: 2px;  to center text baseline with wallet info. TODO review */
-}
-
-.wallet-single-container {
-  width: 100%;
-  border: 1px solid #ccc;
-  padding: 8px 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.wallet-info .wallet-amount-value {
-  color: #39f;
-}
-
-.wallet-info .wallet-id {
-  font-size: 10px;
-  color: rgba(28, 42, 70, 0.4);
-}
-
-.wallet-symbol {
-  height: 20px;
-  width: 20px;
-  vertical-align: middle;
-}
-
-.wallet-name {
-  margin-left: 10px;
-  vertical-align: middle;
-}
-
-@media (max-width: 320px) {
-  .wallet-name {
-    display: none;
-  }
 }
 
 /*******************************************************************************************
 /* Other Screens (Info Screens)
 /*******************************************************************************************/
 
-.info-screen-title {
+:global .info-screen-title {
   font-size: 0.75rem;
   font-weight: 700;
   padding: 0;
@@ -350,273 +122,10 @@
   margin: 0 0 1rem;
   text-transform: uppercase;
 }
-.info-screen-header {
+:global .info-screen-header {
   flex: 0;
 }
 
-.info-screen-content {
+:global .info-screen-content {
   margin-top: auto;
-}
-
-.error-screen-header {
-  color: #d01;
-  margin-top: 5rem;
-}
-
-.error-screen-header .error-screen-message {
-  margin: 2.5rem 0 0;
-}
-
-/*******************************************************************************************
-/* FormatTxHash
-/*******************************************************************************************/
-
-.txhash-link {
-  margin-top: 1rem;
-  transition: 0.25s;
-  text-decoration: none;
-  color: #124;
-}
-
-.external-link {
-  width: 15px;
-  margin-left: 5px;
-}
-
-.txhash-link:hover {
-  text-decoration: none;
-  color: #39f;
-}
-
-/*******************************************************************************************
-/* FormatAddress
-/*******************************************************************************************/
-
-.address-link {
-  margin-top: 1rem;
-  transition: 0.25s;
-  text-decoration: none;
-  /* color: #39f; */
-}
-
-.address-link:hover {
-  text-decoration: none;
-  /* color: #159; */
-}
-
-/*******************************************************************************************
-/* Token Info & Trade Info
-/*******************************************************************************************/
-
-.token-info {
-  text-align: center;
-}
-
-/* TokenAmount */
-.token-amount-value {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-.token-amount-name {
-  font-size: 1rem;
-  margin-top: 5px;
-}
-
-/* TokenImage */
-.token-big-icon {
-  margin-top: 20px;
-  margin-bottom: 10px;
-}
-
-.token-big-icon img {
-  height: 32px;
-}
-
-/* Trade Details */
-.trade-info-section {
-  margin-bottom: 1rem;
-}
-
-.trade-info-section:first-child {
-  margin-top: 1rem;
-}
-
-.trade-info-section img {
-  height: 20px;
-  margin: 0 15px;
-}
-
-.trade-info-details {
-  display: flex;
-  align-items: center;
-}
-
-.trade-info-details .trade-info-token-amount > div:first-child {
-  text-transform: uppercase;
-  font-size: 0.5rem;
-  margin-bottom: 4px;
-  font-weight: 700;
-  color: #999;
-}
-.trade-info-details .trade-info-token-amount > div:nth-child(2) {
-  font-weight: 700;
-  font-size: 1rem;
-}
-.trade-info-details .trade-info-token-amount > div:nth-child(3) {
-  font-size: 0.75rem;
-}
-
-/*******************************************************************************************
-/* Trade Steps
-/*******************************************************************************************/
-
-.trade-steps {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.trade-steps > li {
-  position: relative;
-  font-size: 1rem;
-  line-height: 25px;
-  height: 50px;
-  overflow: hidden;
-}
-
-.trade-steps > li:last-child {
-  padding-bottom: 0;
-}
-
-.trade-steps > li > div {
-  margin-left: 40px;
-}
-
-.trade-steps > li.trade-steps-pending {
-  color: #d8d8d8;
-  background-image: url('./icons/pending.svg');
-  background-repeat: no-repeat;
-}
-
-.trade-steps > li.trade-steps-current {
-  color: #124;
-  background-image: url('./icons/current.svg');
-  background-repeat: no-repeat;
-}
-
-.trade-steps > li.trade-steps-current .status-message {
-  animation: blink-animation 1s steps(5, start) infinite;
-  font-size: 0.75rem;
-  line-height: 1rem;
-  position: absolute;
-}
-
-.trade-steps > li.trade-steps-current:last-child .status-message {
-  position: relative;
-}
-
-/* blink animation */
-@keyframes blink-animation {
-  from {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.2;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.trade-steps > li.trade-steps-completed {
-  color: #7d2;
-  background-image: url('./icons/completed.svg');
-  background-repeat: no-repeat;
-}
-
-.trade-steps > li:not(:last-child)::before {
-  position: absolute;
-  top: 25px;
-  left: 11px;
-  width: 3px;
-  height: 25px;
-  content: '';
-  background: #ddd;
-}
-
-.trade-steps > li.trade-steps-completed:not(:last-child)::before {
-  background: #7d2;
-}
-
-/*******************************************************************************************
-/* Transaction Details
-/*******************************************************************************************/
-
-.item-list {
-  font-size: 12px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.item-list li {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid #eee;
-}
-
-.item-list li:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.item-list li.item-list-title {
-  padding: 5px 0;
-  border-bottom: 2px solid #124;
-}
-
-.item-list-label {
-  text-transform: uppercase;
-  font-size: 11px;
-  font-weight: 600;
-  color: #124;
-}
-
-.item-list-value {
-  color: #124;
-}
-
-/*******************************************************************************************
-/* Trade Success Screen
-/*******************************************************************************************/
-
-.trade-success-txhash,
-.trade-success-address {
-  color: #124;
-}
-
-.trade-success-timestamp {
-  font-size: 0.5rem;
-  margin-top: 0.2rem;
-}
-
-.screen-success-btn-close {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  font-size: 1rem;
-  background-color: #999;
-  border: none;
-  color: #fff;
-  border-radius: 100%;
-  width: 30px;
-  height: 30px;
-  padding: 0;
-  cursor: pointer;
-}
-
-.screen-success-btn-close:hover {
-  background-color: rgb(82, 79, 79);
 }

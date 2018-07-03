@@ -1,0 +1,32 @@
+/*******************************************************************************************
+/* Token Selector
+/*******************************************************************************************/
+
+.tokenSymbol {
+  height: 20px;
+  width: 20px;
+  vertical-align: middle;
+}
+
+.row .name {
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+.tokenSelector {
+  flex: 1;
+
+  & :global(.Select-control) {
+    border-left: transparent;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+:global :local(.tokenSelector).Select.is-focused:not(.is-open) > .Select-control {
+  border-left: none !important;
+}
+
+:global :local(.tokenSelector).Select.is-focused.is-open .Select-value {
+  display: none;
+}

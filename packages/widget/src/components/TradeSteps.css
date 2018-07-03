@@ -1,0 +1,81 @@
+/*******************************************************************************************
+/* Trade Steps
+/*******************************************************************************************/
+
+.steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  & > li {
+    position: relative;
+    font-size: 1rem;
+    line-height: 25px;
+    height: 50px;
+    overflow: hidden;
+  }
+
+  & > li:last-child {
+    padding-bottom: 0;
+  }
+
+  & > li > div {
+    margin-left: 40px;
+  }
+
+  & > li.pending {
+    color: #d8d8d8;
+    background-image: url('./icons/pending.svg');
+    background-repeat: no-repeat;
+  }
+
+  & > li.current {
+    color: #124;
+    background-image: url('./icons/current.svg');
+    background-repeat: no-repeat;
+  }
+
+  & > li.current .message {
+    animation: blink-animation 1s steps(5, start) infinite;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    position: absolute;
+  }
+
+  & > li.current:last-child .message {
+    position: relative;
+  }
+
+  & > li.completed {
+    color: #7d2;
+    background-image: url('./icons/completed.svg');
+    background-repeat: no-repeat;
+  }
+
+  & > li:not(:last-child)::before {
+    position: absolute;
+    top: 25px;
+    left: 11px;
+    width: 3px;
+    height: 25px;
+    content: '';
+    background: #ddd;
+  }
+
+  & > li.completed:not(:last-child)::before {
+    background: #7d2;
+  }
+}
+
+/* blink animation */
+@keyframes blink-animation {
+  from {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  to {
+    opacity: 1;
+  }
+}

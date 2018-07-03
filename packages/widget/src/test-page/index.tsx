@@ -4,8 +4,7 @@ import { toTokenDecimals } from '@dexdex/utils/lib/units';
 import { BN } from 'bn.js';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Screen as ErrorScreen } from '../components/screens/ErrorScreen';
-import { Screen as RejectedSignature } from '../components/screens/RejectedSignature';
+import { ErrorScreen, RejectedSignatureScreen } from '../components/screens/ErrorScreen';
 import { Screen as RequestAllowanceScreen } from '../components/screens/RequestAllowanceScreen';
 import { Screen as TradeProgressScreen } from '../components/screens/TradeProgressScreen';
 import { Screen as TradeSuccessScreen } from '../components/screens/TradeSuccessScreen';
@@ -40,7 +39,7 @@ type SwitcherState = {
 };
 class Switcher extends React.Component<{}, SwitcherState> {
   state: SwitcherState = {
-    currentScreen: 0,
+    currentScreen: 5,
   };
 
   nextScreen = () => this.setState(st => ({ ...st, currentScreen: st.currentScreen + 1 }));
@@ -109,7 +108,7 @@ const TestApp: React.SFC = () => {
         goBack={() => console.log('go back cliked!')}
       />
       <ErrorScreen goBack={() => console.log('go back cliked!')} />
-      <RejectedSignature goBack={() => console.log('go back cliked!')} />
+      <RejectedSignatureScreen goBack={() => console.log('go back cliked!')} />
     </Switcher>
   );
 };

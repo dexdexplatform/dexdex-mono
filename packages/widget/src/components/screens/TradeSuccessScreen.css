@@ -1,0 +1,67 @@
+/*******************************************************************************************
+/* Transaction Details
+/*******************************************************************************************/
+
+.itemList {
+  font-size: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: #124;
+
+  & li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+  }
+
+  & li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  & li.itemTitle {
+    padding: 5px 0;
+    border-bottom: 2px solid #124;
+  }
+
+  & li div:first-child {
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 600;
+    color: #124;
+  }
+}
+
+/*******************************************************************************************
+/* Trade Success Screen
+/*******************************************************************************************/
+
+.addressOverride,
+.txhashOverride {
+  color: #124;
+}
+
+.timestamp {
+  font-size: 0.5rem;
+  margin-top: 0.2rem;
+}
+
+.btnClose {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1rem;
+  background-color: #999;
+  border: none;
+  color: #fff;
+  border-radius: 100%;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  cursor: pointer;
+  &:hover {
+    background-color: rgb(82, 79, 79);
+  }
+}

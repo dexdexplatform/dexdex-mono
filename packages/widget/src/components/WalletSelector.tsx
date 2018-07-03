@@ -15,6 +15,8 @@ import { FormField } from './FormField';
 import { ErrorMessage } from '../model/form-error';
 import { isMobile } from '../config';
 
+const classes = require('./WalletSelector.css');
+
 export interface WalletSelectorProps {
   wallets: WalletState[];
   selectedWallet: WalletAccountRef | null;
@@ -58,7 +60,7 @@ class WalletSelector extends React.Component<WalletSelectorProps> {
     return (
       <FormField label="Wallet" htmlFor="account" error={this.props.error}>
         {isMobile ? (
-          <div className="wallet-single-container">{this.optionRenderer(this.entryList()[0])}</div>
+          <div className={classes.singleContainer}>{this.optionRenderer(this.entryList()[0])}</div>
         ) : (
           <Select
             className="col"
@@ -80,16 +82,16 @@ class WalletSelector extends React.Component<WalletSelectorProps> {
     const wallet = WalletInfo[option.wallet.walletId];
     return (
       <div className="flex-grid">
-        <div className="wallet-name-container">
-          <img className="wallet-symbol" src={wallet.icon} />
-          <span className="wallet-name">{wallet.label} </span>
+        <div className={classes.nameContainer}>
+          <img className={classes.icon} src={wallet.icon} />
+          <span className={classes.name}>{wallet.label} </span>
         </div>
         {option.kind === 'account' ? (
-          <div className="wallet-info">
-            <div className="wallet-amount-value">
+          <div className={classes.info}>
+            <div className={classes.balance}>
               <FormatEth value={option.account.balance} /> ETH
             </div>
-            <div className="wallet-amount-value">
+            <div className={classes.balance}>
               <FormatToken value={option.account.tokenBalance} token={this.props.tradeable} />{' '}
               {this.props.tradeable.symbol}
             </div>

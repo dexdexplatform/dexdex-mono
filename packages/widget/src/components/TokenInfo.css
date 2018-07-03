@@ -1,0 +1,62 @@
+/*******************************************************************************************
+/* Token Info & Trade Info
+/*******************************************************************************************/
+
+.tokenInfo {
+  text-align: center;
+}
+
+/* TokenAmount */
+.tokenAmount {
+  & .value {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  & .name {
+    font-size: 1rem;
+    margin-top: 5px;
+  }
+}
+
+/* TokenImage */
+.tokenImage {
+  margin-top: 20px;
+  margin-bottom: 10px;
+
+  & img {
+    height: 32px;
+  }
+}
+
+/* Trade Details */
+.tradeSide {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+
+  &:first-child {
+    margin-top: 1rem;
+  }
+
+  & img {
+    height: 20px;
+    margin: 0 15px;
+  }
+
+  & .amount > div:first-child {
+    text-transform: uppercase;
+    font-size: 0.5rem;
+    margin-bottom: 4px;
+    font-weight: 700;
+    color: #999;
+  }
+
+  & .amount > div:nth-child(2) {
+    font-weight: 700;
+    font-size: 1rem;
+  }
+  & .amount > div:nth-child(3) {
+    font-size: 0.75rem;
+  }
+}

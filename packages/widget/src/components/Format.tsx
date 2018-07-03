@@ -6,6 +6,8 @@ import classnames from 'classnames';
 import * as React from 'react';
 import { etherscanAddressUrl, etherscanTxUrl } from '../config';
 
+const classes = require('./Format.css');
+
 const formatEth = (
   volumeEth: null | BN,
   decimals: number,
@@ -132,12 +134,12 @@ export class FormatAddress extends React.PureComponent<FormatAddressProps> {
     } else {
       return (
         <a
-          className={classnames('address-link', this.props.className)}
+          className={classnames(classes.addressLink, this.props.className)}
           href={etherscanAddressUrl(address)}
           target="_blank"
         >
           <span>{shortenAddress(address, 6, 6)}</span>
-          <img src={externalIcon} className="external-link" />
+          <img src={externalIcon} />
         </a>
       );
     }
@@ -153,12 +155,12 @@ export class FormatTxHash extends React.PureComponent<FormatTxHashProps> {
     const txhash = this.props.value;
     return (
       <a
-        className={classnames('txhash-link', this.props.className)}
+        className={classnames(classes.txhashLink, this.props.className)}
         href={etherscanTxUrl(txhash)}
         target="_blank"
       >
         <span>{shortenAddress(txhash, 6, 6)}</span>
-        <img src={externalIcon} className="external-link" />
+        <img src={externalIcon} />
       </a>
     );
   }

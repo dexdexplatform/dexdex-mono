@@ -6,6 +6,8 @@ import 'react-select/dist/react-select.css';
 import { tokenDefaultSmallImg, tokenSmallImg, isMobile } from '../config';
 import { SafeImage } from './ImageLoader';
 
+const classes = require('./TokenSelector.css');
+
 export type TokenImageProps = {
   token: Tradeable;
 };
@@ -13,7 +15,7 @@ const TokenImage: React.SFC<TokenImageProps> = ({ token }) => (
   <SafeImage
     src={tokenSmallImg(token.symbol)}
     fallback={tokenDefaultSmallImg}
-    className="token-symbol"
+    className={classes.tokenSymbol}
     alt={`${token.symbol}`}
   />
 );
@@ -29,9 +31,9 @@ class TokenSelector extends React.PureComponent<TokenSelectorProps> {
   optionRenderer = (option: Option<number>) => {
     const token = this.props.tokens[option.value!];
     return (
-      <div className="select-symbol-name">
+      <div className={classes.row}>
         <TokenImage token={token} />
-        <span className="token-name">
+        <span className={classes.name}>
           {token.symbol} <small>({token.name})</small>
         </span>
       </div>
@@ -43,7 +45,7 @@ class TokenSelector extends React.PureComponent<TokenSelectorProps> {
 
     return (
       <Select
-        className="token-selector col"
+        className={classes.tokenSelector}
         name="token"
         clearable={false}
         searchable={!isMobile}

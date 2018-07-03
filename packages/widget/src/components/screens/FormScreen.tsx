@@ -24,6 +24,7 @@ import OperationSelector from '../OperationSelector';
 import TokenSelector from '../TokenSelector';
 import WalletSelector from '../WalletSelector';
 
+const classes = require('./FormScreen.css');
 const DEXDEX_ICON = require('../icons/dexdex.svg');
 
 export interface WidgetFormProps {
@@ -107,49 +108,43 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
       error={props.balanceError}
       onChange={props.actions.setWallet}
     />
-    <div className="summary">
-      <div className="summary-token margin-bottom">
-        <div className="summary-token-price flex-grid">
-          <label className="col">Price</label>
-          <div className="summary-token-price-value value col">
-            <FormatPrice
-              volume={props.expectedVolume}
-              volumeEth={props.expectedVolumeEth}
-              token={props.tradeable}
-            />{' '}
-            ETH / {props.tradeable.symbol}
-          </div>
+    <div className={classes.summary}>
+      <div className={classes.summaryItem}>
+        <label>Price</label>
+        <div>
+          <FormatPrice
+            volume={props.expectedVolume}
+            volumeEth={props.expectedVolumeEth}
+            token={props.tradeable}
+          />{' '}
+          ETH / {props.tradeable.symbol}
         </div>
       </div>
-      <div className="summary-total flex-grid">
-        <label className="col">
-          {props.operation === 'buy' ? 'You will exchange' : 'You will receive'}
-        </label>
-        <div className="summary-total-value value col">
+      <div className={`${classes.summaryItem} ${classes.total}`}>
+        <label>{props.operation === 'buy' ? 'You will exchange' : 'You will receive'}</label>
+        <div>
           <FormatEth value={props.expectedVolumeEth} /> ETH
         </div>
       </div>
     </div>
     <div className="flex-grid">
       <button
-        className="btn-submit col"
+        className={classes.btnSubmit}
         disabled={!props.canSubmit}
         onClick={props.actions.startTransaction}
       >
         Confirm
       </button>
     </div>
-    <div className="footer flex-grid">
-      <div className="col-1">
+    <div className={classes.footer}>
+      <div>
         <img src={DEXDEX_ICON} alt="Powered by DEXDEX" />
       </div>
-      <div className="col-2">
-        <p>
-          By clicking confirm, you agree to our{' '}
-          <a href="https://dexdex.io/tos/" target="_blank">
-            terms
-          </a>
-        </p>
+      <div>
+        By clicking confirm, you agree to our{' '}
+        <a href="https://dexdex.io/tos/" target="_blank">
+          terms
+        </a>
       </div>
     </div>
   </div>

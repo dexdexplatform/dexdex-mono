@@ -21,16 +21,18 @@ import {
 } from '../Format';
 import { TradeInfo } from '../TokenInfo';
 
-const ItemList: React.SFC = ({ children }) => <ul className="item-list">{children}</ul>;
+const classes = require('./TradeSuccessScreen.css');
+
+const ItemList: React.SFC = ({ children }) => <ul className={classes.itemList}>{children}</ul>;
 
 const Item: React.SFC<{ kind?: 'title' | 'total'; title: string }> = ({
   kind,
   title,
   children,
 }) => (
-  <li className={kind ? `item-list-${kind}` : ''}>
-    <div className="item-list-label">{title}</div>
-    <div className="item-list-value">{children}</div>
+  <li className={kind ? classes.itemTitle : ''}>
+    <div>{title}</div>
+    <div>{children}</div>
   </li>
 );
 
@@ -101,13 +103,13 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
     <div className="info-screen-content">
       <ItemList>
         <Item kind="title" title={`Transaction details`}>
-          <div className="value trade-success-timestamp">{props.executionDate.toISOString()}</div>
+          <div className={classes.timestamp}>{props.executionDate.toISOString()}</div>
         </Item>
         <Item title="Account">
-          <FormatAddress className="trade-success-address" value={props.fromAddress} />
+          <FormatAddress className={classes.addressOverride} value={props.fromAddress} />
         </Item>
         <Item title="Transaction">
-          <FormatTxHash className="trade-success-txhash" value={props.tradeTxHash} />
+          <FormatTxHash className={classes.txhashOverride} value={props.tradeTxHash} />
         </Item>
         <Item title="Amount Refunded">
           {props.operation === 'buy' ? (
@@ -155,7 +157,7 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
         </li>
       </ItemList>
     </div>
-    <button className="screen-success-btn-close" onClick={props.goBack}>
+    <button className={classes.btnClose} onClick={props.goBack}>
       ✕
     </button>
   </div>

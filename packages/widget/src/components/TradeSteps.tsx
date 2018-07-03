@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { FormatTxHash } from './Format';
 
-const Steps: React.SFC = ({ children }) => <ul className="trade-steps">{children}</ul>;
+const classes = require('./TradeSteps.css');
+
+const Steps: React.SFC = ({ children }) => <ul className={classes.steps}>{children}</ul>;
 
 type StepProps = {
   status: 'completed' | 'pending' | 'current';
@@ -10,9 +12,9 @@ type StepProps = {
 };
 
 const Step: React.SFC<StepProps> = ({ status, title, statusMessage }) => (
-  <li className={`trade-steps-${status}`}>
+  <li className={classes[status]}>
     <div>{title}</div>
-    {statusMessage && <div className="status-message">{statusMessage}</div>}
+    {statusMessage && <div className={classes.message}>{statusMessage}</div>}
   </li>
 );
 

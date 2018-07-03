@@ -1,0 +1,8 @@
+.errorMsg {
+  color: #ce0b24;
+  font-size: 0.75rem;
+  flex-basis: 100%;
+  text-align: right;
+  flex-basis: 66.667%;
+  max-width: 66.667%;
+}

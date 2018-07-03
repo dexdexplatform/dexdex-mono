@@ -1,6 +1,7 @@
 'use strict';
 
 const autoprefixer = require('autoprefixer');
+const postcssPresetEnv = require('postcss-preset-env');
 const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -80,6 +81,12 @@ module.exports = {
           },
           {
             test: /\.css$/,
+            exclude: paths.appSrc,
+            use: [require.resolve('style-loader'), require.resolve('css-loader')],
+          },
+          {
+            test: /\.css$/,
+            include: paths.appSrc,
             loader: ExtractTextPlugin.extract({
               fallback: {
                 loader: require.resolve('style-loader'),
@@ -93,6 +100,7 @@ module.exports = {
                   options: {
                     importLoaders: 1,
                     minimize: true,
+                    modules: true,
                     sourceMap: shouldUseSourceMap,
                   },
                 },
@@ -104,6 +112,12 @@ module.exports = {
                     ident: 'postcss',
                     plugins: () => [
                       require('postcss-flexbugs-fixes'),
+                      postcssPresetEnv({
+                        stage: 2,
+                        features: {
+                          'nesting-rules': true,
+                        },
+                      }),
                       autoprefixer({
                         browsers: [
                           '>1%',

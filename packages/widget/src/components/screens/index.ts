@@ -1,7 +1,6 @@
 import { WidgetScreen, WidgetState, WidgetStore } from '../../model/widget-state';
-import * as error from './ErrorScreen';
+import { errorMapper, ErrorScreen, RejectedSignatureScreen } from './ErrorScreen';
 import * as form from './FormScreen';
-import * as rejectedSignature from './RejectedSignature';
 import { Screen as RequestAllowanceScreen } from './RequestAllowanceScreen';
 import * as tradeProgress from './TradeProgressScreen';
 import * as tradeSuccess from './TradeSuccessScreen';
@@ -14,8 +13,8 @@ export type Screen<T> = {
   Screen: React.ComponentType<T>;
 };
 const screens: Record<WidgetScreen, Screen<any>> = {
-  rejectedSignature: rejectedSignature,
-  error: error,
+  rejectedSignature: { mapper: errorMapper, Screen: RejectedSignatureScreen },
+  error: { mapper: errorMapper, Screen: ErrorScreen },
   form: form,
   signatureApproval: {
     mapper: () => getTokenAllowanceInfo,
