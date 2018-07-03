@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+const classes = require('./AmountField.css');
+
 export interface AmountFieldProps {
   amount: string;
   onChange: (newAmount: string) => void;
@@ -20,15 +22,13 @@ class AmountField extends React.Component<AmountFieldProps> {
   render() {
     const { amount } = this.props;
     return (
-      <div className="col">
-        <input
-          className="AmountField"
-          id="amount"
-          type="number"
-          value={amount}
-          onChange={this.inputChange}
-        />
-      </div>
+      <input
+        className={classes.amountField}
+        id="amount"
+        type="number"
+        value={amount}
+        onChange={this.inputChange}
+      />
     );
   }
 }
