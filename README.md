@@ -2,6 +2,12 @@
 
 This repository holds dexdex platform libraries.
 
+## Documentation
+
+- [Embed widget into your site](https://github.com/dexdexplatform/dexdex-mono/wiki/Widget--Install)
+- [Custom install](https://github.com/dexdexplatform/dexdex-mono/wiki/Custom-install) 
+- [Trading API](https://github.com/dexdexplatform/dexdex-mono/wiki/API---Trading)
+
 ## Current Packages
 
 - **lib-erc20 [@dexdex/erc20]**: Typescript proxy for ERC20 contracts
