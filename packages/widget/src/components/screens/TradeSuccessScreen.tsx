@@ -138,24 +138,18 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
         <Item title="Network Cost">
           <FormatEth value={props.networkCost} /> ETH
         </Item>
-        <li>
-          <div className="label">Service Fee</div>
-          <div className="value">
-            <FormatEth value={props.serviceFee} /> ETH
-          </div>
-        </li>
-        <li>
-          <div className="label">Price Optimization</div>
-          <div className="value">
-            <FormatPriceComparison
-              effectiveVolume={props.effectiveVolume}
-              effectiveVolumeEth={props.effectiveVolumeEth}
-              volume={props.volume}
-              volumeEth={props.volumeEth}
-              token={props.tradeable}
-            />
-          </div>
-        </li>
+        <Item title="Service Fee">
+          <FormatEth value={props.serviceFee} /> ETH
+        </Item>
+        {/* <Item title="Price Optimization">
+          <FormatPriceComparison
+            effectiveVolume={props.effectiveVolume}
+            effectiveVolumeEth={props.effectiveVolumeEth}
+            volume={props.volume}
+            volumeEth={props.volumeEth}
+            token={props.tradeable}
+          />
+        </Item> */}
       </ItemList>
     </ScreenContent>
     <button className={classes.btnClose} onClick={props.goBack}>
