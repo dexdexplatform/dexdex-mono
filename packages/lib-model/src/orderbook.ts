@@ -3,19 +3,43 @@ import { Operation } from './base';
 import * as obmath from './ob-math';
 import { Order } from './order';
 import { toWei } from '@dexdex/utils/lib/units';
-import { TradePlan } from './trade-plan';
+import { OrderSelection } from './order-selection';
 
 /** Minimun Ether we allow to trade */
 const MIN_VOLUME_ETH = toWei(0.001, 'ether');
 /** Maximun number of orders we can fit on a TradePlan */
 const MAX_PLAN_ORDERS = 8;
 
+/**
+ * Side of an Orderbook (either buy or sell)
+ *
+ * Contains information about:
+ *
+ *  - Minimum tradeable volume of tokens for the orders. Computes the volume by assuming that no
+ *  operation can happen for less than `MIN_VOLUME_ETH` ethers.
+ *  - Maximum tradeable volume of tokens for the orders. Computes the volume by assuming that we
+ *  can't send more than `MAX_PLAN_ORDERS` to the smart contract in a single trade.
+ *
+ * The `orders` collection is sorted by ascending price for sells & descending price for buys. So,
+ * always the first order of each collection has the more convenient price for the taker.
+ *
+ * The structure should be treated as an immutable object
+ */
 export interface OrderBookSide {
   orders: Order[];
   minVolume: BN;
   maxVolume: BN;
 }
 
+/**
+ * An Orderbook for a Token.
+ *
+ * Contains buy and sells orders for a given token.
+ * Orders are sorted in ascending price for sells & descending price for buys. So, always
+ * the first order of each collection has the more convenient price for the taker.
+ *
+ * The structure should be treated as an immutable object
+ */
 export interface OrderBook {
   buys: OrderBookSide;
   sells: OrderBookSide;
@@ -104,8 +128,8 @@ export const updateOrder = (o: Order): Updater<OrderBookSide> => obside => {
   }
 };
 
-export const tradePlanFor = (obside: OrderBookSide, volumeTD: BN): TradePlan => {
-  return obmath.tradePlanFor(obside.orders, MAX_PLAN_ORDERS, volumeTD);
+export const selectOrdersFor = (obside: OrderBookSide, volumeTD: BN): OrderSelection => {
+  return obmath.selectOrdersFor(obside.orders, MAX_PLAN_ORDERS, volumeTD);
 };
 
 export const isValidVolume = (obside: OrderBookSide, volume: BN) =>

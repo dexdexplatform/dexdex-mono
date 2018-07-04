@@ -1,6 +1,6 @@
+import { getRequiredGas } from '@dexdex/model/lib/order';
 import { getSide } from '@dexdex/model/lib/orderbook';
 import { Trade } from '@dexdex/model/lib/trade';
-import { getFinalVolumeEth } from '@dexdex/model/lib/trade-plan';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
 import { toTokenDecimals } from '@dexdex/utils/lib/units';
 import { BN } from 'bn.js';
@@ -9,6 +9,7 @@ import { isMobile } from '../../config';
 import { AmountError, ErrorCode, ErrorMessage } from '../form-error';
 import { AccountState, DesktopWallets, WalletState } from '../wallets/index';
 import { computeGasPrice } from '../widget';
+import { getFinalVolumeEth } from '@dexdex/model/lib/order-selection';
 
 const withTrade = <A>(f: (t: Trade, ws: WidgetState) => A, defaultValue: A) => (
   ws: WidgetState
@@ -19,7 +20,9 @@ export const expectedVolume = (ws: WidgetState) =>
   toTokenDecimals(ws.amount, ws.tradeable.decimals);
 
 export const expectedVolumeEth = (ws: WidgetState) => {
-  return ws.tradePlan ? getFinalVolumeEth(ws.tradePlan, ws.config.feePercentage) : null;
+  return ws.orderSelection
+    ? getFinalVolumeEth(ws.orderSelection, expectedVolume(ws), ws.config.feePercentage)
+    : null;
 };
 
 export const effectiveVolumeEth = withTrade(t => t.volumeEthEffective!, new BN(0));
@@ -35,9 +38,8 @@ export const effectiveNetworkCost = (ws: WidgetState) => {
   }
 };
 export const networkCost = (ws: WidgetState) => {
-  const transactionInfo = ws.tradePlan;
   const gasPrice = computeGasPrice(ws.config.gasprices, ws.gasPrice);
-  return transactionInfo ? transactionInfo.requiredGas.mul(gasPrice) : null;
+  return ws.orderSelection ? getRequiredGas(ws.orderSelection.orders).mul(gasPrice) : null;
 };
 
 export const amountTD = (ws: WidgetState): BN => toTokenDecimals(ws.amount, ws.tradeable.decimals);

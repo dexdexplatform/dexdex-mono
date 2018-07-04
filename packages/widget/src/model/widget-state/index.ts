@@ -1,7 +1,6 @@
 import { Address, Operation } from '@dexdex/model/lib/base';
 import { OrderBook } from '@dexdex/model/lib/orderbook';
 import { Trade } from '@dexdex/model/lib/trade';
-import { TradePlan } from '@dexdex/model/lib/trade-plan';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
 import { BN } from 'bn.js';
 import { AmountError, BalanceError } from '../form-error';
@@ -12,6 +11,7 @@ import * as actions from './actions';
 import rootEpic from './epics';
 import { reducerWithDefaults } from './reducer';
 import { createStore, Store } from './store';
+import { OrderSelection } from '../../../../lib-model/lib/order-selection';
 
 //-------------------------------------------------------------------------------------------------
 // Types
@@ -47,7 +47,7 @@ export interface WidgetState {
     amount: null | AmountError;
     balance: null | BalanceError;
   };
-  tradePlan: TradePlan | null;
+  orderSelection: OrderSelection | null;
   tradeExecution: {
     stage: TxStage;
     approvalTxHash: null | string;
@@ -88,7 +88,7 @@ export async function initWidget(widgetId: string): Promise<Store<WidgetState, a
       amount: null,
       balance: null,
     },
-    tradePlan: null,
+    orderSelection: null,
     tradeExecution: {
       stage: TxStage.Idle,
       approvalTxHash: null,

@@ -3,34 +3,45 @@ import { percentage } from '@dexdex/utils/lib/bn-math';
 import { Address } from './base';
 import { getDecimalBase, fromWei } from '@dexdex/utils/lib/units';
 
+/**
+ * DexDex Order data structure.
+ *
+ * An orders corresponds to an intent of buying or selling (`isSell`) a specified amount of tokens (`volume`) in
+ * exchange to an amount of Ether (`volumeEth`).
+ *
+ * An order can be partially filled, meaning that from the original amounts, only a part remains.
+ * This is determined by `remaining` attribute.
+ *
+ * Order's relevant data for the smart contract is the `ordersData` which is the part that MUST be
+ * sent to the contract in order to fill the order.
+ */
 export interface Order {
+  /** unique id for the order */
   id: string;
-  /** The other token */
+  /** Ethereum Address for the Token to be sold or bought */
   token: Address;
   /** Wether is buy or sell order */
   isSell: boolean;
 
-  /** token's decimals */
+  /** Number of decimals the token has. Needed to interpret `volume` as a decimal number */
   decimals: number;
-  /** token's volume to buy/sell  (in td) */
+  /** Original volume of tokens. Expressed as a big integer. The real volume is: {volume} / 1e{decimals}  */
   volume: BN;
-  /** ether's volume to buy/sell (in wei) */
+  /** Original volume of tokens. Expressed in wei */
   volumeEth: BN;
-
-  // Values below might change in order updates
-
-  /** fee in ether (in wei) */
-  fee: BN;
-
-  /** exhange rate considering the fee: volumeEth / volume */
+  /** Price for tokens, expressed in eth. Computed volumeEth / volume with necessary unit conversions */
   price: number;
-  /** remaining % [0,1] */
+
+  // Mutable Values
+
+  /** Percentage of the order that remains to be filled. A number in range [0,1] */
   remaining: number;
 
+  /** Encoded order data for the Order. Used by the Smart Contract. Starts with 0x */
   ordersData: string;
 }
 
-export type BNFields = 'fee' | 'volume' | 'volumeEth';
+export type BNFields = 'volume' | 'volumeEth';
 export type OtherFields = Exclude<keyof Order, BNFields>;
 export type JsonOrder = Pick<Order, OtherFields> & Record<BNFields, string>;
 
@@ -44,9 +55,8 @@ export const computePrice = (volumeEth: BN, volume: BN, tokenDecimals: number) =
 };
 
 export function fromJsonOrder(orderS: JsonOrder): Order {
-  const { fee, volume, volumeEth, ...others } = orderS;
+  const { volume, volumeEth, ...others } = orderS;
   return {
-    fee: new BN(fee, 10),
     volume: new BN(volume, 10),
     volumeEth: new BN(volumeEth, 10),
     ...others,
@@ -54,9 +64,8 @@ export function fromJsonOrder(orderS: JsonOrder): Order {
 }
 
 export function toJsonOrder(order: Order): JsonOrder {
-  const { fee, volume, volumeEth, ...others } = order;
+  const { volume, volumeEth, ...others } = order;
   return {
-    fee: fee.toString(10),
     volume: volume.toString(10),
     volumeEth: volumeEth.toString(10),
     ...others,

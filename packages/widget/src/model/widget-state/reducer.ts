@@ -6,7 +6,7 @@ import {
   OrderBook,
   OrderBookSide,
   removeOrder,
-  tradePlanFor,
+  selectOrdersFor,
   updateOrder,
   updateSide,
   Sort,
@@ -24,6 +24,7 @@ import {
   getCurrentAccountState,
   networkCost,
 } from './selectors';
+import { canHandle } from '@dexdex/model/lib/order-selection';
 
 function applyEvent(ob: OrderBook, event: OrderBookEvent): OrderBook {
   switch (event.kind) {
@@ -207,21 +208,26 @@ function reducer(oldState: WidgetState, action: Actions): WidgetState {
     st.errors.amount = computeAmountError(st.amount, st.tradeable.decimals, currentSide);
   }
 
-  // Recompute currentTransaction when necessary
+  // Recompute orderSelection when necessary
   if (currentSide == null || st.errors.amount != null) {
     // we don't have orderbook or the amount is invalid => no valid tx
-    st.tradePlan = null;
-  } else if (oldSide !== currentSide) {
-    // ordebookSide changed => (side orders changed OR operation changed) => recompute
-    st.tradePlan = tradePlanFor(currentSide, toTokenDecimals(st.amount, st.tradeable.decimals));
+    st.orderSelection = null;
+  } else if (st.orderSelection == null || oldSide !== currentSide) {
+    // 1. we don't have current selection
+    // 2. ordebookSide changed => (side orders changed OR operation changed) => recompute
+    st.orderSelection = selectOrdersFor(
+      currentSide,
+      toTokenDecimals(st.amount, st.tradeable.decimals)
+    );
   } else if (anyChanged('amount')) {
     // only the amount changed. Maybe the current computed transaction is still valid
     const volumeTD = toTokenDecimals(st.amount, st.tradeable.decimals);
-    if (st.tradePlan && st.tradePlan.canHandle(volumeTD)) {
-      st.tradePlan = st.tradePlan!.changeVolume(volumeTD);
-    } else {
+    if (st.orderSelection && !canHandle(st.orderSelection, volumeTD)) {
       // current is not valid => recompute
-      st.tradePlan = tradePlanFor(currentSide, toTokenDecimals(st.amount, st.tradeable.decimals));
+      st.orderSelection = selectOrdersFor(
+        currentSide,
+        toTokenDecimals(st.amount, st.tradeable.decimals)
+      );
     }
   }
 

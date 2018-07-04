@@ -1,6 +1,6 @@
 import { BN } from 'bn.js';
 import { Order, getOrderRemainingVolume, getOrderRemainingVolumeEth } from './order';
-import { TradePlan } from './trade-plan';
+import { OrderSelection } from './order-selection';
 
 function findMinVolumeIdx(orders: Order[]): number {
   let lowest = getOrderRemainingVolume(orders[0]);
@@ -37,15 +37,19 @@ function applyOrder(order: Order, requiredVolume: BN) {
   }
 }
 
-export function tradePlanFor(orders: Order[], ordersQty: number, totalVolume: BN): TradePlan {
+export function selectOrdersFor(
+  orders: Order[],
+  ordersQty: number,
+  totalVolume: BN
+): OrderSelection {
   if (orders.length === 0) {
-    return new TradePlan({
+    return {
       baseVolume: new BN(0),
       baseVolumeEth: new BN(0),
       extraVolume: new BN(0),
       extraVolumeEth: new BN(0),
       orders: [],
-    });
+    };
   }
 
   let accVolume = new BN(0);
@@ -73,13 +77,13 @@ export function tradePlanFor(orders: Order[], ordersQty: number, totalVolume: BN
 
     // If we already achieve the required volume, exit
     if (accVolume.gte(totalVolume)) {
-      return new TradePlan({
+      return {
         baseVolume: accVolume,
         baseVolumeEth: accVolumeEth,
         extraVolume,
         extraVolumeEth,
         orders: selectedOrders,
-      });
+      };
     }
   }
   throw new Error("can't operate to that amount");

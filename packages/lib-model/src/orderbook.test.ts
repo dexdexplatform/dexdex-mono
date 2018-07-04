@@ -10,7 +10,7 @@ beforeEach(() => {
 });
 
 function createOrder(
-  opts: Partial<Pick<Order, 'volume' | 'volumeEth' | 'fee' | 'remaining'>> = {}
+  opts: Partial<Pick<Order, 'volume' | 'volumeEth' | 'remaining'> & { fee: BN }> = {}
 ): Order {
   const volume = opts.volume || new BN(10);
   const volumeEth = opts.volumeEth || new BN(1);
@@ -22,7 +22,6 @@ function createOrder(
     decimals: TokenDecimals,
     volume,
     volumeEth,
-    fee,
     price: computePrice(volumeEth.add(fee), volume, TokenDecimals),
     remaining: opts.remaining || 1,
     ordersData: '',

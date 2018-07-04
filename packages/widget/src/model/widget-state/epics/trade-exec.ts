@@ -1,7 +1,6 @@
 import Erc20 from '@dexdex/erc20';
 import { Operation } from '@dexdex/model/lib/base';
 import { Trade, TradeState } from '@dexdex/model/lib/trade';
-import { getFinalVolumeEth, TradePlan } from '@dexdex/model/lib/trade-plan';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
 import { BN } from 'bn.js';
 import Eth, { Address, TransactionReceipt } from 'ethjs-query';
@@ -13,13 +12,21 @@ import DexDex from '../../contracts/dexdex';
 import { ServerApi } from '../../server-api';
 import { computeGasPrice, TransactionState, TxStage } from '../../widget';
 import { Actions, setTransactionState } from '../actions';
-import { getCurrentAccountState, getCurrentWalletState } from '../selectors';
+import { getCurrentAccountState, getCurrentWalletState, expectedVolume } from '../selectors';
 import { Epic } from '../store';
 import { filterAction } from './utils';
+import { getOrdersData } from '@dexdex/model/lib/order';
+import { getFinalVolumeEth } from '@dexdex/model/lib/order-selection';
 
 const NOAFFILIATE = '0x0000000000000000000000000000000000000000';
 
 const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+type TradeParameters = {
+  ordersData: string;
+  volume: BN;
+  volumeEth: BN;
+};
 
 async function dexdexBuy(opts: {
   eth: Eth;
@@ -109,8 +116,7 @@ async function executeTrade(
   gasPrice: BN,
   tradeable: Tradeable,
   operation: Operation,
-  plan: TradePlan,
-  feePercentage: number,
+  tradeParams: TradeParameters,
   reportState: (newState: TransactionState) => void
 ) {
   let tradeTxId: string;
@@ -121,9 +127,9 @@ async function executeTrade(
         eth,
         account,
         token: tradeable.address,
-        volume: plan.currentVolume,
-        volumeEth: getFinalVolumeEth(plan, feePercentage),
-        ordersData: plan.getOrderParameters(),
+        volume: tradeParams.volume,
+        volumeEth: tradeParams.volumeEth,
+        ordersData: tradeParams.ordersData,
         gasPrice,
         affiliate: NOAFFILIATE,
       });
@@ -133,7 +139,7 @@ async function executeTrade(
         eth,
         account,
         tradeable,
-        plan.currentVolume,
+        tradeParams.volume,
         gasPrice
       );
       reportState({ stage: TxStage.TokenAllowanceInProgress, txId: allowanceTxId });
@@ -144,9 +150,9 @@ async function executeTrade(
         eth,
         account,
         token: tradeable.address,
-        volume: plan.currentVolume,
-        volumeEth: getFinalVolumeEth(plan, feePercentage),
-        ordersData: plan.getOrderParameters(),
+        volume: tradeParams.volume,
+        volumeEth: tradeParams.volumeEth,
+        ordersData: tradeParams.ordersData,
         gasPrice,
         affiliate: NOAFFILIATE,
       });
@@ -184,11 +190,10 @@ function executeTradeObs(
   gasPrice: BN,
   tradeable: Tradeable,
   operation: Operation,
-  plan: TradePlan,
-  feePercentage: number
+  tradeParams: TradeParameters
 ): Observable<TransactionState> {
   return Observable.create(async (observer: Observer<TransactionState>) => {
-    executeTrade(api, eth, account, gasPrice, tradeable, operation, plan, feePercentage, state =>
+    executeTrade(api, eth, account, gasPrice, tradeable, operation, tradeParams, state =>
       observer.next(state)
     )
       .catch(err => observer.error(err))
@@ -213,14 +218,23 @@ export const executeTradeEpic = (api: ServerApi): Epic<WidgetState, Actions> => 
         return empty();
       }
 
-      if (state.tradePlan == null) {
+      if (state.orderSelection == null) {
         // something is wrong here
         console.log('invalid UI state: starting tx with no trade plan');
         return empty();
       }
 
       const gasPriceBN = computeGasPrice(state.config.gasprices, state.gasPrice);
-      const plan = state.tradePlan;
+      const ordersData = getOrdersData(state.orderSelection.orders);
+      const volume = expectedVolume(state);
+      const volumeEth = getFinalVolumeEth(state.orderSelection, volume, state.config.feePercentage);
+
+      const tradeParameters: TradeParameters = {
+        ordersData,
+        volume,
+        volumeEth,
+      };
+
       return executeTradeObs(
         api,
         walletState.eth,
@@ -228,8 +242,7 @@ export const executeTradeEpic = (api: ServerApi): Epic<WidgetState, Actions> => 
         gasPriceBN,
         state.tradeable,
         state.operation,
-        plan,
-        state.config.feePercentage
+        tradeParameters
       );
     }),
     map(setTransactionState)
