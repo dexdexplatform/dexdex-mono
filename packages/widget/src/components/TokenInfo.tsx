@@ -81,7 +81,6 @@ export const TradeInfo: React.SFC<{
           ) : (
             <FormatEth value={volumeEth} />
           )}
-          <FormatEth value={volumeEth} />
         </div>
         <div>{operation === 'buy' ? `${token.name} (${token.symbol})` : 'Ether (ETH)'}</div>
       </div>
