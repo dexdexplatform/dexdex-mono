@@ -22,6 +22,12 @@ export interface OrderSelection {
   extraVolumeEth: BN;
 }
 
+/**
+ * Computes the Ether volume required to fill the OrderSelection with
+ * a given volume.
+ *
+ * @param volume Token volume to fill. Must be between [os.baseVolume, os.baseVolume+os.extraVolume]
+ */
 export function volumeEthFor(orderSel: OrderSelection, volume: BN) {
   if (volume.eq(orderSel.baseVolume)) {
     return orderSel.baseVolumeEth;
@@ -37,6 +43,23 @@ export function volumeEthFor(orderSel: OrderSelection, volume: BN) {
   }
 }
 
+/**
+ * Same as `volumeEthFor` but also add the DexDex Fee to it.
+ *
+ * @param orderSel OrderSelection
+ * @param volume Token Volume
+ * @param feeParts fee expressed in parts / 10000
+ */
+export function getFinalVolumeEth(orderSel: OrderSelection, volume: BN, feeParts: number): BN {
+  return volumeEthFor(orderSel, volume)
+    .muln(10000 + feeParts)
+    .divn(10000);
+}
+
+/**
+ * Indicates wether the given OrderSelection is the optimal selection
+ * to buy/sell the specified volume
+ */
 export function canHandle(orderSel: OrderSelection, volume: BN) {
   return (
     volume.gte(orderSel.baseVolume) && volume.lte(orderSel.baseVolume.add(orderSel.extraVolume))
@@ -49,15 +72,4 @@ export function maxAvailableVolume(orderSel: OrderSelection): BN {
 
 export function maxAvailableVolumeEth(orderSel: OrderSelection): BN {
   return orderSel.baseVolumeEth.add(orderSel.extraVolumeEth);
-}
-
-/**
- *
- * @param orderSel
- * @param feeParts fee expressed in parts / 10000
- */
-export function getFinalVolumeEth(orderSel: OrderSelection, volume: BN, feeParts: number): BN {
-  return volumeEthFor(orderSel, volume)
-    .muln(10000 + feeParts)
-    .divn(10000);
 }

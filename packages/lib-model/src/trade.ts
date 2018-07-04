@@ -7,24 +7,61 @@ export enum TradeState {
   Failed = 'Failed',
 }
 
+/**
+ * Represents a trade that can be in process (Pending), completed or failed.
+ *
+ * The fields are divided between:
+ *   - parameters for the trade (information sent to the smart contract)
+ *   - result of the trade (comes the Ethereum Transaction executed)
+ */
 export interface Trade {
+  /** unique id for the Trade */
   id: string;
+  /** Ethereum transaction hash on which the trade was executed */
   txhash: string;
+  /** Current state */
   state: TradeState;
+  /** Wether it is a sell or a buy */
   isSell: boolean;
+  /** Ethereum Address of the ERC20 token involved */
   tradeableAddress: Address;
+  /** Ethereum Address of the account that originated the trade (smart contract caller) */
   senderAddress: Address;
+  /** Ethereum Address where the trade result has or will be deposited */
   depositAddress: Address;
+  /** Ethereum Address of the trade affiliate (if any) */
   affiliateAddress: Address;
+  /** Encoded information about the orders involved in the trade */
   ordersData: Buffer;
+  /** Gas price used for the trade (in wei) */
   gasPrice: BN;
+  /** Expected token volume for the trade. (encoded as a integer) */
   volume: BN;
+  /** Expected eth volume for the trade. (in wei) */
   volumeEth: BN;
+  /**
+   * Only if Completed
+   * The actual token volume that was traded, it's <= volume
+   * (encoded as a integer)
+   */
   volumeEffective: BN | null;
+  /**
+   * Only if Completed
+   * The actual eth volume that was traded, it's <= volumeEth
+   * (encoded as a integer)
+   */
   volumeEthEffective: BN | null;
+  /** Only if Completed or Failed. Gas Amount consumed by the transaction  */
   gasUsed: BN | null;
+  /**
+   * Only if Completed or Failed.
+   * Date on which the Ethereum Address for the trade was mined.
+   * Actually, the block address
+   */
   executionDate: Date | null;
+  /** Last Update Date */
   updatedDate: Date;
+  /** Creation Date */
   createdDate: Date;
 }
 
