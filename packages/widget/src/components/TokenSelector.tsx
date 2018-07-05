@@ -87,7 +87,7 @@ class TokenList extends React.PureComponent<TokenListProps> {
             // overscanRowCount={overscanRowCount}
             // noRowsRenderer={this._noRowsRenderer}
             rowCount={this.props.tokens.length}
-            rowHeight={40}
+            rowHeight={44}
             rowRenderer={this.rowRenderer}
             // scrollToIndex={scrollToIndex}
           />
