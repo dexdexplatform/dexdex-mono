@@ -165,7 +165,7 @@ async function executeTrade(
     let trade: Trade | null = null;
     while (trade == null || trade.state === TradeState.Pending) {
       trade = await api.getTrade(tradeTxId);
-      wait(1000);
+      await wait(1000);
     }
 
     if (trade.state === TradeState.Failed) {
