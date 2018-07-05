@@ -13,7 +13,7 @@ export type TokenImageProps = {
 };
 const TokenImage: React.SFC<TokenImageProps> = ({ token }) => (
   <SafeImage
-    src={tokenSmallImg(token.symbol)}
+    src={tokenSmallImg(token.address)}
     fallback={tokenDefaultSmallImg}
     className={classes.tokenSymbol}
     alt={`${token.symbol}`}

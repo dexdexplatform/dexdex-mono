@@ -92,5 +92,5 @@ const tokenImage = (size: 23 | 32, name: string) =>
 
 export const tokenDefaultSmallImg = tokenImage(23, '_default');
 export const tokenDefaultBigImg = tokenImage(32, '_default');
-export const tokenSmallImg = (symbol: string) => tokenImage(23, symbol.toLowerCase());
-export const tokenBigImg = (symbol: string) => tokenImage(32, symbol.toLowerCase());
+export const tokenSmallImg = (address: string) => tokenImage(23, address.toLowerCase());
+export const tokenBigImg = (address: string) => tokenImage(32, address.toLowerCase());

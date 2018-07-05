@@ -14,7 +14,7 @@ const classes = require('./TokenInfo.css');
 const TokenImage: React.SFC<{ token: Token }> = ({ token }) => (
   <div className={classes.tokenImage}>
     <SafeImage
-      src={tokenBigImg(token.symbol)}
+      src={tokenBigImg(token.address)}
       fallback={tokenDefaultBigImg}
       alt={`${token.symbol}`}
     />
@@ -51,7 +51,7 @@ export const TradeInfo: React.SFC<{
   <div>
     <div className={classes.tradeSide}>
       <SafeImage
-        src={tokenSmallImg(token.symbol)}
+        src={tokenSmallImg(token.address)}
         fallback={tokenDefaultSmallImg}
         alt={`${token.symbol}`}
       />
