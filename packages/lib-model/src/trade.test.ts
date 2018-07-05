@@ -8,7 +8,7 @@ describe('Trade', () => {
       affiliateAddress: '0x0000000001000000000200000000030000000004',
       depositAddress: '0x0000000001000000000200000000030000000004',
       senderAddress: '0x0000000001000000000200000000030000000004',
-      tradeableAddress: '0x0000000001000000000200000000030000000004',
+      tokenAddress: '0x0000000001000000000200000000030000000004',
       isSell: true,
       id: 'aaaaaaaaaaaaaaaaaaa',
       ordersData: Buffer.from('00000000000000', 'hex'),

@@ -1,6 +1,6 @@
 import { BN } from 'bn.js';
 
-import { Tradeable } from '@dexdex/model/lib/tradeable';
+import { Token } from '@dexdex/model/lib/token';
 
 export enum ErrorCode {
   VolumeBadFormat = 'VolumeBadFormat',
@@ -25,8 +25,8 @@ export type BalanceError =
 
 export type ErrorMessage =
   | { code: ErrorCode.VolumeBadFormat }
-  | { code: ErrorCode.VolumeTooSmall; minVolume: BN; token: Tradeable }
-  | { code: ErrorCode.VolumeTooBig; maxVolume: BN; token: Tradeable }
+  | { code: ErrorCode.VolumeTooSmall; minVolume: BN; token: Token }
+  | { code: ErrorCode.VolumeTooBig; maxVolume: BN; token: Token }
   | {
       code:
         | ErrorCode.NoOrders

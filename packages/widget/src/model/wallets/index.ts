@@ -1,7 +1,7 @@
 import { Address } from '@dexdex/model/lib/base';
 import { BN } from 'bn.js';
 import { Observable, of, combineLatest, empty } from 'rxjs';
-import { Tradeable } from '@dexdex/model/lib/tradeable';
+import { Token } from '@dexdex/model/lib/token';
 import { promiseFactory, seqAsync, pollDifferences } from '@dexdex/rx';
 import { share, concatMap, switchMap, startWith, map } from 'rxjs/operators';
 import Eth from 'ethjs-query';
@@ -141,7 +141,7 @@ const injectedWeb3 = promiseFactory(() => getOnLoad(getWeb3Provider)).pipe(share
 const accountStates = (
   eth: Eth,
   accountAddress: Address,
-  currentToken: Observable<Tradeable>
+  currentToken: Observable<Token>
 ): Observable<AccountState> => {
   const etherBalance$ = pollDifferences({
     period: 60 * 1000,
@@ -206,7 +206,7 @@ function compareArrays(a: Array<any>, b: Array<any>) {
 
 function singleAccountWallet(
   walletId: WalletId,
-  token: Observable<Tradeable>,
+  token: Observable<Token>,
   provider: Provider,
   pollAccount: boolean = false
 ): Observable<WalletState> {
@@ -236,7 +236,7 @@ function singleAccountWallet(
   return withNetworkCheck(eth, walletId, wallet$);
 }
 
-export function metmaskWallet(token: Observable<Tradeable>): Observable<WalletState> {
+export function metmaskWallet(token: Observable<Token>): Observable<WalletState> {
   return injectedWeb3.pipe(
     concatMap(provider => {
       if (provider && provider.isMetaMask) {
@@ -261,7 +261,7 @@ function detectMobileWalletId(provider: any) {
     return WalletId.Unkown;
   }
 }
-export function mobileWallet(token: Observable<Tradeable>): Observable<WalletState> {
+export function mobileWallet(token: Observable<Token>): Observable<WalletState> {
   return injectedWeb3.pipe(
     concatMap(provider => {
       if (provider) {
@@ -274,11 +274,11 @@ export function mobileWallet(token: Observable<Tradeable>): Observable<WalletSta
   );
 }
 
-export function ledgerWallet(token: Observable<Tradeable>): Observable<WalletState> {
+export function ledgerWallet(token: Observable<Token>): Observable<WalletState> {
   return futureWallet(WalletId.Ledger);
 }
 
-export function trezorWallet(token: Observable<Tradeable>): Observable<WalletState> {
+export function trezorWallet(token: Observable<Token>): Observable<WalletState> {
   return futureWallet(WalletId.Trezor);
 }
 

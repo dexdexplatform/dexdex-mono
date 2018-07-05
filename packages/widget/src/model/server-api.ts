@@ -25,12 +25,12 @@ export interface OrderBookSnapshot {
 export type OrderBookEvent =
   | {
       kind: OrderEventKind.Snapshot;
-      tradeableAddress: Address;
+      tokenAddress: Address;
       snapshot: OrderBookSnapshot;
     }
-  | { kind: OrderEventKind.Add; tradeableAddress: Address; order: Order }
-  | { kind: OrderEventKind.Update; tradeableAddress: Address; order: Order }
-  | { kind: OrderEventKind.Delete; tradeableAddress: Address; order: Order };
+  | { kind: OrderEventKind.Add; tokenAddress: Address; order: Order }
+  | { kind: OrderEventKind.Update; tokenAddress: Address; order: Order }
+  | { kind: OrderEventKind.Delete; tokenAddress: Address; order: Order };
 
 export interface JsonOrderBookSnapshot {
   sells: JsonOrder[];
@@ -40,12 +40,12 @@ export interface JsonOrderBookSnapshot {
 export type JsonOrderBookEvent =
   | {
       kind: OrderEventKind.Snapshot;
-      tradeableAddress: Address;
+      tokenAddress: Address;
       snapshot: JsonOrderBookSnapshot;
     }
-  | { kind: OrderEventKind.Add; tradeableAddress: Address; order: JsonOrder }
-  | { kind: OrderEventKind.Update; tradeableAddress: Address; order: JsonOrder }
-  | { kind: OrderEventKind.Delete; tradeableAddress: Address; order: JsonOrder };
+  | { kind: OrderEventKind.Add; tokenAddress: Address; order: JsonOrder }
+  | { kind: OrderEventKind.Update; tokenAddress: Address; order: JsonOrder }
+  | { kind: OrderEventKind.Delete; tokenAddress: Address; order: JsonOrder };
 
 export interface ServerApi {
   getWidgetConfig(widgetId: string): Promise<Exclude<WidgetConfig, 'wallets'>>;
@@ -106,8 +106,8 @@ const getTrade = async (txhash: string): Promise<Trade | null> => {
   }
 };
 
-const getOrderBook = async (tradeableAddress: string): Promise<OrderBookSnapshot> => {
-  const res = await fetch(`${appConfig().ApiBase}/api/v1/orderbooks/${tradeableAddress}`);
+const getOrderBook = async (tokenAddress: string): Promise<OrderBookSnapshot> => {
+  const res = await fetch(`${appConfig().ApiBase}/api/v1/orderbooks/${tokenAddress}`);
   if (res.ok) {
     return fromJsonOrderbookSnapshot(await res.json());
   } else {
@@ -161,15 +161,15 @@ const websocketApi = (socketUrl: string) => {
   const updates$ = eventListener<JsonOrderBookEvent>(socket, 'ob::update').pipe(share());
   const reconnects$ = eventListener(socket, 'reconnect');
 
-  const watchTradeable = (tokenAddress: string): Observable<OrderBookEvent> => {
+  const watchToken = (tokenAddress: string): Observable<OrderBookEvent> => {
     const events = updates$.pipe(
-      filter(obe => obe.tradeableAddress === tokenAddress),
+      filter(obe => obe.tokenAddress === tokenAddress),
       map(fromJsonOrderbookEvent)
     );
 
     const watcher$ = Observable.create((observer: Observer<OrderBookEvent>) => {
       const tokenUnsubsribe = new Subscription(() => {
-        socket.emit('unsubscribe', { tradeable: tokenAddress });
+        socket.emit('unsubscribe', { token: tokenAddress });
       });
 
       // subject with only one value: the initial snapshot
@@ -183,21 +183,17 @@ const websocketApi = (socketUrl: string) => {
       const subscription = allWithTeardown$.subscribe(observer);
 
       // do the subscription
-      socket.emit(
-        'subscribe',
-        { tradeable: tokenAddress, withSnapshot: true },
-        (snapshotJson: any) => {
-          try {
-            snapshot$.next({
-              kind: OrderEventKind.Snapshot,
-              tradeableAddress: tokenAddress,
-              snapshot: fromJsonOrderbookSnapshot(snapshotJson),
-            });
-          } catch (err) {
-            snapshot$.error(err);
-          }
+      socket.emit('subscribe', { token: tokenAddress, withSnapshot: true }, (snapshotJson: any) => {
+        try {
+          snapshot$.next({
+            kind: OrderEventKind.Snapshot,
+            tokenAddress: tokenAddress,
+            snapshot: fromJsonOrderbookSnapshot(snapshotJson),
+          });
+        } catch (err) {
+          snapshot$.error(err);
         }
-      );
+      });
 
       return subscription;
     });
@@ -209,7 +205,7 @@ const websocketApi = (socketUrl: string) => {
   };
 
   return {
-    watchTradeable,
+    watchToken,
   };
 };
 
@@ -220,6 +216,6 @@ export function createApi(): ServerApi {
     getWidgetConfig: getWidgetConfig,
     getOrderBook: getOrderBook,
     getTrade: getTrade,
-    orderBookWatcher: wsApi.watchTradeable,
+    orderBookWatcher: wsApi.watchToken,
   };
 }

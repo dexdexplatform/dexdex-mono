@@ -1,5 +1,5 @@
 import { computePrice } from '@dexdex/model/lib/order';
-import { Tradeable } from '@dexdex/model/lib/tradeable';
+import { Token } from '@dexdex/model/lib/token';
 import { changeDecimals, DivMode } from '@dexdex/utils/lib/units';
 import { BN } from 'bn.js';
 import classnames from 'classnames';
@@ -43,7 +43,7 @@ export class FormatEth extends React.PureComponent<FormatEthProps> {
 }
 
 export type FormatTokenProps =
-  | BNFormatProps & { token: Tradeable }
+  | BNFormatProps & { token: Token }
   | BNFormatProps & { decimals: number };
 
 export class FormatToken extends React.PureComponent<FormatTokenProps> {
@@ -66,7 +66,7 @@ export class FormatToken extends React.PureComponent<FormatTokenProps> {
 export type FormatPriceProps = {
   volume: BN | null;
   volumeEth: BN | null;
-  token: Tradeable;
+  token: Token;
   displayDecimals?: number;
   defaultValue?: string;
 };
@@ -89,7 +89,7 @@ export type FormatPriceComparisonProps = {
   volumeEth: BN;
   effectiveVolume: BN;
   effectiveVolumeEth: BN;
-  token: Tradeable;
+  token: Token;
   displayDecimals?: number;
   defaultValue?: string;
 };

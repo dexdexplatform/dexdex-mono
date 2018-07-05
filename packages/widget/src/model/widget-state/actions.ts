@@ -1,5 +1,5 @@
 import { Operation } from '@dexdex/model/lib/base';
-import { Tradeable } from '@dexdex/model/lib/tradeable';
+import { Token } from '@dexdex/model/lib/token';
 import { OrderBookEvent } from '../server-api';
 import { WalletAccountRef, WalletState } from '../wallets/index';
 import { TransactionState } from '../widget';
@@ -55,13 +55,13 @@ export const setWalletState = (payload: WalletState): SetWalletStateAction => ({
   payload,
 });
 
-export interface SetTradeableAction {
-  type: 'setTradeable';
-  payload: Tradeable;
+export interface SetTokenAction {
+  type: 'setToken';
+  payload: Token;
 }
 
-export const setTradeable = (payload: Tradeable): SetTradeableAction => ({
-  type: 'setTradeable',
+export const setToken = (payload: Token): SetTokenAction => ({
+  type: 'setToken',
   payload,
 });
 
@@ -104,4 +104,4 @@ export type Actions =
   | StartTransactionAction
   | SetTransactionStateAction
   | GoBackAction
-  | SetTradeableAction;
+  | SetTokenAction;

@@ -7,7 +7,7 @@ import { WidgetState } from '..';
 
 export const orderbook = (api: ServerApi): Epic<WidgetState, Actions> => changes =>
   changes.pipe(
-    select('state', 'tradeable'),
-    switchMap(tradeable => api.orderBookWatcher(tradeable.address)),
+    select('state', 'token'),
+    switchMap(token => api.orderBookWatcher(token.address)),
     map(orderbookEvent)
   );

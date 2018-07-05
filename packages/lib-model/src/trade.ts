@@ -24,7 +24,7 @@ export interface Trade {
   /** Wether it is a sell or a buy */
   isSell: boolean;
   /** Ethereum Address of the ERC20 token involved */
-  tradeableAddress: Address;
+  tokenAddress: Address;
   /** Ethereum Address of the account that originated the trade (smart contract caller) */
   senderAddress: Address;
   /** Ethereum Address where the trade result has or will be deposited */
@@ -70,7 +70,7 @@ export interface TradeJson {
   txhash: string;
   state: TradeState;
   isSell: boolean;
-  tradeableAddress: Address;
+  tokenAddress: Address;
   senderAddress: Address;
   depositAddress: Address;
   affiliateAddress: Address;

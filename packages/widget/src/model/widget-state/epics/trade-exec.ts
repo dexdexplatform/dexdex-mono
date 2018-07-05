@@ -1,7 +1,7 @@
 import Erc20 from '@dexdex/erc20';
 import { Operation } from '@dexdex/model/lib/base';
 import { Trade, TradeState } from '@dexdex/model/lib/trade';
-import { Tradeable } from '@dexdex/model/lib/tradeable';
+import { Token } from '@dexdex/model/lib/token';
 import { BN } from 'bn.js';
 import Eth, { Address, TransactionReceipt } from 'ethjs-query';
 import { empty, Observable, Observer } from 'rxjs';
@@ -101,7 +101,7 @@ async function waitForTransaction(eth: Eth, txId: string): Promise<TransactionRe
 async function approveTokenAllowance(
   eth: Eth,
   account: Address,
-  token: Tradeable,
+  token: Token,
   volume: BN,
   gasPrice: BN
 ): Promise<string> {
@@ -114,7 +114,7 @@ async function executeTrade(
   eth: Eth,
   account: Address,
   gasPrice: BN,
-  tradeable: Tradeable,
+  token: Token,
   operation: Operation,
   tradeParams: TradeParameters,
   reportState: (newState: TransactionState) => void
@@ -126,7 +126,7 @@ async function executeTrade(
       tradeTxId = await dexdexBuy({
         eth,
         account,
-        token: tradeable.address,
+        token: token.address,
         volume: tradeParams.volume,
         volumeEth: tradeParams.volumeEth,
         ordersData: tradeParams.ordersData,
@@ -138,7 +138,7 @@ async function executeTrade(
       const allowanceTxId = await approveTokenAllowance(
         eth,
         account,
-        tradeable,
+        token,
         tradeParams.volume,
         gasPrice
       );
@@ -149,7 +149,7 @@ async function executeTrade(
       tradeTxId = await dexdexSell({
         eth,
         account,
-        token: tradeable.address,
+        token: token.address,
         volume: tradeParams.volume,
         volumeEth: tradeParams.volumeEth,
         ordersData: tradeParams.ordersData,
@@ -188,12 +188,12 @@ function executeTradeObs(
   eth: Eth,
   account: Address,
   gasPrice: BN,
-  tradeable: Tradeable,
+  token: Token,
   operation: Operation,
   tradeParams: TradeParameters
 ): Observable<TransactionState> {
   return Observable.create(async (observer: Observer<TransactionState>) => {
-    executeTrade(api, eth, account, gasPrice, tradeable, operation, tradeParams, state =>
+    executeTrade(api, eth, account, gasPrice, token, operation, tradeParams, state =>
       observer.next(state)
     )
       .catch(err => observer.error(err))
@@ -240,7 +240,7 @@ export const executeTradeEpic = (api: ServerApi): Epic<WidgetState, Actions> => 
         walletState.eth,
         accountState.address,
         gasPriceBN,
-        state.tradeable,
+        state.token,
         state.operation,
         tradeParameters
       );

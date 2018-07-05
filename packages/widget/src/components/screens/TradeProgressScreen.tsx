@@ -1,5 +1,5 @@
 import { Address, Operation } from '@dexdex/model/lib/base';
-import { Tradeable } from '@dexdex/model/lib/tradeable';
+import { Token } from '@dexdex/model/lib/token';
 import { BN } from 'bn.js';
 import * as React from 'react';
 import { RenderMapper } from '.';
@@ -15,7 +15,7 @@ import { Screen, ScreenHeader, ScreenContent } from '../Screen';
 
 export interface TradeProgressScreen {
   operation: Operation;
-  tradeable: Tradeable;
+  token: Token;
   expectedVolume: BN;
   fromAddress: Address;
   expectedVolumeEth: BN;
@@ -25,7 +25,7 @@ export interface TradeProgressScreen {
 }
 
 export const mapper: RenderMapper<TradeProgressScreen> = store => ws => ({
-  tradeable: ws.tradeable,
+  token: ws.token,
   fromAddress: getCurrentAccountState(ws)!.address,
   expectedVolume: expectedVolume(ws),
   operation: ws.operation,
@@ -39,7 +39,7 @@ const TradeProgressScreen: React.SFC<TradeProgressScreen> = props => (
   <Screen kind="info" title={props.txHash ? 'Working...' : `Please, approve to ${props.operation}`}>
     <ScreenHeader>
       <TradeInfo
-        token={props.tradeable}
+        token={props.token}
         volume={props.expectedVolume}
         volumeEth={props.expectedVolumeEth}
         inProgress

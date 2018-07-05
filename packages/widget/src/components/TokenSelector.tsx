@@ -1,5 +1,5 @@
 import { Operation } from '@dexdex/model/lib/base';
-import { Tradeable } from '@dexdex/model/lib/tradeable';
+import { Token } from '@dexdex/model/lib/token';
 import * as React from 'react';
 import Select, { Option } from 'react-select';
 import 'react-select/dist/react-select.css';
@@ -9,7 +9,7 @@ import { SafeImage } from './ImageLoader';
 const classes = require('./TokenSelector.css');
 
 export type TokenImageProps = {
-  token: Tradeable;
+  token: Token;
 };
 const TokenImage: React.SFC<TokenImageProps> = ({ token }) => (
   <SafeImage
@@ -22,9 +22,9 @@ const TokenImage: React.SFC<TokenImageProps> = ({ token }) => (
 
 export interface TokenSelectorProps {
   operation: Operation;
-  tokens: Tradeable[];
-  selectedToken: Tradeable;
-  onChange: (token: Tradeable) => void;
+  tokens: Token[];
+  selectedToken: Token;
+  onChange: (token: Token) => void;
 }
 
 class TokenSelector extends React.PureComponent<TokenSelectorProps> {

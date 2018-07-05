@@ -1,5 +1,5 @@
 import { Trade } from '@dexdex/model/lib/trade';
-import { Tradeable } from '@dexdex/model/lib/tradeable';
+import { Token } from '@dexdex/model/lib/token';
 import { toWei } from '@dexdex/utils/lib/units';
 import { BN } from 'bn.js';
 
@@ -18,8 +18,8 @@ export interface GasPrices {
 export interface WidgetConfig {
   gasprices: GasPrices;
   feePercentage: number;
-  tokens: Tradeable[];
-  featuredTokens: Tradeable[];
+  tokens: Token[];
+  featuredTokens: Token[];
   ethers2usdER: number;
 }
 

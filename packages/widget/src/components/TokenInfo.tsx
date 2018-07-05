@@ -1,4 +1,4 @@
-import { Tradeable } from '@dexdex/model/lib/tradeable';
+import { Token } from '@dexdex/model/lib/token';
 import { BN } from 'bn.js';
 import classNames from 'classnames';
 import * as React from 'react';
@@ -11,7 +11,7 @@ const classes = require('./TokenInfo.css');
 
 // const exchangeImgSrc = require('./icons/exchange.svg');
 
-const TokenImage: React.SFC<{ token: Tradeable }> = ({ token }) => (
+const TokenImage: React.SFC<{ token: Token }> = ({ token }) => (
   <div className={classes.tokenImage}>
     <SafeImage
       src={tokenBigImg(token.symbol)}
@@ -21,7 +21,7 @@ const TokenImage: React.SFC<{ token: Tradeable }> = ({ token }) => (
   </div>
 );
 
-const TokenAmount: React.SFC<{ className?: string; token?: Tradeable; value: BN }> = ({
+const TokenAmount: React.SFC<{ className?: string; token?: Token; value: BN }> = ({
   className,
   token,
   value,
@@ -34,7 +34,7 @@ const TokenAmount: React.SFC<{ className?: string; token?: Tradeable; value: BN 
   </div>
 );
 
-export const TokenInfo: React.SFC<{ token: Tradeable; volume: BN }> = ({ token, volume }) => (
+export const TokenInfo: React.SFC<{ token: Token; volume: BN }> = ({ token, volume }) => (
   <div className={classes.tokenInfo}>
     <TokenImage token={token} />
     <TokenAmount value={volume} token={token} />
@@ -42,7 +42,7 @@ export const TokenInfo: React.SFC<{ token: Tradeable; volume: BN }> = ({ token, 
 );
 
 export const TradeInfo: React.SFC<{
-  token: Tradeable;
+  token: Token;
   volume: BN;
   volumeEth: BN;
   inProgress?: boolean;

@@ -1,5 +1,5 @@
 import { Operation } from '@dexdex/model/lib/base';
-import { Tradeable } from '@dexdex/model/lib/tradeable';
+import { Token } from '@dexdex/model/lib/token';
 import { toTokenDecimals } from '@dexdex/utils/lib/units';
 import { BN } from 'bn.js';
 import * as React from 'react';
@@ -11,13 +11,9 @@ import { Screen as TradeSuccessScreen } from '../components/screens/TradeSuccess
 import '../components/Widget.css';
 import { WalletInfo, WalletId } from '../model/wallets/index';
 
-const tokenA: Tradeable = {
+const tokenA: Token = {
   address: '0xbc98051d2cd1eeaa4b396dcde34624e5cd4d50e3',
-  buy_price: 1,
-  sell_price: 1,
   decimals: 5,
-  last_day_buy_price_change: 11,
-  last_day_sellPrice_change: 11,
   name: 'TokenA',
   symbol: 'TKA',
   website: 'ddddd',
@@ -25,7 +21,7 @@ const tokenA: Tradeable = {
 
 const data = {
   operation: 'buy' as Operation,
-  tradeable: tokenA,
+  token: tokenA,
   amount: '25.5',
   amountBN: toTokenDecimals('25.5', 5),
   expectedVolumeEth: new BN('100000000000000000'),
@@ -68,9 +64,9 @@ class Switcher extends React.Component<{}, SwitcherState> {
 const TestApp: React.SFC = () => {
   return (
     <Switcher>
-      <RequestAllowanceScreen token={data.tradeable} volume={data.amountBN} />
+      <RequestAllowanceScreen token={data.token} volume={data.amountBN} />
       <RequestAllowanceScreen
-        token={data.tradeable}
+        token={data.token}
         volume={data.amountBN}
         txHash={'asdfsdfasdfsdfsdafsdafd'}
       />
@@ -79,7 +75,7 @@ const TestApp: React.SFC = () => {
         fromAddress={data.fromAddress}
         operation={data.operation}
         networkCost={data.networkCost}
-        tradeable={data.tradeable}
+        token={data.token}
         expectedVolumeEth={data.expectedVolumeEth}
       />
       <TradeProgressScreen
@@ -87,7 +83,7 @@ const TestApp: React.SFC = () => {
         fromAddress={data.fromAddress}
         operation={data.operation}
         networkCost={data.networkCost}
-        tradeable={data.tradeable}
+        token={data.token}
         expectedVolumeEth={data.expectedVolumeEth}
         txHash={'asdfsdfasdfsdfsdafsdafd'}
       />
@@ -96,7 +92,7 @@ const TestApp: React.SFC = () => {
         fromAddress={data.fromAddress}
         operation={data.operation}
         networkCost={data.networkCost}
-        tradeable={data.tradeable}
+        token={data.token}
         executionDate={new Date()}
         serviceFee={new BN('1000000000')}
         volumeEth={new BN('5000000000000000000')}

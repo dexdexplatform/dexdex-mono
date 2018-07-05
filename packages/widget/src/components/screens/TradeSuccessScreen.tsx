@@ -1,5 +1,5 @@
 import { Address, Operation } from '@dexdex/model/lib/base';
-import { Tradeable } from '@dexdex/model/lib/tradeable';
+import { Token } from '@dexdex/model/lib/token';
 import { feeFromVolumeEthWithFee } from '@dexdex/model/lib/fee';
 import { BN } from 'bn.js';
 import * as React from 'react';
@@ -33,7 +33,7 @@ const Item: React.SFC<{ kind?: 'title' | 'total'; title: string }> = ({
 
 export interface TradeSuccessScreenProps {
   operation: Operation;
-  tradeable: Tradeable;
+  token: Token;
   amount: string;
   fromAddress: Address;
   volume: BN;
@@ -65,7 +65,7 @@ export const mapper: RenderMapper<TradeSuccessScreenProps> = store => ws => {
   const effVolumeEth = effectiveVolumeEth(ws);
 
   return {
-    tradeable: ws.tradeable,
+    token: ws.token,
     fromAddress: accountState.address,
     amount: ws.amount,
     operation: ws.operation,
@@ -89,7 +89,7 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
   >
     <ScreenHeader>
       <TradeInfo
-        token={props.tradeable}
+        token={props.token}
         volume={props.effectiveVolume}
         volumeEth={props.effectiveVolumeEth}
         operation={props.operation}
@@ -113,19 +113,16 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
             </>
           ) : (
             <>
-              <FormatToken
-                value={props.volume.sub(props.effectiveVolume)}
-                token={props.tradeable}
-              />{' '}
-              {props.tradeable.symbol}
+              <FormatToken value={props.volume.sub(props.effectiveVolume)} token={props.token} />{' '}
+              {props.token.symbol}
             </>
           )}
         </Item>
-        <Item title={`${props.tradeable.symbol} Price`}>
+        <Item title={`${props.token.symbol} Price`}>
           <FormatPrice
             volume={props.effectiveVolume}
             volumeEth={props.effectiveVolumeEth}
-            token={props.tradeable}
+            token={props.token}
           />{' '}
           ETH
         </Item>
@@ -141,7 +138,7 @@ const TradeSuccessScreen: React.SFC<TradeSuccessScreenProps> = props => (
             effectiveVolumeEth={props.effectiveVolumeEth}
             volume={props.volume}
             volumeEth={props.volumeEth}
-            token={props.tradeable}
+            token={props.token}
           />
         </Item> */}
       </ItemList>

@@ -7,7 +7,7 @@ import * as CONTRACT_ABI from './dexdex.abi';
 
 export interface DexDex {
   buy(
-    tradeable: Address,
+    token: Address,
     amountToBuy: BN,
     ordersData: string,
     destination: Address,
@@ -16,7 +16,7 @@ export interface DexDex {
   ): Promise<TxHash>;
 
   sell(
-    tradeable: Address,
+    token: Address,
     amount: BN,
     ethers: BN,
     ordersData: string,

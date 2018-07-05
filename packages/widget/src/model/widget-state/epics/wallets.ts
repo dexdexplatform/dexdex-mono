@@ -7,7 +7,7 @@ import { merge } from 'rxjs';
 import { isMobile } from '../../../config';
 
 export const wallets: WidgetEpic = changes => {
-  const currentToken$ = changes.pipe(select('state', 'tradeable'));
+  const currentToken$ = changes.pipe(select('state', 'token'));
 
   const walletStates$ = isMobile
     ? mobileWallet(currentToken$)

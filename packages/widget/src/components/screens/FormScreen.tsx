@@ -1,5 +1,5 @@
 import { Operation } from '@dexdex/model/lib/base';
-import { Tradeable } from '@dexdex/model/lib/tradeable';
+import { Token } from '@dexdex/model/lib/token';
 import { fixDecimals } from '@dexdex/utils/lib/format';
 import { BN } from 'bn.js';
 import * as React from 'react';
@@ -30,8 +30,8 @@ const DEXDEX_ICON = require('../icons/dexdex.svg');
 
 export interface WidgetFormProps {
   actions: Operations;
-  tradeableList: Tradeable[];
-  tradeable: Tradeable;
+  tokenList: Token[];
+  token: Token;
   walletList: WalletState[];
   wallet: WalletAccountRef | null;
   amountError: null | ErrorMessage;
@@ -46,13 +46,13 @@ export interface WidgetFormProps {
 }
 
 export const mapper: RenderMapper<WidgetFormProps> = store => {
-  const setTradeable = (x: Tradeable) => store.dispatch(actions.setTradeable(x));
+  const setToken = (x: Token) => store.dispatch(actions.setToken(x));
   const setOperation = (x: Operation) => store.dispatch(actions.setOperation(x));
   const setWallet = (x: WalletAccountRef | null) => store.dispatch(actions.setWallet(x));
   const startTransaction = () => store.dispatch(actions.startTransaction());
 
   const setAmount = (ws: WidgetState) => (x: string) => {
-    const fixed = fixDecimals(x, ws.tradeable.decimals);
+    const fixed = fixDecimals(x, ws.token.decimals);
     if (ws.amount !== fixed) {
       store.dispatch(actions.setAmount(fixed));
     }
@@ -62,8 +62,8 @@ export const mapper: RenderMapper<WidgetFormProps> = store => {
     const amountError = getAmountError(ws);
     const balanceError = getBalanceError(ws);
     return {
-      tradeableList: ws.config.tokens,
-      tradeable: ws.tradeable,
+      tokenList: ws.config.tokens,
+      token: ws.token,
       walletList: getWalletList(ws),
       wallet: ws.selectedWallet,
       amountError,
@@ -81,7 +81,7 @@ export const mapper: RenderMapper<WidgetFormProps> = store => {
       networkCost: networkCost(ws),
       actions: {
         setAmount: setAmount(ws),
-        setTradeable,
+        setToken,
         setOperation,
         setWallet,
         startTransaction,
@@ -98,16 +98,16 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
         <AmountField amount={props.amount} onChange={props.actions.setAmount} />
         <TokenSelector
           operation={props.operation}
-          tokens={props.tradeableList}
-          selectedToken={props.tradeable}
-          onChange={props.actions.setTradeable}
+          tokens={props.tokenList}
+          selectedToken={props.token}
+          onChange={props.actions.setToken}
         />
       </div>
     </FormField>
     <WalletSelector
       selectedWallet={props.wallet}
       wallets={props.walletList}
-      tradeable={props.tradeable}
+      token={props.token}
       error={props.balanceError}
       onChange={props.actions.setWallet}
     />
@@ -118,9 +118,9 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
           <FormatPrice
             volume={props.expectedVolume}
             volumeEth={props.expectedVolumeEth}
-            token={props.tradeable}
+            token={props.token}
           />{' '}
-          ETH / {props.tradeable.symbol}
+          ETH / {props.token.symbol}
         </div>
       </div>
       <div className={`${classes.summaryItem} ${classes.total}`}>

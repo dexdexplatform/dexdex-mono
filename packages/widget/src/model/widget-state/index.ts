@@ -1,7 +1,7 @@
 import { Address, Operation } from '@dexdex/model/lib/base';
 import { OrderBook } from '@dexdex/model/lib/orderbook';
 import { Trade } from '@dexdex/model/lib/trade';
-import { Tradeable } from '@dexdex/model/lib/tradeable';
+import { Token } from '@dexdex/model/lib/token';
 import { BN } from 'bn.js';
 import { AmountError, BalanceError } from '../form-error';
 import { createApi } from '../server-api';
@@ -30,13 +30,13 @@ export type WidgetScreen =
 export interface WalletDetails {
   address: Address | null;
   etherBalance: BN;
-  tradeableBalance: BN | null;
+  tokenBalance: BN | null;
 }
 
 export interface WidgetState {
   config: WidgetConfig;
   operation: Operation;
-  tradeable: Tradeable;
+  token: Token;
   wallets: Partial<Record<WalletId, WalletState>>;
   selectedWallet: null | WalletAccountRef;
   amountPristine: boolean;
@@ -60,7 +60,7 @@ export type WidgetStore = Store<WidgetState, actions.Actions>;
 
 export interface Operations {
   setOperation: (operation: Operation) => void;
-  setTradeable: (tradeable: Tradeable) => void;
+  setToken: (token: Token) => void;
   setWallet: (wallet: WalletAccountRef | null) => void;
   setAmount: (amount: string) => void;
   startTransaction: () => void;
@@ -77,7 +77,7 @@ export async function initWidget(widgetId: string): Promise<Store<WidgetState, a
   const initialState: WidgetState = {
     config,
     operation: 'buy',
-    tradeable: config.tokens[0],
+    token: config.tokens[0],
     wallets: {},
     selectedWallet: null,
     amountPristine: true,

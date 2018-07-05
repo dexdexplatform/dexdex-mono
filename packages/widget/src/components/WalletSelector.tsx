@@ -1,4 +1,4 @@
-import { Tradeable } from '@dexdex/model/lib/tradeable';
+import { Token } from '@dexdex/model/lib/token';
 import * as React from 'react';
 import Select, { Option } from 'react-select';
 import 'react-select/dist/react-select.css';
@@ -20,7 +20,7 @@ const classes = require('./WalletSelector.css');
 export interface WalletSelectorProps {
   wallets: WalletState[];
   selectedWallet: WalletAccountRef | null;
-  tradeable: Tradeable;
+  token: Token;
   error?: ErrorMessage | null;
   onChange: (selected: WalletAccountRef | null) => void;
 }
@@ -91,8 +91,8 @@ class WalletSelector extends React.Component<WalletSelectorProps> {
               <FormatEth value={option.account.balance} /> ETH
             </div>
             <div className={classes.balance}>
-              <FormatToken value={option.account.tokenBalance} token={this.props.tradeable} />{' '}
-              {this.props.tradeable.symbol}
+              <FormatToken value={option.account.tokenBalance} token={this.props.token} />{' '}
+              {this.props.token.symbol}
             </div>
 
             <FormatAddress className={classes.address} value={option.account.address} noLink />

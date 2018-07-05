@@ -124,10 +124,10 @@ function applySetters(state: WidgetState, action: Actions): WidgetState {
             ? { wallet: action.payload.walletId, accountIdx: 0 }
             : state.selectedWallet,
       };
-    case 'setTradeable':
+    case 'setToken':
       return {
         ...state,
-        tradeable: action.payload,
+        token: action.payload,
       };
     case 'orderbookEvent':
       return {
@@ -178,8 +178,8 @@ function reducer(oldState: WidgetState, action: Actions): WidgetState {
   let st = applySetters(oldState, action);
   const anyChanged = changeChecker(oldState, st);
 
-  // reset orderbook when tradeable changes
-  if (anyChanged('tradeable')) {
+  // reset orderbook when token changes
+  if (anyChanged('token')) {
     st.orderbook = null;
   }
 
@@ -188,24 +188,24 @@ function reducer(oldState: WidgetState, action: Actions): WidgetState {
     st.amount = removeExtraZeros(
       changeDecimals(
         getSide(st.orderbook, st.operation).minVolume,
-        st.tradeable.decimals,
+        st.token.decimals,
         6,
         DivMode.Ceil
       )
     );
   }
 
-  // If tradeable changed, we adjust the amount to the number of decimals of it
-  if (anyChanged('tradeable')) {
-    st.amount = fixDecimals(st.amount, st.tradeable.decimals);
+  // If token changed, we adjust the amount to the number of decimals of it
+  if (anyChanged('token')) {
+    st.amount = fixDecimals(st.amount, st.token.decimals);
   }
 
   const oldSide = getCurrentSide(oldState.orderbook, oldState.operation);
   const currentSide = getCurrentSide(st.orderbook, st.operation);
 
-  // Recompute isValidAmount if (side,amount or tradeable) changed
-  if (oldSide !== currentSide || anyChanged('amount', 'tradeable')) {
-    st.errors.amount = computeAmountError(st.amount, st.tradeable.decimals, currentSide);
+  // Recompute isValidAmount if (side,amount or token) changed
+  if (oldSide !== currentSide || anyChanged('amount', 'token')) {
+    st.errors.amount = computeAmountError(st.amount, st.token.decimals, currentSide);
   }
 
   // Recompute orderSelection when necessary
@@ -215,18 +215,15 @@ function reducer(oldState: WidgetState, action: Actions): WidgetState {
   } else if (st.orderSelection == null || oldSide !== currentSide) {
     // 1. we don't have current selection
     // 2. ordebookSide changed => (side orders changed OR operation changed) => recompute
-    st.orderSelection = selectOrdersFor(
-      currentSide,
-      toTokenDecimals(st.amount, st.tradeable.decimals)
-    );
+    st.orderSelection = selectOrdersFor(currentSide, toTokenDecimals(st.amount, st.token.decimals));
   } else if (anyChanged('amount')) {
     // only the amount changed. Maybe the current computed transaction is still valid
-    const volumeTD = toTokenDecimals(st.amount, st.tradeable.decimals);
+    const volumeTD = toTokenDecimals(st.amount, st.token.decimals);
     if (st.orderSelection && !canHandle(st.orderSelection, volumeTD)) {
       // current is not valid => recompute
       st.orderSelection = selectOrdersFor(
         currentSide,
-        toTokenDecimals(st.amount, st.tradeable.decimals)
+        toTokenDecimals(st.amount, st.token.decimals)
       );
     }
   }
