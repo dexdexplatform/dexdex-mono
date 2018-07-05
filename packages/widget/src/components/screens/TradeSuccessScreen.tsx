@@ -1,5 +1,6 @@
 import { Address, Operation } from '@dexdex/model/lib/base';
 import { Tradeable } from '@dexdex/model/lib/tradeable';
+import { feeFromVolumeEthWithFee } from '@dexdex/model/lib/fee';
 import { BN } from 'bn.js';
 import * as React from 'react';
 import { RenderMapper } from '.';
@@ -72,7 +73,7 @@ export const mapper: RenderMapper<TradeSuccessScreenProps> = store => ws => {
     volume: ws.tradeExecution.trade.volume,
     effectiveVolume: effectiveVolume(ws),
     effectiveVolumeEth: effVolumeEth,
-    serviceFee: effVolumeEth.muln(ws.config.feePercentage).divn(10000),
+    serviceFee: feeFromVolumeEthWithFee(ws.operation, effVolumeEth, ws.config.feePercentage),
     networkCost: effectiveNetworkCost(ws),
     executionDate: ws.tradeExecution.trade.executionDate!,
     tradeTxHash: ws.tradeExecution.tradeTxHash,

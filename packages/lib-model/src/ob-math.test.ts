@@ -2,7 +2,7 @@ import { fromTokenDecimals, toTokenDecimals, toWei } from '@dexdex/utils/lib/uni
 import { BN } from 'bn.js';
 import * as obmath from './ob-math';
 import { computePrice, getOrderRemainingVolumeEth, Order } from './order';
-import { maxAvailableVolume, maxAvailableVolumeEth } from './order-selection';
+import { maxVolume, maxVolumeEth } from './order-selection';
 
 let nextId = 1;
 let TokenDecimals = 10;
@@ -142,14 +142,14 @@ describe('obmath', () => {
       expect(tx.orders[0].id).toBe(order.id);
 
       // ether amount is proporitonal a 20/30 (required/available)
-      const maxVolumeEth = order.volumeEth;
-      const requiredVolumeEth = maxVolumeEth.muln(20).divn(30);
+      const volumeEth = order.volumeEth;
+      const requiredVolumeEth = volumeEth.muln(20).divn(30);
 
       expect(tx.baseVolumeEth).toEqualBN(requiredVolumeEth);
 
       // this selection is valid until we reach 30 tokens (max volume)
-      expect(maxAvailableVolume(tx)).toEqualBN(toTokenDecimals(30, TokenDecimals));
-      expect(maxAvailableVolumeEth(tx)).toEqualBN(maxVolumeEth);
+      expect(maxVolume(tx)).toEqualBN(toTokenDecimals(30, TokenDecimals));
+      expect(maxVolumeEth(tx)).toEqualBN(volumeEth);
     });
 
     test('case: 1 order - partial completion - order is not full', () => {
@@ -158,14 +158,14 @@ describe('obmath', () => {
 
       const order = orders[0];
       // we have half the order remaining
-      const maxVolumeEth = order.volumeEth.divn(2);
+      const volumeEth = order.volumeEth.divn(2);
       // half the volume (10), when we want 15 is (* 10 / 15)
-      const requiredVolumeEth = maxVolumeEth.muln(10).divn(15);
+      const requiredVolumeEth = volumeEth.muln(10).divn(15);
 
       expect(tx.orders).toHaveLength(1);
       expect(tx.orders[0].id).toBe(order.id);
       expect(tx.baseVolumeEth).toEqualBN(requiredVolumeEth);
-      expect(maxAvailableVolumeEth(tx)).toEqualBN(maxVolumeEth);
+      expect(maxVolumeEth(tx)).toEqualBN(volumeEth);
     });
 
     test('case: 2 orders - partial completion', () => {

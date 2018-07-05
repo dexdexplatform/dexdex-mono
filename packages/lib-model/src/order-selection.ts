@@ -1,5 +1,7 @@
 import { BN } from 'bn.js';
 import { Order } from './order';
+import { Operation } from './base';
+import { applyFee } from './fee';
 
 /**
  * Models a selection of orders that are the response to the question
@@ -51,9 +53,12 @@ export function volumeEthFor(orderSel: OrderSelection, volume: BN) {
  * @param feeParts fee expressed in parts / 10000
  */
 export function getFinalVolumeEth(orderSel: OrderSelection, volume: BN, feeParts: number): BN {
-  return volumeEthFor(orderSel, volume)
-    .muln(10000 + feeParts)
-    .divn(10000);
+  if (orderSel.orders.length === 0) {
+    throw new Error('invalid OrderSelection: no orders');
+  }
+
+  const operation: Operation = orderSel.orders[0].isSell ? 'buy' : 'sell';
+  return applyFee(operation, volumeEthFor(orderSel, volume), feeParts);
 }
 
 /**
@@ -66,10 +71,10 @@ export function canHandle(orderSel: OrderSelection, volume: BN) {
   );
 }
 
-export function maxAvailableVolume(orderSel: OrderSelection): BN {
+export function maxVolume(orderSel: OrderSelection): BN {
   return orderSel.baseVolume.add(orderSel.extraVolume);
 }
 
-export function maxAvailableVolumeEth(orderSel: OrderSelection): BN {
+export function maxVolumeEth(orderSel: OrderSelection): BN {
   return orderSel.baseVolumeEth.add(orderSel.extraVolumeEth);
 }
