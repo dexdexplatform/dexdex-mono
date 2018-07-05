@@ -97,7 +97,6 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
       <div className={classes.flexWrapper}>
         <AmountField amount={props.amount} onChange={props.actions.setAmount} />
         <TokenSelector
-          operation={props.operation}
           tokens={props.tokenList}
           selectedToken={props.token}
           onChange={props.actions.setToken}
