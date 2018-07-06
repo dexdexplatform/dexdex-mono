@@ -10,5 +10,11 @@
   border-right: transparent;
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
-  flex: 4;
+  flex: 3;
+}
+
+@media (min-width: 650px) {
+  .amountField {
+    flex: 2;
+  }
 }
