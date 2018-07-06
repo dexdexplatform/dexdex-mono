@@ -55,7 +55,7 @@ const ErrorScreen: React.SFC<ErrorScreenProps> = props => (
       </>
     }
     contentMsg="Should we start again?"
-    onClick={goBack}
+    onClick={props.goBack}
     btnLabel="YEAH!"
   />
 );
@@ -65,7 +65,7 @@ const RejectedSignatureScreen: React.SFC<ErrorScreenProps> = props => (
     imageSrc={rejectedIcon}
     headerMsg="You rejected us..."
     contentMsg="Should we start again?"
-    onClick={goBack}
+    onClick={props.goBack}
     btnLabel="Go Gack"
   />
 );
