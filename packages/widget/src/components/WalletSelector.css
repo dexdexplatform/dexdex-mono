@@ -6,6 +6,10 @@
 
   & .walletReason {
     margin-left: auto;
+    font-size: 0.75rem;
+    justify-content: flex-end;
+    display: flex;
+    align-items: center;
   }
 }
 .nameContainer {
@@ -25,7 +29,7 @@
 
 .info {
   text-align: right;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   line-height: 0.9rem;
   color: #124;
   margin-left: auto;
