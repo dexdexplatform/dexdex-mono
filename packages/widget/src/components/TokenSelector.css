@@ -10,16 +10,14 @@
 
 .tokenSelector {
   cursor: pointer;
-  & .tokenSelector .name {
+  & .name {
     margin-left: 5px;
     vertical-align: middle;
     font-size: 1rem;
     font-weight: 700;
 
     & small {
-      font-size: 0.75rem;
-      color: rgba(17, 34, 68, 0.5);
-      font-weight: 400;
+      display: none;
     }
   }
 }
@@ -100,9 +98,6 @@
 }
 
 .tokenSelector {
-  flex-basis: 30%;
-  max-width: 30%;
-
   border: 1px solid #ccc;
   border-left: transparent;
   padding: 0 10px;
@@ -111,6 +106,8 @@
   border-bottom-left-radius: 0;
 
   display: flex;
+  flex: 1;
+  justify-content: flex-end;
   align-items: center;
 }
 
@@ -120,4 +117,14 @@
 
 :global :local(.tokenSelector).Select.is-focused.is-open .Select-value {
   display: none;
+}
+
+@media (min-width: 650px) {
+  .tokenSelector .name small {
+    display: inline-flex;
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: rgba(17, 34, 68, 0.5);
+    white-space: nowrap;
+  }
 }
