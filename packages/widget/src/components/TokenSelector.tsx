@@ -3,7 +3,7 @@ import * as classnames from 'classnames/bind';
 import * as React from 'react';
 import 'react-select/dist/react-select.css';
 import { AutoSizer, List, ListRowProps } from 'react-virtualized';
-import { tokenDefaultSmallImg, tokenSmallImg } from '../config';
+import { tokenDefaultSmallImg, tokenSmallImg, isMobile } from '../config';
 import { SafeImage } from './ImageLoader';
 import { Modal } from './Modal';
 
@@ -150,7 +150,7 @@ class TokenSelectionModal extends React.PureComponent<
   };
 
   componentDidMount() {
-    if (this.searchRef.current) {
+    if (!isMobile && this.searchRef.current) {
       this.searchRef.current.focus();
     }
   }
