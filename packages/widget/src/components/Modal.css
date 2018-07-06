@@ -1,0 +1,28 @@
+.modalOverlay {
+  /* use absolute since it's a modal contained in a realative div */
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(40, 40, 40, 0.5);
+  z-index: 100;
+
+  /* to center .modal inside */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  position: relative;
+  background-color: white;
+
+  height: 90%;
+  max-height: 80vh;
+  width: 30em;
+  max-width: 100vw;
+
+  line-height: 1.4;
+}

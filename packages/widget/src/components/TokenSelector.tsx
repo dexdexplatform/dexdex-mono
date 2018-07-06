@@ -1,18 +1,13 @@
 import { Token } from '@dexdex/model/lib/token';
+import * as classnames from 'classnames/bind';
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-
 import 'react-select/dist/react-select.css';
+import { AutoSizer, List, ListRowProps } from 'react-virtualized';
 import { tokenDefaultSmallImg, tokenSmallImg } from '../config';
 import { SafeImage } from './ImageLoader';
-import * as classnames from 'classnames/bind';
-import { AutoSizer, List, ListRowProps } from 'react-virtualized';
+import { Modal } from './Modal';
 
 const cx = classnames.bind(require('./TokenSelector.css'));
-
-const preventPropagation: React.EventHandler<any> = e => {
-  e.stopPropagation();
-};
 
 // TokenImage
 //------------------------------------------------------------------------------
@@ -160,46 +155,34 @@ class TokenSelectionModal extends React.PureComponent<
     }
   }
 
-  renderPortal() {
+  render() {
     return (
-      <div
-        className={cx('modalOverlay')}
-        aria-hidden={false}
-        onClick={this.props.onCancel}
-        role="dialog"
-        tabIndex={-1}
-      >
-        <div className={cx('modal')} onClick={preventPropagation}>
-          <div className={cx('headerModal')}>
-            <div className={cx('headerTitle')}>Token List</div>
-            <div className={cx('closeModal')} onClick={this.props.onCancel}>
-              ✕
-            </div>
-          </div>
-          <div className={cx('modalSearchArea')}>
-            <input
-              placeholder="search..."
-              ref={this.searchRef}
-              type="text"
-              value={this.state.currentSearch}
-              onChange={this.setSearchText}
-              onKeyUp={this.onSearchKeyUp}
-            />
-          </div>
-          <div className={cx('modalTokenList')}>
-            <TokenList
-              tokens={this.filteredTokens}
-              selectedToken={this.props.selectedToken}
-              setToken={this.props.setToken}
-            />
+      <Modal modalClassName={cx('modal')} onClose={this.props.onCancel}>
+        <div className={cx('headerModal')}>
+          <div className={cx('headerTitle')}>Token List</div>
+          <div className={cx('closeModal')} onClick={this.props.onCancel}>
+            ✕
           </div>
         </div>
-      </div>
+        <div className={cx('modalSearchArea')}>
+          <input
+            placeholder="search..."
+            ref={this.searchRef}
+            type="text"
+            value={this.state.currentSearch}
+            onChange={this.setSearchText}
+            onKeyUp={this.onSearchKeyUp}
+          />
+        </div>
+        <div className={cx('modalTokenList')}>
+          <TokenList
+            tokens={this.filteredTokens}
+            selectedToken={this.props.selectedToken}
+            setToken={this.props.setToken}
+          />
+        </div>
+      </Modal>
     );
-  }
-
-  render() {
-    return ReactDOM.createPortal(this.renderPortal(), document.getElementById('modal-root')!);
   }
 }
 
@@ -216,7 +199,7 @@ export interface TokenSelectorState {
   isOpen: boolean;
 }
 
-class TokenSelector extends React.PureComponent<TokenSelectorProps, TokenSelectorState> {
+class TokenSelector extends React.Component<TokenSelectorProps, TokenSelectorState> {
   state: TokenSelectorState = {
     isOpen: false,
   };
