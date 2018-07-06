@@ -87,7 +87,7 @@ class TokenList extends React.PureComponent<TokenListProps> {
             // overscanRowCount={overscanRowCount}
             // noRowsRenderer={this._noRowsRenderer}
             rowCount={this.props.tokens.length}
-            rowHeight={40}
+            rowHeight={50}
             rowRenderer={this.rowRenderer}
             // scrollToIndex={scrollToIndex}
           />
@@ -170,8 +170,11 @@ class TokenSelectionModal extends React.PureComponent<
         tabIndex={-1}
       >
         <div className={cx('modal')} onClick={preventPropagation}>
-          <div className={cx('closeModal')} onClick={this.props.onCancel}>
-            X
+          <div className={cx('headerModal')}>
+            <div className={cx('headerTitle')}>Token List</div>
+            <div className={cx('closeModal')} onClick={this.props.onCancel}>
+              ✕
+            </div>
           </div>
           <div className={cx('modalSearchArea')}>
             <input
