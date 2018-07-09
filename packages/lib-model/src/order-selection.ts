@@ -58,7 +58,8 @@ export function getFinalVolumeEth(orderSel: OrderSelection, volume: BN, feeParts
   }
 
   const operation: Operation = orderSel.orders[0].isSell ? 'buy' : 'sell';
-  return applyFee(operation, volumeEthFor(orderSel, volume), feeParts);
+  const volumeEth = applyFee(operation, volumeEthFor(orderSel, volume), feeParts);
+  return operation === 'buy' ? volumeEth.add(new BN(2)) : volumeEth;
 }
 
 /**
