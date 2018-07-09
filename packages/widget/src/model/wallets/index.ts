@@ -214,7 +214,7 @@ function singleAccountWallet(
 
   const accounts2States = (accounts: string[]): Observable<WalletState> => {
     if (accounts.length === 0) {
-      return of(errorState(walletId, 'Not logged'));
+      return of(errorState(walletId, 'Not logged in'));
     } else {
       return combineLatest(accounts.map(address => accountStates(eth, address, token))).pipe(
         map(xs => readyState(walletId, eth, xs))

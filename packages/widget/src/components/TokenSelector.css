@@ -118,13 +118,3 @@
 :global :local(.tokenSelector).Select.is-focused.is-open .Select-value {
   display: none;
 }
-
-@media (min-width: 650px) {
-  .tokenSelector .name small {
-    display: inline-flex;
-    font-size: 0.75rem;
-    font-weight: 400;
-    color: rgba(17, 34, 68, 0.5);
-    white-space: nowrap;
-  }
-}
