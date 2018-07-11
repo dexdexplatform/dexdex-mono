@@ -5,14 +5,18 @@ import { Operation } from '@dexdex/model/lib/base';
 const classes = require('./OperationSelector.css');
 
 export interface OperationSelectorProps {
+  enabledOperations: Operation[];
   value: Operation;
   onChange: (newValue: Operation) => void;
 }
 
-const Operations: Operation[] = ['buy', 'sell'];
-const OperationSelector: React.SFC<OperationSelectorProps> = ({ value, onChange }) => (
+const OperationSelector: React.SFC<OperationSelectorProps> = ({
+  enabledOperations,
+  value,
+  onChange,
+}) => (
   <div className={classes.operationSelector}>
-    {Operations.map(op => (
+    {enabledOperations.map(op => (
       <button
         key={op}
         className={className(value === op && classes.selected)}

@@ -2,6 +2,8 @@ import { Trade } from '@dexdex/model/lib/trade';
 import { Token } from '@dexdex/model/lib/token';
 import { toWei } from '@dexdex/utils/lib/units';
 import BN from 'bn.js';
+import { Address } from 'ethjs-contract';
+import { Operation } from '../../../../node_modules/@dexdex/model/lib/base';
 
 export enum GasPrice {
   Slow = 'Slow',
@@ -19,7 +21,8 @@ export interface WidgetConfig {
   gasprices: GasPrices;
   feePercentage: number;
   tokens: Token[];
-  featuredTokens: Token[];
+  affiliateAddress: Address;
+  enabledOperations: Operation[];
   ethers2usdER: number;
 }
 

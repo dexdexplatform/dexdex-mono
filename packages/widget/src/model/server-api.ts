@@ -48,7 +48,7 @@ export type JsonOrderBookEvent =
   | { kind: OrderEventKind.Delete; tokenAddress: Address; order: JsonOrder };
 
 export interface ServerApi {
-  getWidgetConfig(widgetId: string): Promise<Exclude<WidgetConfig, 'wallets'>>;
+  getWidgetConfig(widgetId: string): Promise<WidgetConfig>;
   getOrderBook(tokenAddress: string): Promise<OrderBookSnapshot>;
   getTrade(txhash: string): Promise<Trade | null>;
   orderBookWatcher(tokenAddress: string): Observable<OrderBookEvent>;

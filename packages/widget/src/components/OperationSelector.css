@@ -26,6 +26,7 @@
   &.selected {
     color: #fff;
     background-color: #124;
+    cursor: default;
   }
 
   &:first-child {

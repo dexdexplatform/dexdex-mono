@@ -76,7 +76,7 @@ export async function initWidget(widgetId: string): Promise<Store<WidgetState, a
 
   const initialState: WidgetState = {
     config,
-    operation: 'buy',
+    operation: config.enabledOperations.length > 1 ? 'buy' : config.enabledOperations[0],
     token: config.tokens[0],
     wallets: {},
     selectedWallet: null,

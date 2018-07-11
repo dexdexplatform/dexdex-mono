@@ -18,8 +18,6 @@ import { filterAction } from './utils';
 import { getOrdersData } from '@dexdex/model/lib/order';
 import { getFinalVolumeEth } from '@dexdex/model/lib/order-selection';
 
-const NOAFFILIATE = '0x0000000000000000000000000000000000000000';
-
 const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 type TradeParameters = {
@@ -116,6 +114,7 @@ async function executeTrade(
   gasPrice: BN,
   token: Token,
   operation: Operation,
+  affiliateAddress: Address,
   tradeParams: TradeParameters,
   reportState: (newState: TransactionState) => void
 ) {
@@ -131,7 +130,7 @@ async function executeTrade(
         volumeEth: tradeParams.volumeEth,
         ordersData: tradeParams.ordersData,
         gasPrice,
-        affiliate: NOAFFILIATE,
+        affiliate: affiliateAddress,
       });
     } else {
       reportState({ stage: TxStage.RequestTokenAllowanceSignature });
@@ -154,7 +153,7 @@ async function executeTrade(
         volumeEth: tradeParams.volumeEth,
         ordersData: tradeParams.ordersData,
         gasPrice,
-        affiliate: NOAFFILIATE,
+        affiliate: affiliateAddress,
       });
     }
 
@@ -190,11 +189,20 @@ function executeTradeObs(
   gasPrice: BN,
   token: Token,
   operation: Operation,
+  affiliateAddress: Address,
   tradeParams: TradeParameters
 ): Observable<TransactionState> {
   return Observable.create(async (observer: Observer<TransactionState>) => {
-    executeTrade(api, eth, account, gasPrice, token, operation, tradeParams, state =>
-      observer.next(state)
+    executeTrade(
+      api,
+      eth,
+      account,
+      gasPrice,
+      token,
+      operation,
+      affiliateAddress,
+      tradeParams,
+      state => observer.next(state)
     )
       .catch(err => observer.error(err))
       .then(() => observer.complete());
@@ -224,6 +232,7 @@ export const executeTradeEpic = (api: ServerApi): Epic<WidgetState, Actions> => 
         return empty();
       }
 
+      const affiliateAddress = state.config.affiliateAddress;
       const gasPriceBN = computeGasPrice(state.config.gasprices, state.gasPrice);
       const ordersData = getOrdersData(state.orderSelection.orders);
       const volume = expectedVolume(state);
@@ -242,6 +251,7 @@ export const executeTradeEpic = (api: ServerApi): Epic<WidgetState, Actions> => 
         gasPriceBN,
         state.token,
         state.operation,
+        affiliateAddress,
         tradeParameters
       );
     }),

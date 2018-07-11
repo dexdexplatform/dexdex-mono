@@ -40,6 +40,7 @@ export interface WidgetFormProps {
   amount: string; // expressed in Tokens #
   gasPrice: GasPrice;
   operation: Operation;
+  enabledOperations: Operation[];
   expectedVolume: BN | null;
   expectedVolumeEth: BN | null;
   networkCost: BN | null;
@@ -75,6 +76,7 @@ export const mapper: RenderMapper<WidgetFormProps> = store => {
         ws.orderbook != null,
       amount: ws.amount,
       gasPrice: ws.gasPrice,
+      enabledOperations: ws.config.enabledOperations,
       operation: ws.operation,
       expectedVolume: amountError == null ? expectedVolume(ws) : null,
       expectedVolumeEth: expectedVolumeEth(ws),
@@ -92,7 +94,11 @@ export const mapper: RenderMapper<WidgetFormProps> = store => {
 
 const WidgetForm: React.SFC<WidgetFormProps> = props => (
   <Screen kind="form">
-    <OperationSelector value={props.operation} onChange={props.actions.setOperation} />
+    <OperationSelector
+      enabledOperations={props.enabledOperations}
+      value={props.operation}
+      onChange={props.actions.setOperation}
+    />
     <FormField label={`${props.operation} Amount`} htmlFor="token" error={props.amountError}>
       <div className={classes.flexWrapper}>
         <AmountField amount={props.amount} onChange={props.actions.setAmount} />
