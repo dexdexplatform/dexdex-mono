@@ -1,6 +1,6 @@
 {
   "name": "@dexdex/typescript-typings",
-  "version": "0.0.14",
+  "version": "0.1.2",
   "description": "Typings",
   "license": "MIT",
   "scripts": {

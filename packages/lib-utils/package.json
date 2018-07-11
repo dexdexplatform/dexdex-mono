@@ -1,6 +1,6 @@
 {
   "name": "@dexdex/utils",
-  "version": "0.0.14",
+  "version": "0.1.2",
   "description": "DexDex Utils",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -20,7 +20,7 @@
     ]
   },
   "devDependencies": {
-    "@dexdex/typescript-typings": "^0.0.14",
+    "@dexdex/typescript-typings": "^0.1.2",
     "@types/jest": "^22.2.3",
     "jest": "^23.0.1",
     "lint-staged": "^7.1.2",
