@@ -175,6 +175,15 @@ declare module 'ethjs-query' {
     getBlockByHash(blockHash: BlockHash, fullTxs: true): Promise<null | Block<Transaction>>;
     getBlockByHash(blockHash: BlockHash, fullTxs: false): Promise<null | Block<string>>;
 
+    getBlockByNumber(
+      blockNumber: QUANTITY | BlockTag,
+      fullTxs: true
+    ): Promise<null | Block<Transaction>>;
+    getBlockByNumber(
+      blockNumber: QUANTITY | BlockTag,
+      fullTxs: false
+    ): Promise<null | Block<string>>;
+
     getTransactionReceipt(txHash: string): Promise<null | TransactionReceipt>;
     getTransactionByHash(txHash: string): Promise<null | Transaction>;
     blockNumber(): Promise<BN>;
