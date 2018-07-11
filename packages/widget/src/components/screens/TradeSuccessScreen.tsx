@@ -1,7 +1,7 @@
 import { Address, Operation } from '@dexdex/model/lib/base';
 import { Token } from '@dexdex/model/lib/token';
 import { feeFromVolumeEthWithFee } from '@dexdex/model/lib/fee';
-import { BN } from 'bn.js';
+import BN from 'bn.js';
 import * as React from 'react';
 import { RenderMapper } from '.';
 import { WalletInfo } from '../../model/wallets/index';

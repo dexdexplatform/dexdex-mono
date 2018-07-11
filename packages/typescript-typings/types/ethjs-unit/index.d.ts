@@ -1,5 +1,5 @@
 declare module 'ethjs-unit' {
-  import { BN } from 'bn.js';
+  import BN from 'bn.js';
   export type EthUnit =
     | 'wei'
     | 'kwei'

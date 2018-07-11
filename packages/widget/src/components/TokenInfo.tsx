@@ -1,5 +1,5 @@
 import { Token } from '@dexdex/model/lib/token';
-import { BN } from 'bn.js';
+import BN from 'bn.js';
 import classNames from 'classnames';
 import * as React from 'react';
 import { tokenBigImg, tokenDefaultBigImg, tokenDefaultSmallImg, tokenSmallImg } from '../config';

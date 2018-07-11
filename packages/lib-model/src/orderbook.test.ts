@@ -1,6 +1,6 @@
 import * as ob from './orderbook';
 import { Order, fromJsonOrder, computePrice, toJsonOrder } from './order';
-import { BN } from 'bn.js';
+import BN from 'bn.js';
 
 let nextId = 1;
 let TokenDecimals = 10;

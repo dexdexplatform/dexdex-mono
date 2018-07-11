@@ -9,6 +9,8 @@ import {
   map,
   share,
   startWith,
+  take,
+  toArray,
 } from 'rxjs/operators';
 
 export const removeNull = <A>(input$: Observable<A | null>): Observable<A> =>
@@ -113,3 +115,11 @@ export function accumulateUntil(notifier: Observable<any>) {
     );
   };
 }
+
+export const sample = <A>(input: Observable<A>, n: number) =>
+  input
+    .pipe(
+      take(n),
+      toArray()
+    )
+    .toPromise();

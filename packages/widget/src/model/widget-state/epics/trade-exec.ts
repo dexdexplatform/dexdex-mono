@@ -2,7 +2,7 @@ import Erc20 from '@dexdex/erc20';
 import { Operation } from '@dexdex/model/lib/base';
 import { Trade, TradeState } from '@dexdex/model/lib/trade';
 import { Token } from '@dexdex/model/lib/token';
-import { BN } from 'bn.js';
+import BN from 'bn.js';
 import Eth, { Address, TransactionReceipt } from 'ethjs-query';
 import { empty, Observable, Observer } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';

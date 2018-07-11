@@ -4,7 +4,7 @@ import { WidgetState, WidgetStore, initWidget, WidgetScreen } from '../model/wid
 import './Widget.css';
 import WidgetLoader from './WidgetLoader';
 import screens from './screens';
-import { BN } from 'bn.js';
+import BN from 'bn.js';
 import { TxStage } from '../model/widget';
 
 export interface WidgetManagerState {

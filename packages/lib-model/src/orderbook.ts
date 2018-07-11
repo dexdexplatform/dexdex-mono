@@ -1,4 +1,4 @@
-import { BN } from 'bn.js';
+import BN from 'bn.js';
 import { Operation } from './base';
 import * as obmath from './ob-math';
 import { Order } from './order';

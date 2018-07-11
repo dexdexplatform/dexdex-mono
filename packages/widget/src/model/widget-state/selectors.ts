@@ -3,7 +3,7 @@ import { getSide } from '@dexdex/model/lib/orderbook';
 import { Trade } from '@dexdex/model/lib/trade';
 import { Token } from '@dexdex/model/lib/token';
 import { toTokenDecimals } from '@dexdex/utils/lib/units';
-import { BN } from 'bn.js';
+import BN from 'bn.js';
 import { WidgetState } from '.';
 import { isMobile } from '../../config';
 import { AmountError, ErrorCode, ErrorMessage } from '../form-error';

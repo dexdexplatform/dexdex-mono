@@ -1,4 +1,4 @@
-import { BN } from 'bn.js';
+import BN from 'bn.js';
 import { Order, fromJsonOrder, toJsonOrder } from './order';
 
 describe('Order Model', () => {

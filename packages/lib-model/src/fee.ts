@@ -1,5 +1,5 @@
 import { Operation } from './base';
-import { BN } from 'bn.js';
+import BN from 'bn.js';
 
 export function applyFee(operation: Operation, volumeEth: BN, feeParts: number): BN {
   return volumeEth.muln(operation === 'buy' ? 10000 + feeParts : 10000 - feeParts).divn(10000);

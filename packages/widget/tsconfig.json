@@ -6,7 +6,9 @@
     "target": "es5",
     "lib": ["es6", "dom"],
     "jsx": "react",
-    "declaration": false
+    "declaration": false,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": ["./src/**/*"],
   "exclude": ["src/setupTests.ts"]

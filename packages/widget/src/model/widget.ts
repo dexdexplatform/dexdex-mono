@@ -1,7 +1,7 @@
 import { Trade } from '@dexdex/model/lib/trade';
 import { Token } from '@dexdex/model/lib/token';
 import { toWei } from '@dexdex/utils/lib/units';
-import { BN } from 'bn.js';
+import BN from 'bn.js';
 
 export enum GasPrice {
   Slow = 'Slow',

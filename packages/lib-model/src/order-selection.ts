@@ -1,4 +1,4 @@
-import { BN } from 'bn.js';
+import BN from 'bn.js';
 import { Order } from './order';
 import { Operation } from './base';
 import { applyFee } from './fee';

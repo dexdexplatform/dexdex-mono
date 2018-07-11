@@ -1,5 +1,5 @@
 import { Address } from './base';
-import { BN } from 'bn.js';
+import BN from 'bn.js';
 
 export enum TradeState {
   Pending = 'Pending',

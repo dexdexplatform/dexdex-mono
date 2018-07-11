@@ -1,7 +1,7 @@
 import { Operation } from '@dexdex/model/lib/base';
 import { Token } from '@dexdex/model/lib/token';
 import { fixDecimals } from '@dexdex/utils/lib/format';
-import { BN } from 'bn.js';
+import BN from 'bn.js';
 import * as React from 'react';
 import { RenderMapper } from '.';
 import { ErrorMessage } from '../../model/form-error';

@@ -1,7 +1,7 @@
 import { computePrice } from '@dexdex/model/lib/order';
 import { Token } from '@dexdex/model/lib/token';
 import { changeDecimals, DivMode } from '@dexdex/utils/lib/units';
-import { BN } from 'bn.js';
+import BN from 'bn.js';
 import classnames from 'classnames';
 import * as React from 'react';
 import { etherscanAddressUrl, etherscanTxUrl } from '../config';

@@ -1,4 +1,4 @@
-import { BN } from 'bn.js';
+import BN from 'bn.js';
 import { Order, getOrderRemainingVolume, getOrderRemainingVolumeEth } from './order';
 import { OrderSelection } from './order-selection';
 

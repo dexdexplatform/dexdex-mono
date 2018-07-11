@@ -1,4 +1,4 @@
-import { BN } from 'bn.js';
+import BN from 'bn.js';
 import { Trade, TradeState, fromJson, toJson } from './trade';
 import { Buffer } from 'buffer';
 

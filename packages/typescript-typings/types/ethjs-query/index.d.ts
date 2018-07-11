@@ -1,5 +1,5 @@
 declare module 'ethjs-query' {
-  import { BN } from 'bn.js';
+  import BN from 'bn.js';
 
   export type Address = string;
   export type BlockHash = string;

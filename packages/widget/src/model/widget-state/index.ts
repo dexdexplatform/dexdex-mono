@@ -2,7 +2,7 @@ import { Address, Operation } from '@dexdex/model/lib/base';
 import { OrderBook } from '@dexdex/model/lib/orderbook';
 import { Trade } from '@dexdex/model/lib/trade';
 import { Token } from '@dexdex/model/lib/token';
-import { BN } from 'bn.js';
+import BN from 'bn.js';
 import { AmountError, BalanceError } from '../form-error';
 import { createApi } from '../server-api';
 import { WalletAccountRef, WalletId, WalletState } from '../wallets/index';

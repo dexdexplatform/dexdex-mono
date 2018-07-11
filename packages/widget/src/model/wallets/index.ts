@@ -1,5 +1,5 @@
 import { Address } from '@dexdex/model/lib/base';
-import { BN } from 'bn.js';
+import BN from 'bn.js';
 import { Observable, of, combineLatest, empty } from 'rxjs';
 import { Token } from '@dexdex/model/lib/token';
 import { promiseFactory, seqAsync, pollDifferences } from '@dexdex/rx';

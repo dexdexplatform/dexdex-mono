@@ -1,4 +1,4 @@
-import { BN } from 'bn.js';
+import BN from 'bn.js';
 import { percentage } from '@dexdex/utils/lib/bn-math';
 import { Address } from './base';
 import { getDecimalBase, fromWei } from '@dexdex/utils/lib/units';

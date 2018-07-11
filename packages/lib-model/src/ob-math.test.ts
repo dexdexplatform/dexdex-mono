@@ -1,5 +1,5 @@
 import { fromTokenDecimals, toTokenDecimals, toWei } from '@dexdex/utils/lib/units';
-import { BN } from 'bn.js';
+import BN from 'bn.js';
 import * as obmath from './ob-math';
 import { computePrice, getOrderRemainingVolumeEth, Order } from './order';
 import { maxVolume, maxVolumeEth } from './order-selection';

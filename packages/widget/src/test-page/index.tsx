@@ -1,7 +1,7 @@
 import { Operation } from '@dexdex/model/lib/base';
 import { Token } from '@dexdex/model/lib/token';
 import { toTokenDecimals } from '@dexdex/utils/lib/units';
-import { BN } from 'bn.js';
+import BN from 'bn.js';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { ErrorScreen, RejectedSignatureScreen } from '../components/screens/ErrorScreen';

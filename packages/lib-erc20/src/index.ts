@@ -1,6 +1,6 @@
 import Eth from 'ethjs-query';
 import EthContract, { TxOptions, TxHash } from 'ethjs-contract';
-import { BN } from 'bn.js';
+import BN from 'bn.js';
 import { Address } from '@dexdex/model/lib/base';
 
 import ABI from './erc20.abi';

@@ -1,5 +1,5 @@
 declare module 'ethjs-contract' {
-  import { BN } from 'bn.js';
+  import BN from 'bn.js';
   import Eth from 'ethjs-query';
 
   export type Address = string;

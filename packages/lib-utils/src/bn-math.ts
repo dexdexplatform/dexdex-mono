@@ -1,4 +1,4 @@
-import { BN } from 'bn.js';
+import BN from 'bn.js';
 
 /**
  * Large number representing the number of decimals we support

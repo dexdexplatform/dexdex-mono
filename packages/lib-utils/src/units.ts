@@ -1,4 +1,4 @@
-import { BN } from 'bn.js';
+import BN from 'bn.js';
 import { fromWei, numberToString } from 'ethjs-unit';
 
 export { fromWei, toWei } from 'ethjs-unit';
