@@ -3,7 +3,7 @@ import { Token } from '@dexdex/model/lib/token';
 import { toWei } from '@dexdex/utils/lib/units';
 import BN from 'bn.js';
 import { Address } from 'ethjs-contract';
-import { Operation } from '../../../../node_modules/@dexdex/model/lib/base';
+import { Operation } from '@dexdex/model/lib/base';
 
 export enum GasPrice {
   Slow = 'Slow',
