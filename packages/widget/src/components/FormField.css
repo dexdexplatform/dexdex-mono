@@ -20,13 +20,3 @@
     }
   }
 }
-
-@media (max-height: 480px) {
-  .formField {
-    margin-bottom: 0.5rem;
-    & .name {
-      margin-bottom: 0.25rem;
-      font-size: 0.625rem;
-    }
-  }
-}

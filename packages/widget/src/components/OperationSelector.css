@@ -43,14 +43,3 @@
     outline: 0;
   }
 }
-
-@media (max-height: 480px) {
-  .operationSelector {
-    margin-bottom: 0.5rem;
-  }
-  .operationSelector button {
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 0.5rem;
-  }
-}

@@ -5,6 +5,7 @@
   padding: 1rem;
   background-color: #fff;
   height: 100%;
+  min-height: 492px;
 }
 
 .screen.info {
@@ -37,11 +38,5 @@
   & .screenContent {
     margin-top: auto;
     margin-bottom: 2rem;
-  }
-}
-
-@media (max-height: 480px) {
-  .screen {
-    padding: 0.5rem 1rem;
   }
 }
