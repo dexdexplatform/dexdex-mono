@@ -1,6 +1,6 @@
 import { Operation } from './base';
 import BN from 'bn.js';
-import { divCeil } from '../../../node_modules/@dexdex/utils/lib/bn-math';
+import { divCeil } from '@dexdex/utils/lib/bn-math';
 
 export function applyFee(operation: Operation, volumeEth: BN, feeParts: number): BN {
   if (operation === 'buy') {
