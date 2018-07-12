@@ -16,3 +16,8 @@ const DECIMALS = 10000000000;
 export function percentage(per: number, bn: BN) {
   return bn.mul(new BN(DECIMALS * per)).div(new BN(DECIMALS));
 }
+
+export function divCeil(numerator: BN, denominator: BN) {
+  const isExact = numerator.mod(denominator).isZero();
+  return isExact ? numerator.div(denominator) : numerator.div(denominator).addn(1);
+}
