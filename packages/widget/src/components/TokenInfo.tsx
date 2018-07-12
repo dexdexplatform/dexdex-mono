@@ -47,43 +47,45 @@ export const TradeInfo: React.SFC<{
   volumeEth: BN;
   inProgress?: boolean;
   operation: Operation;
-}> = ({ token, volume, volumeEth, inProgress, operation }) => (
-  <div>
-    <div className={classes.tradeSide}>
+}> = ({ token, volume, volumeEth, inProgress, operation }) => {
+  const ethSide = {
+    value: <FormatEth value={volumeEth} />,
+    image: <SafeImage src={tokenSmallImg('ETH')} fallback={tokenDefaultSmallImg} alt="ETH" />,
+    unit: 'Ether (ETH)',
+  };
+  const tokenSide = {
+    value: <FormatToken value={volume} token={token} />,
+    image: (
       <SafeImage
         src={tokenSmallImg(token.address)}
         fallback={tokenDefaultSmallImg}
         alt={`${token.symbol}`}
       />
-      <div className={classes.amount}>
-        <div>{inProgress ? 'Exchanging...' : 'Exchanged'}</div>
-        <div>
-          {operation === 'buy' ? (
-            <FormatEth value={volumeEth} />
-          ) : (
-            <FormatToken value={volume} token={token} />
-          )}
+    ),
+    unit: `${token.name} (${token.symbol})`,
+  };
+
+  const sides =
+    operation === 'buy' ? { buy: ethSide, sell: tokenSide } : { buy: tokenSide, sell: ethSide };
+
+  return (
+    <div>
+      <div className={classes.tradeSide}>
+        {sides.buy.image}
+        <div className={classes.amount}>
+          <div>{inProgress ? 'Exchanging...' : 'Exchanged'}</div>
+          <div>{sides.buy.value}</div>
+          <div>{sides.buy.unit}</div>
         </div>
-        <div>{operation === 'buy' ? 'Ether (ETH)' : `${token.name} (${token.symbol})`}</div>
+      </div>
+      <div className={classes.tradeSide}>
+        {sides.sell.image}
+        <div className={classes.amount}>
+          <div>{inProgress ? 'Will Receive...' : 'Received'}</div>
+          <div>{sides.sell.value}</div>
+          <div>{sides.sell.unit}</div>
+        </div>
       </div>
     </div>
-    <div className={classes.tradeSide}>
-      <SafeImage
-        src={tokenSmallImg('ETH')}
-        fallback={tokenDefaultSmallImg}
-        alt={`${token.symbol}`}
-      />
-      <div className={classes.amount}>
-        <div>{inProgress ? 'Will Receive...' : 'Received'}</div>
-        <div>
-          {operation === 'buy' ? (
-            <FormatToken value={volume} token={token} />
-          ) : (
-            <FormatEth value={volumeEth} />
-          )}
-        </div>
-        <div>{operation === 'buy' ? `${token.name} (${token.symbol})` : 'Ether (ETH)'}</div>
-      </div>
-    </div>
-  </div>
-);
+  );
+};
