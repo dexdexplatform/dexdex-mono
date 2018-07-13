@@ -16,6 +16,8 @@ export interface WidgetProps {
   widgetId: string;
 }
 
+const classes = require('./Widget.css');
+
 function connectDevTools(widgetId: string) {
   if ((window as any).__REDUX_DEVTOOLS_EXTENSION__) {
     return (window as any).__REDUX_DEVTOOLS_EXTENSION__.connect({
@@ -99,7 +101,7 @@ class Widget extends React.Component<WidgetProps, WidgetManagerState> {
   render() {
     if (this.state.widgetError) {
       return (
-        <div style={{ position: 'relative', height: 662 }}>
+        <div className={classes.widgetError}>
           <div>There was an error loading the widget!</div>
         </div>
       );
