@@ -1,12 +1,12 @@
 import BN from 'bn.js';
-import { Order, getOrderRemainingVolume, getOrderRemainingVolumeEth } from './order';
+import { Order } from './order';
 import { OrderSelection } from './order-selection';
 
 function findMinVolumeIdx(orders: Order[]): number {
-  let lowest = getOrderRemainingVolume(orders[0]);
+  let lowest = orders[0].remainingVolume;
   let lowestIdx = 0;
   for (let i = 1; i < orders.length; i++) {
-    const remaining = getOrderRemainingVolume(orders[i]);
+    const remaining = orders[i].remainingVolume;
     if (lowest.gt(remaining)) {
       lowest = remaining;
       lowestIdx = i;
@@ -16,8 +16,8 @@ function findMinVolumeIdx(orders: Order[]): number {
 }
 
 function applyOrder(order: Order, requiredVolume: BN) {
-  const volume = getOrderRemainingVolume(order);
-  const volumeEth = getOrderRemainingVolumeEth(order);
+  const volume = order.remainingVolume;
+  const volumeEth = order.remainingVolumeEth;
 
   if (requiredVolume.gte(volume)) {
     return {
@@ -61,8 +61,8 @@ export function selectOrdersFor(
     if (selectedOrders.length >= ordersQty) {
       const idxToRemove = findMinVolumeIdx(selectedOrders);
       const [deletedOrder] = selectedOrders.splice(idxToRemove, 1);
-      accVolume = accVolume.sub(getOrderRemainingVolume(deletedOrder));
-      accVolumeEth = accVolumeEth.sub(getOrderRemainingVolumeEth(deletedOrder));
+      accVolume = accVolume.sub(deletedOrder.remainingVolume);
+      accVolumeEth = accVolumeEth.sub(deletedOrder.remainingVolumeEth);
     }
 
     // We compute volume amounts to complete the remaining volume
@@ -107,9 +107,9 @@ export function getMinVolume(orders: Order[], minVolumeEth: BN): BN {
     const BIGN = new BN('100000000000000000000');
 
     const minVolume = minVolumeEth
-      .mul(order.volume)
+      .mul(order.remainingVolume)
       .mul(BIGN)
-      .div(order.volumeEth)
+      .div(order.remainingVolumeEth)
       .div(BIGN);
 
     return minVolume;
@@ -118,7 +118,7 @@ export function getMinVolume(orders: Order[], minVolumeEth: BN): BN {
 
 export function getMaxVolume(orders: Order[], maxOrders: number): BN {
   const maxVolume = orders
-    .map(getOrderRemainingVolume)
+    .map(o => o.remainingVolume)
     .sort((v1, v2) => v2.cmp(v1))
     .slice(0, maxOrders)
     .reduce((acc, v) => v.add(acc), new BN(0));

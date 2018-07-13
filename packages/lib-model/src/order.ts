@@ -1,7 +1,6 @@
+import { fromWei, getDecimalBase } from '@dexdex/utils/lib/units';
 import BN from 'bn.js';
-import { percentage } from '@dexdex/utils/lib/bn-math';
 import { Address } from './base';
-import { getDecimalBase, fromWei } from '@dexdex/utils/lib/units';
 
 /**
  * DexDex Order data structure.
@@ -25,29 +24,23 @@ export interface Order {
 
   /** Number of decimals the token has. Needed to interpret `volume` as a decimal number */
   decimals: number;
-  /** Original volume of tokens. Expressed as a big integer. The real volume is: {volume} / 1e{decimals}  */
-  volume: BN;
-  /** Original volume of tokens. Expressed in wei */
-  volumeEth: BN;
   /** Price for tokens, expressed in eth. Computed volumeEth / volume with necessary unit conversions */
   price: number;
 
   // Mutable Values
 
-  /** Percentage of the order that remains to be filled. A number in range [0,1] */
-  remaining: number;
+  /** Remaining volume of tokens. Expressed as a big integer. The real volume is: {volume} / 1e{decimals}  */
+  remainingVolume: BN;
+  /** Remaining volume of tokens. Expressed in wei */
+  remainingVolumeEth: BN;
 
   /** Encoded order data for the Order. Used by the Smart Contract. Starts with 0x */
   ordersData: string;
 }
 
-export type BNFields = 'volume' | 'volumeEth';
+export type BNFields = 'remainingVolume' | 'remainingVolumeEth';
 export type OtherFields = Exclude<keyof Order, BNFields>;
 export type JsonOrder = Pick<Order, OtherFields> & Record<BNFields, string>;
-
-export const getOrderRemainingVolume = (o: Order) => percentage(o.remaining, o.volume);
-
-export const getOrderRemainingVolumeEth = (o: Order) => percentage(o.remaining, o.volumeEth);
 
 export const computePrice = (volumeEth: BN, volume: BN, tokenDecimals: number) => {
   const priceWei = volumeEth.mul(getDecimalBase(tokenDecimals)).div(volume);
@@ -55,19 +48,19 @@ export const computePrice = (volumeEth: BN, volume: BN, tokenDecimals: number) =
 };
 
 export function fromJsonOrder(orderS: JsonOrder): Order {
-  const { volume, volumeEth, ...others } = orderS;
+  const { remainingVolume, remainingVolumeEth, ...others } = orderS;
   return {
-    volume: new BN(volume, 10),
-    volumeEth: new BN(volumeEth, 10),
+    remainingVolume: new BN(remainingVolume, 10),
+    remainingVolumeEth: new BN(remainingVolumeEth, 10),
     ...others,
   };
 }
 
 export function toJsonOrder(order: Order): JsonOrder {
-  const { volume, volumeEth, ...others } = order;
+  const { remainingVolume, remainingVolumeEth, ...others } = order;
   return {
-    volume: volume.toString(10),
-    volumeEth: volumeEth.toString(10),
+    remainingVolume: remainingVolume.toString(10),
+    remainingVolumeEth: remainingVolumeEth.toString(10),
     ...others,
   };
 }

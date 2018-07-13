@@ -10,20 +10,19 @@ beforeEach(() => {
 });
 
 function createOrder(
-  opts: Partial<Pick<Order, 'volume' | 'volumeEth' | 'remaining'> & { fee: BN }> = {}
+  opts: Partial<Pick<Order, 'remainingVolume' | 'remainingVolumeEth'> & { fee: BN }> = {}
 ): Order {
-  const volume = opts.volume || new BN(10);
-  const volumeEth = opts.volumeEth || new BN(1);
-  const fee = opts.fee || volumeEth.muln(50).divn(10000);
+  const remainingVolume = opts.remainingVolume || new BN(10);
+  const remainingVolumeEth = opts.remainingVolumeEth || new BN(1);
+  const fee = opts.fee || remainingVolumeEth.muln(50).divn(10000);
   return {
     id: `order-${nextId++}`,
     token: '0x0000000000000000000000000000000000000000',
     isSell: true,
     decimals: TokenDecimals,
-    volume,
-    volumeEth,
-    price: computePrice(volumeEth.add(fee), volume, TokenDecimals),
-    remaining: opts.remaining || 1,
+    remainingVolume,
+    remainingVolumeEth,
+    price: computePrice(remainingVolumeEth.add(fee), remainingVolume, TokenDecimals),
     ordersData: '',
   };
 }
@@ -66,7 +65,11 @@ describe('orderbook:side', () => {
     beforeEach(() => {
       sideBefore = ob.newOBSide();
       // order w/price = 10
-      o1 = createOrder({ volume: new BN('1'), volumeEth: new BN('10'), fee: new BN(0) });
+      o1 = createOrder({
+        remainingVolume: new BN('1'),
+        remainingVolumeEth: new BN('10'),
+        fee: new BN(0),
+      });
       sideAfter = ob.addOrder(o1, ob.Sort.ASC)(sideBefore);
     });
 
@@ -84,8 +87,8 @@ describe('orderbook:side', () => {
     test('keeps orders sorted by price', () => {
       // price = 5
       const cheapOrder = createOrder({
-        volume: new BN('2'),
-        volumeEth: new BN('10'),
+        remainingVolume: new BN('2'),
+        remainingVolumeEth: new BN('10'),
         fee: new BN(0),
       });
 
@@ -95,8 +98,8 @@ describe('orderbook:side', () => {
 
       // price = 20
       const expensiveOrder = createOrder({
-        volume: new BN('1'),
-        volumeEth: new BN('20'),
+        remainingVolume: new BN('1'),
+        remainingVolumeEth: new BN('20'),
         fee: new BN(0),
       });
 
@@ -105,8 +108,8 @@ describe('orderbook:side', () => {
 
       // price = 15
       const middlePriceOrder = createOrder({
-        volume: new BN('1'),
-        volumeEth: new BN('15'),
+        remainingVolume: new BN('1'),
+        remainingVolumeEth: new BN('15'),
         fee: new BN(0),
       });
 
@@ -163,10 +166,10 @@ describe('orderbook:side', () => {
 
     test('updates an order', () => {
       const o1Copy = cloneOrder(o1);
-      o1Copy.remaining = 0.5;
+      o1Copy.remainingVolume = new BN(3);
       const sideAfter = ob.updateOrder(o1Copy)(sideBefore);
       expect(sideAfter.orders).toHaveLength(1);
-      expect(sideAfter.orders[0].remaining).toBe(0.5);
+      expect(sideAfter.orders[0].remainingVolume).toEqualBN(new BN(3));
     });
 
     test('doesnt mutate if nothing to update', () => {
@@ -177,7 +180,7 @@ describe('orderbook:side', () => {
 
     test('doesnt mutate existing side', () => {
       const o1Copy = cloneOrder(o1);
-      o1Copy.remaining = 0.5;
+      o1Copy.remainingVolume = new BN(1);
       const sideAfter = ob.updateOrder(o1Copy)(sideBefore);
 
       // diff obj

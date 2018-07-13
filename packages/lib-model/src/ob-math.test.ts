@@ -1,7 +1,7 @@
 import { fromTokenDecimals, toTokenDecimals, toWei } from '@dexdex/utils/lib/units';
 import BN from 'bn.js';
 import * as obmath from './ob-math';
-import { computePrice, getOrderRemainingVolumeEth, Order } from './order';
+import { computePrice, Order } from './order';
 import { maxVolume, maxVolumeEth } from './order-selection';
 
 let nextId = 1;
@@ -38,19 +38,18 @@ declare global {
   }
 }
 
-function createOrder(opts: Pick<Order, 'volume' | 'volumeEth' | 'remaining'>): Order {
-  const volume = opts.volume;
-  const volumeEth = opts.volumeEth;
+function createOrder(opts: Pick<Order, 'remainingVolume' | 'remainingVolumeEth'>): Order {
+  const remainingVolume = opts.remainingVolume;
+  const remainingVolumeEth = opts.remainingVolumeEth;
 
   return {
     id: `order-${nextId++}`,
     token: '0x0000000000000000000000000000000000000000',
     isSell: true,
     decimals: TokenDecimals,
-    volume,
-    volumeEth,
-    price: computePrice(volumeEth, volume, TokenDecimals),
-    remaining: opts.remaining || 1,
+    remainingVolume,
+    remainingVolumeEth,
+    price: computePrice(remainingVolumeEth, remainingVolume, TokenDecimals),
     ordersData: '',
   };
 }
@@ -64,15 +63,14 @@ total = volume / (100% - 3%)   // this is 100% of total ether to send
 fee = volume / (100% - 3%) * 3%
 */
 
-function sellOrderED(tokens: number, ether: number, remaining: number = 1) {
-  const volume = toTokenDecimals(tokens, TokenDecimals);
-  const volumeEth = toWei(ether, 'ether')
+function sellOrderED(tokens: number, ether: number) {
+  const remainingVolume = toTokenDecimals(tokens, TokenDecimals);
+  const remainingVolumeEth = toWei(ether, 'ether')
     .muln(1003)
     .divn(1000);
   return createOrder({
-    volume,
-    volumeEth: volumeEth,
-    remaining,
+    remainingVolume,
+    remainingVolumeEth,
   });
 }
 
@@ -85,15 +83,6 @@ describe('obmath', () => {
         sellOrderED(50, 30),
       ]);
       expect(idx).toBe(1); // second order has minimun volume
-    });
-    test('different remaining values', () => {
-      const idx = obmath._findMinVolumeIdx([
-        sellOrderED(20, 10, 1),
-        sellOrderED(20, 10, 0.5),
-        sellOrderED(20, 10, 0.3),
-      ]);
-      // third order has minimun volume if we consider remaining amount
-      expect(idx).toBe(2);
     });
   });
 
@@ -142,30 +131,14 @@ describe('obmath', () => {
       expect(tx.orders[0].id).toBe(order.id);
 
       // ether amount is proporitonal a 20/30 (required/available)
-      const volumeEth = order.volumeEth;
-      const requiredVolumeEth = volumeEth.muln(20).divn(30);
+      const remainingVolumeEth = order.remainingVolumeEth;
+      const requiredVolumeEth = remainingVolumeEth.muln(20).divn(30);
 
       expect(tx.baseVolumeEth).toEqualBN(requiredVolumeEth);
 
       // this selection is valid until we reach 30 tokens (max volume)
       expect(maxVolume(tx)).toEqualBN(toTokenDecimals(30, TokenDecimals));
-      expect(maxVolumeEth(tx)).toEqualBN(volumeEth);
-    });
-
-    test('case: 1 order - partial completion - order is not full', () => {
-      const orders = [sellOrderED(30, 5, 0.5), sellOrderED(20, 10), sellOrderED(50, 30)];
-      const tx = obmath.selectOrdersFor(orders, 1, toTokenDecimals(10, TokenDecimals));
-
-      const order = orders[0];
-      // we have half the order remaining
-      const volumeEth = order.volumeEth.divn(2);
-      // half the volume (10), when we want 15 is (* 10 / 15)
-      const requiredVolumeEth = volumeEth.muln(10).divn(15);
-
-      expect(tx.orders).toHaveLength(1);
-      expect(tx.orders[0].id).toBe(order.id);
-      expect(tx.baseVolumeEth).toEqualBN(requiredVolumeEth);
-      expect(maxVolumeEth(tx)).toEqualBN(volumeEth);
+      expect(maxVolumeEth(tx)).toEqualBN(remainingVolumeEth);
     });
 
     test('case: 2 orders - partial completion', () => {
@@ -175,7 +148,9 @@ describe('obmath', () => {
       expect(tx.orders).toHaveLength(2);
       expect(tx.orders.map(o => o.id)).toEqual(['order-1', 'order-2']);
 
-      const requiredVolumeEth = orders[0].volumeEth.add(orders[1].volumeEth.divn(2));
+      const requiredVolumeEth = orders[0].remainingVolumeEth.add(
+        orders[1].remainingVolumeEth.divn(2)
+      );
       expect(tx.baseVolumeEth).toEqualBN(requiredVolumeEth);
     });
 
@@ -186,9 +161,7 @@ describe('obmath', () => {
       expect(tx.orders).toHaveLength(1);
       expect(tx.orders.map(o => o.id)).toEqual(['order-3']);
 
-      const requiredVolumeEth = getOrderRemainingVolumeEth(orders[2])
-        .muln(40)
-        .divn(50);
+      const requiredVolumeEth = orders[2].remainingVolumeEth.muln(40).divn(50);
       expect(tx.baseVolumeEth).toEqualBN(requiredVolumeEth);
     });
   });

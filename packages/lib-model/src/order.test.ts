@@ -9,10 +9,9 @@ describe('Order Model', () => {
         token: 'aaaaaaaaaaaaaaaaaaa',
         isSell: false,
         decimals: 0.1,
-        volume: new BN('100000000000000000000'),
-        volumeEth: new BN('60000000000000000000'),
+        remainingVolume: new BN('100000000000000000000'),
+        remainingVolumeEth: new BN('60000000000000000000'),
         price: 10,
-        remaining: 0.5,
         ordersData: '',
       };
 
@@ -23,11 +22,10 @@ describe('Order Model', () => {
       expect(o.token).toBe(obis.token);
       expect(o.isSell).toBe(obis.isSell);
       expect(o.decimals).toBe(obis.decimals);
-      expect(o.remaining).toBe(obis.remaining);
 
       // BN conversions
-      expect(o.volume.eq(obis.volume)).toBeTruthy();
-      expect(o.volumeEth.eq(obis.volumeEth)).toBeTruthy();
+      expect(o.remainingVolume.eq(obis.remainingVolume)).toBeTruthy();
+      expect(o.remainingVolumeEth.eq(obis.remainingVolumeEth)).toBeTruthy();
       expect(o.price).toBe(obis.price);
     });
   });
