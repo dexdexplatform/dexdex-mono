@@ -83,10 +83,41 @@ export function fromJsonOrderbookEvent(event: JsonOrderBookEvent): OrderBookEven
 // Api Impl
 //-------------------------------------------------------------------------------------------------
 
+const getWidgetConfigQueryParams = () => {
+  const searchParams = new URLSearchParams(window.location.search.slice(1));
+  // parent window, search for div
+  const div = document.getElementById('dexdex-root');
+  if (div === null) {
+    console.error('<div id="dexdex-root"> is missing>');
+    throw new Error('Bad Config');
+  }
+  const affiliate: string | null =
+    (searchParams.get('affiliate') as string) ||
+    (div.getAttribute('data-affiliate') as string) ||
+    null;
+  const operations: string | null =
+    (searchParams.get('operations') as string) ||
+    (div.getAttribute('data-operations') as string) ||
+    null;
+  const tokens: string | null =
+    (searchParams.get('tokens') as string) || (div.getAttribute('data-tokens') as string) || null;
+  //Use Object.assign to remove nulls
+  return Object.assign(
+    {},
+    affiliate == null ? null : { affiliate },
+    operations == null ? null : { operations },
+    tokens == null ? null : { tokens }
+  );
+};
+
 const getWidgetConfig = async (widgetId: string): Promise<WidgetConfig> => {
-  const res = await fetch(`${appConfig().ApiBase}/api/v1/widgets/${widgetId}`);
+  const params = getWidgetConfigQueryParams();
+  var url = new URL(`${appConfig().ApiBase}/api/v1/widgets/${widgetId}`);
+  Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+  const res = await fetch(url.toString());
   if (res.ok) {
     const widgetConfig: WidgetConfig = await res.json();
+    console.log(widgetConfig);
     widgetConfig.tokens.sort((tkA, tkB) => tkA.symbol.localeCompare(tkB.symbol));
     return widgetConfig;
   } else {
