@@ -83,6 +83,18 @@ export function fromJsonOrderbookEvent(event: JsonOrderBookEvent): OrderBookEven
 // Api Impl
 //-------------------------------------------------------------------------------------------------
 
+const validateAffiliate = (affiliate: string) => {
+  return /^0x[a-fA-F0-9]{40}$/.test(affiliate);
+};
+
+const validateOperations = (operations: string) => {
+  return ['buy', 'sell', 'buy_sell'].indexOf(operations) > -1;
+};
+
+const validateTokens = (tokens: string) => {
+  return /^0x[a-fA-F0-9]{40}(?:,0x[a-fA-F0-9]{40})*$/.test(tokens);
+};
+
 const getWidgetConfigQueryParams = () => {
   const searchParams = new URLSearchParams(window.location.search.slice(1));
   // parent window, search for div
@@ -92,9 +104,7 @@ const getWidgetConfigQueryParams = () => {
     throw new Error('Bad Config');
   }
   const affiliate: string | null =
-    (searchParams.get('affiliate') as string) ||
-    (div.getAttribute('data-affiliate') as string) ||
-    null;
+    (searchParams.get('ref') as string) || (div.getAttribute('data-ref') as string) || null;
   const operations: string | null =
     (searchParams.get('operations') as string) ||
     (div.getAttribute('data-operations') as string) ||
@@ -104,9 +114,9 @@ const getWidgetConfigQueryParams = () => {
   //Use Object.assign to remove nulls
   return Object.assign(
     {},
-    affiliate == null ? null : { affiliate },
-    operations == null ? null : { operations },
-    tokens == null ? null : { tokens }
+    affiliate !== null && validateAffiliate(affiliate) ? { affiliate } : null,
+    operations !== null && validateOperations(operations) ? { operations } : null,
+    tokens !== null && validateTokens(tokens) ? { tokens } : null
   );
 };
 
@@ -117,7 +127,6 @@ const getWidgetConfig = async (widgetId: string): Promise<WidgetConfig> => {
   const res = await fetch(url.toString());
   if (res.ok) {
     const widgetConfig: WidgetConfig = await res.json();
-    console.log(widgetConfig);
     widgetConfig.tokens.sort((tkA, tkB) => tkA.symbol.localeCompare(tkB.symbol));
     return widgetConfig;
   } else {
