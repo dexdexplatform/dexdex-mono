@@ -51,7 +51,7 @@ class WalletSelector extends React.Component<WalletSelectorProps> {
       return (
         <FormField label="Wallet" htmlFor="account" error={this.props.error}>
           <div>
-            <span>You don't have a connected wallet</span>
+            <span>You don’t have a wallet connected</span>
           </div>
         </FormField>
       );
