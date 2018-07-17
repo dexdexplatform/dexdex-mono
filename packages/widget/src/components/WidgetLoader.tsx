@@ -1,8 +1,11 @@
 import * as React from 'react';
+import Loader from './Loader';
+
+const classes = require('./WidgetLoader.css');
 
 const WidgetLoader: React.SFC = () => (
-  <div className="WidgetLoader">
-    <div>Loading...</div>
+  <div className={classes.widgetLoader}>
+    <Loader />
   </div>
 );
 
