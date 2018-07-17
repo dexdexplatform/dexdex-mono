@@ -9,7 +9,6 @@
 
 #rectangleBottom {
   animation: animatedRectangleBottom 3s ease-in infinite;
-  height: 23px;
 }
 
 @keyframes animatedLoader {
@@ -27,16 +26,13 @@
 
 @keyframes animatedRectangleTop {
   0% {
-    height: 23px;
-  }
-  25% {
-    height: 0;
+    transform: translateY(0);
   }
   50% {
-    height: 15px;
+    transform: translateY(-25px);
   }
   100% {
-    height: 23px;
+    transform: translateY(0);
   }
 }
 

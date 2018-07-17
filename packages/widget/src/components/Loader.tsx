@@ -35,7 +35,7 @@ const Loader: React.SFC = () => (
       x="0"
       y="0"
       width="200px"
-      height="20px"
+      height="23px"
     />
     <rect
       id={classes.rectangleBottom}
@@ -44,7 +44,7 @@ const Loader: React.SFC = () => (
       x="0"
       y="23"
       width="200px"
-      height="20px"
+      height="23px"
     />
   </svg>
 );
