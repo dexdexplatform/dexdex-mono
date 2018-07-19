@@ -104,25 +104,28 @@ export type WalletState = WalletErrorState | WalletReadyState;
 
 type Provider = any;
 
-function getWeb3Provider(): Provider | null {
-  const web3 = (window as any).web3;
-  if (typeof web3 !== 'undefined') {
-    return web3.currentProvider;
+function withWeb3(fn: (p: Provider) => void) {
+  if ((window as any).web3 && (window as any).web3.currentProvider) {
+    fn((window as any).web3.currentProvider);
+  } else {
+    setTimeout(() => withWeb3(fn), 100);
   }
-  return null;
 }
 
-export function getOnLoad<A>(onLoadGetter: () => A): Promise<A> {
-  return new Promise(resolve => {
-    switch (document.readyState) {
-      case 'loading':
-        window.addEventListener('load', () => resolve(onLoadGetter()));
-        return;
-      default:
-        resolve(onLoadGetter());
-    }
-  });
+function onLoad<A>(fn: () => void) {
+  switch (document.readyState) {
+    case 'loading':
+      window.addEventListener('load', fn);
+      return;
+    default:
+      fn();
+  }
 }
+
+const getWeb3Provider = (): Promise<Provider> =>
+  new Promise(resolve => {
+    onLoad(() => withWeb3(resolve));
+  });
 
 const errorState = (walletId: WalletId, reason: string): WalletErrorState => ({
   walletId,
@@ -136,7 +139,7 @@ const readyState = (walletId: WalletId, eth: Eth, accounts: AccountState[]): Wal
   accounts,
 });
 
-const injectedWeb3 = promiseFactory(() => getOnLoad(getWeb3Provider)).pipe(share());
+const injectedWeb3 = promiseFactory(getWeb3Provider).pipe(share());
 
 const accountStates = (
   eth: Eth,
