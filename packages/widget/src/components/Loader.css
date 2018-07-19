@@ -4,11 +4,11 @@
 }
 
 #rectangleTop {
-  animation: animatedRectangleTop 1s ease-in infinite;
+  animation: animatedRectangleTop 2s ease-in infinite;
 }
 
 #rectangleBottom {
-  animation: animatedRectangleBottom 3s ease-in infinite;
+  animation: animatedRectangleBottom 2s ease-in infinite;
 }
 
 @keyframes animatedLoader {
