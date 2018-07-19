@@ -70,9 +70,13 @@ export interface Operations {
 // Store Initialization
 //-------------------------------------------------------------------------------------------------
 
-export async function initWidget(widgetId: string): Promise<Store<WidgetState, actions.Actions>> {
+export async function initWidget(
+  widgetId: string,
+  operations: string | null,
+  tokens: string | null
+): Promise<Store<WidgetState, actions.Actions>> {
   const api = createApi();
-  const config: WidgetConfig = await api.getWidgetConfig(widgetId);
+  const config: WidgetConfig = await api.getWidgetConfig(widgetId, operations, tokens);
 
   const initialState: WidgetState = {
     config,

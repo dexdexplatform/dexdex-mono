@@ -14,6 +14,8 @@ export interface WidgetManagerState {
 
 export interface WidgetProps {
   widgetId: string;
+  operations: string | null;
+  tokens: string | null;
 }
 
 function connectDevTools(widgetId: string) {
@@ -79,7 +81,7 @@ class Widget extends React.Component<WidgetProps, WidgetManagerState> {
 
   async componentDidMount() {
     try {
-      this.store = await initWidget(this.props.widgetId);
+      this.store = await initWidget(this.props.widgetId, this.props.operations, this.props.tokens);
       this.subscription = this.store.changes.subscribe({
         next: change => {
           this.devTools.send(change.action, change.state);

@@ -31,6 +31,8 @@
     const parameters = {
       widgetId: dexdexScript.getAttribute('data-dexdex-id'),
       net: dexdexScript.getAttribute('data-net'),
+      operations: dexdexScript.getAttribute('data-operations'),
+      tokens: dexdexScript.getAttribute('data-tokens'),
     };
     return iframeUrl.toString() + '#' + toQueryString(parameters);
   }

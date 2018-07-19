@@ -13,6 +13,14 @@ const once = <A>(f: () => A) => {
   };
 };
 
+const validateOperations = (operations: string) => {
+  return ['buy', 'sell', 'buy_sell'].indexOf(operations) > -1;
+};
+
+const validateTokens = (tokens: string) => {
+  return /^0x[a-fA-F0-9]{40}(?:,0x[a-fA-F0-9]{40})*$/.test(tokens);
+};
+
 function readConfig() {
   const searchParams = new URLSearchParams(window.location.hash.slice(1));
   // parent window, search for div
@@ -42,8 +50,16 @@ function readConfig() {
     throw new Error('Bad Config');
   }
 
+  let operations = searchParams.get('operations') || div.getAttribute('data-operations');
+  operations = operations !== null && validateOperations(operations) ? operations : null;
+
+  let tokens = searchParams.get('tokens') || div.getAttribute('data-tokens');
+  tokens = tokens !== null && validateTokens(tokens) ? tokens : null;
+
   return {
     widgetId,
+    operations,
+    tokens,
     network: net,
     ApiBase: getAPIBase(net),
     ContractAddress: getContractAddress(net),

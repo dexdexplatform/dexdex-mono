@@ -20,4 +20,11 @@ const modalRoot = document.createElement('div');
 modalRoot.id = 'modal-root';
 dexdexRoot.appendChild(modalRoot);
 
-ReactDOM.render(<Widget widgetId={appConfig().widgetId} />, document.getElementById('widget-root'));
+ReactDOM.render(
+  <Widget
+    widgetId={appConfig().widgetId}
+    operations={appConfig().operations}
+    tokens={appConfig().tokens}
+  />,
+  document.getElementById('widget-root')
+);

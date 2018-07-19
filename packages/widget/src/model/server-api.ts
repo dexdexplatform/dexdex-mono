@@ -48,7 +48,11 @@ export type JsonOrderBookEvent =
   | { kind: OrderEventKind.Delete; tokenAddress: Address; order: JsonOrder };
 
 export interface ServerApi {
-  getWidgetConfig(widgetId: string): Promise<WidgetConfig>;
+  getWidgetConfig(
+    widgetId: string,
+    operations: string | null,
+    tokens: string | null
+  ): Promise<WidgetConfig>;
   getOrderBook(tokenAddress: string): Promise<OrderBookSnapshot>;
   getTrade(txhash: string): Promise<Trade | null>;
   orderBookWatcher(tokenAddress: string): Observable<OrderBookEvent>;
@@ -83,47 +87,34 @@ export function fromJsonOrderbookEvent(event: JsonOrderBookEvent): OrderBookEven
 // Api Impl
 //-------------------------------------------------------------------------------------------------
 
-const validateAffiliate = (affiliate: string) => {
+const validateEthereumAccount = (affiliate: string) => {
   return /^0x[a-fA-F0-9]{40}$/.test(affiliate);
 };
 
-const validateOperations = (operations: string) => {
-  return ['buy', 'sell', 'buy_sell'].indexOf(operations) > -1;
-};
-
-const validateTokens = (tokens: string) => {
-  return /^0x[a-fA-F0-9]{40}(?:,0x[a-fA-F0-9]{40})*$/.test(tokens);
-};
-
-const getWidgetConfigQueryParams = () => {
+const getReferralAccount = () => {
   const searchParams = new URLSearchParams(window.location.search.slice(1));
-  // parent window, search for div
-  const div = document.getElementById('dexdex-root');
-  if (div === null) {
-    console.error('<div id="dexdex-root"> is missing>');
-    throw new Error('Bad Config');
-  }
-  const affiliate: string | null =
-    (searchParams.get('ref') as string) || (div.getAttribute('data-ref') as string) || null;
-  const operations: string | null =
-    (searchParams.get('operations') as string) ||
-    (div.getAttribute('data-operations') as string) ||
-    null;
-  const tokens: string | null =
-    (searchParams.get('tokens') as string) || (div.getAttribute('data-tokens') as string) || null;
-  //Use Object.assign to remove nulls
-  return Object.assign(
-    {},
-    affiliate !== null && validateAffiliate(affiliate) ? { affiliate } : null,
-    operations !== null && validateOperations(operations) ? { operations } : null,
-    tokens !== null && validateTokens(tokens) ? { tokens } : null
-  );
+  const referralAccount: string | null = (searchParams.get('ref') as string) || null;
+  return referralAccount !== null && validateEthereumAccount(referralAccount)
+    ? referralAccount
+    : null;
 };
 
-const getWidgetConfig = async (widgetId: string): Promise<WidgetConfig> => {
-  const params = getWidgetConfigQueryParams();
+const getWidgetConfig = async (
+  widgetId: string,
+  operations: string | null,
+  tokens: string | null
+): Promise<WidgetConfig> => {
+  const referralAccount = getReferralAccount();
   var url = new URL(`${appConfig().ApiBase}/api/v1/widgets/${widgetId}`);
-  Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+  if (referralAccount !== null) {
+    url.searchParams.append('affiliate', referralAccount);
+  }
+  if (operations !== null) {
+    url.searchParams.append('operations', operations);
+  }
+  if (tokens !== null) {
+    url.searchParams.append('tokens', tokens);
+  }
   const res = await fetch(url.toString());
   if (res.ok) {
     const widgetConfig: WidgetConfig = await res.json();
