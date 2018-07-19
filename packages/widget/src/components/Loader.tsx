@@ -28,24 +28,8 @@ const Loader: React.SFC = () => (
       fill="#6AAFFF"
       points="169.732977 16.0770428 178.057874 16.0770428 187.365852 29.0925776 176.665402 43.723618 168.489273 43.723618 179.766111 29.0925776"
     />
-    <rect
-      id={classes.rectangleTop}
-      fill="#fff"
-      fill-opacity="1"
-      x="0"
-      y="0"
-      width="200px"
-      height="23px"
-    />
-    <rect
-      id={classes.rectangleBottom}
-      fill="#fff"
-      fill-opacity="1"
-      x="0"
-      y="23"
-      width="200px"
-      height="23px"
-    />
+    <rect id={classes.rectangleTop} fill="#fff" x="0" y="0" width="200px" height="23px" />
+    <rect id={classes.rectangleBottom} fill="#fff" x="0" y="23" width="200px" height="23px" />
   </svg>
 );
 
