@@ -61,7 +61,7 @@
     ifrm.setAttribute('src', iframeUrl);
     setAttributes(ifrm, {
       width: '100%',
-      height: 600,
+      height: 500,
       style: 'border: none; width: 1px; min-width: 100%;', // iOS Safari iframe sizing workaround
       allowTransparency: 'yes',
       marginwidth: 0,
