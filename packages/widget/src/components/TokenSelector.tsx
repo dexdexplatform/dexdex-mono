@@ -206,7 +206,9 @@ class TokenSelector extends React.Component<TokenSelectorProps, TokenSelectorSta
 
   openSelector: React.MouseEventHandler<HTMLElement> = e => {
     e.stopPropagation();
-    this.setState({ isOpen: true });
+    if (this.props.tokens.length !== 1) {
+      this.setState({ isOpen: true });
+    }
   };
 
   cancelSelection = () => {
@@ -219,10 +221,11 @@ class TokenSelector extends React.Component<TokenSelectorProps, TokenSelectorSta
   };
 
   render() {
-    const { selectedToken } = this.props;
+    const { selectedToken, tokens } = this.props;
 
+    const isSingle = tokens.length === 1;
     return (
-      <div className={cx('tokenSelector')} onClick={this.openSelector}>
+      <div className={cx('tokenSelector', isSingle && 'single')} onClick={this.openSelector}>
         <TokenImage token={selectedToken} />
         <span className={cx('name')}>
           {selectedToken.symbol} <small>{selectedToken.name}</small>

@@ -10,6 +10,11 @@
 
 .tokenSelector {
   cursor: pointer;
+
+  &.single {
+    cursor: default;
+  }
+
   & .name {
     margin-left: 5px;
     vertical-align: middle;
