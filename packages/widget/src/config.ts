@@ -13,57 +13,73 @@ const once = <A>(f: () => A) => {
   };
 };
 
-const validateOperations = (operations: string) => {
-  return ['buy', 'sell', 'buy_sell'].indexOf(operations) > -1;
+// tells wether we are a iframe or not
+export const isEmbed = window.parent !== window;
+
+const configReader = () => {
+  let getValue: (varname: string) => string | null;
+  if (isEmbed) {
+    const searchParams = new URLSearchParams(window.location.hash.slice(1));
+    getValue = varname => searchParams.get(varname);
+  } else {
+    const div = document.getElementById('dexdex-root');
+    if (div === null) {
+      console.error('<div id="dexdex-root"> is missing>');
+      throw new Error('Bad Config');
+    }
+    getValue = (varname: string) => div.getAttribute(`data-${varname}`);
+  }
+  return getValue;
 };
 
-const validateTokens = (tokens: string) => {
-  return /^0x[a-fA-F0-9]{40}(?:,0x[a-fA-F0-9]{40})*$/.test(tokens);
-};
+const withinChoices = (...choices: string[]) => (value: string) => choices.indexOf(value) >= 0;
+
+const isValidNetwork = (net: string) => withinChoices('mainnet', 'kovan');
+const isValidOperations = (operations: string) => withinChoices('buy', 'sell', 'both');
+
+const areValidTokens = (tokens: string) =>
+  /^0x[a-fA-F0-9]{40}(?:,0x[a-fA-F0-9]{40})*$/.test(tokens);
 
 function readConfig() {
-  const searchParams = new URLSearchParams(window.location.hash.slice(1));
-  // parent window, search for div
-  const div = document.getElementById('dexdex-root');
-  if (div === null) {
-    console.error('<div id="dexdex-root"> is missing>');
-    throw new Error('Bad Config');
-  }
+  const getConfigParam = configReader();
 
-  let net: EthNet;
+  let network: EthNet;
   if (process.env.NODE_ENV === 'production') {
-    net =
-      (searchParams.get('net') as EthNet) || (div.getAttribute('data-net') as EthNet) || 'mainnet';
-    if (['mainnet', 'kovan'].indexOf(net) < 0) {
-      throw new Error(`Invalid net param: ${net}`);
-    }
-    if (net === 'kovan') {
-      console.log('Using kovan network');
+    network = (getConfigParam('net') as EthNet) || 'mainnet';
+    if (!isValidNetwork(network)) {
+      console.error('Bad "data-net" parameter, valid values: kovan,mainet');
+      throw new Error('Bad Config');
     }
   } else {
-    net = 'devnet';
+    network = 'devnet';
   }
 
-  const widgetId = searchParams.get('widgetId') || div.getAttribute('data-dexdex-id');
+  const widgetId = getConfigParam('dexdex-id');
   if (widgetId == null) {
-    console.error('Missing widgetId (url param widgetId or data-dexdex-id attr');
+    console.error('Missing "data-dexdex-id" parameter');
     throw new Error('Bad Config');
   }
 
-  let operations = searchParams.get('operations') || div.getAttribute('data-operations');
-  operations = operations !== null && validateOperations(operations) ? operations : null;
+  const operations = getConfigParam('operations');
+  if (operations != null && !isValidOperations(operations)) {
+    console.error('Bad "data-operations" parameter, valid values: buy,sell,both');
+    throw new Error('Bad Config');
+  }
 
-  let tokens = searchParams.get('tokens') || div.getAttribute('data-tokens');
-  tokens = tokens !== null && validateTokens(tokens) ? tokens : null;
+  const tokens = getConfigParam('tokens');
+  if (tokens != null && !areValidTokens(tokens)) {
+    console.error('Bad "data-tokens" parameter, must be tokenaddresses separated by ","');
+    throw new Error('Bad Config');
+  }
 
   return {
     widgetId,
     operations,
     tokens,
-    network: net,
-    ApiBase: getAPIBase(net),
-    ContractAddress: getContractAddress(net),
-    EtherscanUrl: net === 'kovan' ? 'https://kovan.etherscan.io' : 'https://etherscan.io',
+    network,
+    ApiBase: getAPIBase(network),
+    ContractAddress: getContractAddress(network),
+    EtherscanUrl: network === 'kovan' ? 'https://kovan.etherscan.io' : 'https://etherscan.io',
   };
 }
 

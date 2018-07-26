@@ -29,7 +29,7 @@
   function createIframeURL(dexdexScript) {
     const iframeUrl = new URL('../content/iframe.html', dexdexScript.src);
     const parameters = {
-      widgetId: dexdexScript.getAttribute('data-dexdex-id'),
+      'dexdex-id': dexdexScript.getAttribute('data-dexdex-id'),
       net: dexdexScript.getAttribute('data-net'),
       operations: dexdexScript.getAttribute('data-operations'),
       tokens: dexdexScript.getAttribute('data-tokens'),
