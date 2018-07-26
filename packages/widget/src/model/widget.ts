@@ -21,6 +21,7 @@ export interface WidgetConfig {
   gasprices: GasPrices;
   feePercentage: number;
   tokens: Token[];
+  initialToken: Token;
   affiliateAddress: Address;
   enabledOperations: Operation[];
   ethers2usdER: number;

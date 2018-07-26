@@ -91,12 +91,22 @@ const validateEthereumAccount = (affiliate: string) => {
   return /^0x[a-fA-F0-9]{40}$/.test(affiliate);
 };
 
-const getReferralAccount = () => {
+const getSearchParam = (param: string): string | null => {
   const searchParams = new URLSearchParams(window.location.search.slice(1));
-  const referralAccount: string | null = (searchParams.get('ref') as string) || null;
+  const value: string | null = (searchParams.get(param) as string) || null;
+  return value;
+};
+
+const getReferralAccount = () => {
+  const referralAccount = getSearchParam('ref');
   return referralAccount !== null && validateEthereumAccount(referralAccount)
     ? referralAccount
     : null;
+};
+
+const getInitialToken = () => {
+  const initialToken = getSearchParam('token');
+  return initialToken !== null && validateEthereumAccount(initialToken) ? initialToken : null;
 };
 
 const getWidgetConfig = async (
@@ -105,6 +115,7 @@ const getWidgetConfig = async (
   tokens: string | null
 ): Promise<WidgetConfig> => {
   const referralAccount = getReferralAccount();
+  const initialTokenAddress = getInitialToken();
   var url = new URL(`${appConfig().ApiBase}/api/v1/widgets/${widgetId}`);
   if (referralAccount !== null) {
     url.searchParams.append('affiliate', referralAccount);
@@ -119,6 +130,10 @@ const getWidgetConfig = async (
   if (res.ok) {
     const widgetConfig: WidgetConfig = await res.json();
     widgetConfig.tokens.sort((tkA, tkB) => tkA.symbol.localeCompare(tkB.symbol));
+    const initialToken = widgetConfig.tokens.find(tk => tk.address === initialTokenAddress);
+    if (initialToken) {
+      widgetConfig.initialToken = initialToken;
+    }
     return widgetConfig;
   } else {
     throw new Error(`Error with request: ${res.status}`);

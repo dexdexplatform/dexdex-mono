@@ -81,7 +81,7 @@ export async function initWidget(
   const initialState: WidgetState = {
     config,
     operation: config.enabledOperations.length > 1 ? 'buy' : config.enabledOperations[0],
-    token: config.tokens[0],
+    token: config.initialToken || config.tokens[0],
     wallets: {},
     selectedWallet: null,
     amountPristine: true,
