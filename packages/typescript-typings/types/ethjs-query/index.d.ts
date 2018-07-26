@@ -52,6 +52,15 @@ declare module 'ethjs-query' {
     uncles: BlockHash[];
   }
 
+  export interface TxEstimateOptions {
+    to?: Address;
+    from?: Address;
+    value?: string | BN;
+    gas?: number | BN;
+    gasPrice?: BN;
+    data: any;
+  }
+
   export interface TransactionReceipt {
     /** hash of the block where this transaction was in. */
     blockHash: BlockHash;
@@ -195,6 +204,8 @@ declare module 'ethjs-query' {
     newPendingTransactionFilter(): Promise<string>;
     uninstallFilter(filterId: string): Promise<boolean>;
     getFilterChanges(filterId: string): Promise<BlockHash[] | TxHash[] | LogObject[]>;
+    
+    estimateGas(estimateTxOject: TxEstimateOptions): Promise<BN>;
 
     net_version(): Promise<string>;
   }

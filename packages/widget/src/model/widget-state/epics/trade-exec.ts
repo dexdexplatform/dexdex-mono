@@ -38,6 +38,19 @@ async function dexdexBuy(opts: {
 }): Promise<string> {
   try {
     const dexdex = DexDex(opts.eth, appConfig().ContractAddress);
+    const estimatedGas = await dexdex.estimateGasForBuy(
+      opts.eth,
+      opts.token,
+      opts.volume,
+      opts.ordersData,
+      opts.account,
+      opts.affiliate,
+      {
+        from: opts.account,
+        value: opts.volumeEth,
+        gasPrice: opts.gasPrice,
+      }
+    );
     return await dexdex.buy(
       opts.token,
       opts.volume,
@@ -47,6 +60,7 @@ async function dexdexBuy(opts: {
       {
         from: opts.account,
         value: opts.volumeEth,
+        gas: estimatedGas.muln(1.5),
         gasPrice: opts.gasPrice,
       }
     );
@@ -68,6 +82,19 @@ async function dexdexSell(opts: {
 }): Promise<string> {
   try {
     const dexdex = DexDex(opts.eth, appConfig().ContractAddress);
+    const estimatedGas = await dexdex.estimateGasForSell(
+      opts.eth,
+      opts.token,
+      opts.volume,
+      opts.volumeEth,
+      opts.ordersData,
+      opts.account,
+      opts.affiliate,
+      {
+        from: opts.account,
+        gasPrice: opts.gasPrice,
+      }
+    );
     return await dexdex.sell(
       opts.token,
       opts.volume,
@@ -75,7 +102,11 @@ async function dexdexSell(opts: {
       opts.ordersData,
       opts.account,
       opts.affiliate,
-      { from: opts.account, gasPrice: opts.gasPrice }
+      {
+        from: opts.account,
+        gas: estimatedGas.muln(1.5),
+        gasPrice: opts.gasPrice,
+      }
     );
   } catch (err) {
     throw err;
