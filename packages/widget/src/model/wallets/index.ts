@@ -102,9 +102,44 @@ export interface WalletReadyState {
 
 export type WalletState = WalletErrorState | WalletReadyState;
 
-type Provider = any;
+interface Provider {
+  sendAsync(payload: any, callback: (err: any, res?: any) => void): void;
+}
 
-function withWeb3(fn: (p: Provider) => void) {
+// function decorateErrors(provider: Provider, errorMapper: (err: any) => any): Provider {
+//   return {
+//     sendAsync(payload: any, callback: (err: any, res?: any) => void) {
+//       provider.sendAsync(payload, (err, res) => {
+//         if (!err && res && res.error) {
+//           callback(errorMapper(res.error), res);
+//         } else {
+//           callback(err, res);
+//         }
+//       });
+//     },
+//   };
+// }
+
+// type RPCError = Error & { code: number; message: string };
+// function RPCError(code: number, message: string): RPCError {
+//   const err = new Error(message) as RPCError;
+//   err.code = code;
+//   err.message = message;
+//   return err;
+// }
+
+// const metamaskErrorMapper = (error: { code: number; message: string }): Error => {
+//   if (
+//     error.code === -32603 &&
+//     error.message === 'Error: MetaMask Tx Signature: User denied transaction signature.'
+//   ) {
+//     return RPCError(error.code, 'SignatureRejected');
+//   } else {
+//     return RPCError(error.code, error.message);
+//   }
+// };
+
+function withWeb3(fn: (p: any) => void) {
   if ((window as any).web3 && (window as any).web3.currentProvider) {
     fn((window as any).web3.currentProvider);
   } else {
@@ -122,7 +157,7 @@ function onLoad<A>(fn: () => void) {
   }
 }
 
-const getWeb3Provider = (): Promise<Provider> =>
+const getWeb3Provider = (): Promise<any> =>
   new Promise(resolve => {
     onLoad(() => withWeb3(resolve));
   });
@@ -243,6 +278,8 @@ export function metmaskWallet(token: Observable<Token>): Observable<WalletState>
   return injectedWeb3.pipe(
     concatMap(provider => {
       if (provider && provider.isMetaMask) {
+        // const metamaskProvider = decorateErrors(provider, metamaskErrorMapper);
+        // return singleAccountWallet(WalletId.MetaMask, token, metamaskProvider, true);
         return singleAccountWallet(WalletId.MetaMask, token, provider, true);
       } else {
         return of(errorState(WalletId.MetaMask, 'Not installed'));

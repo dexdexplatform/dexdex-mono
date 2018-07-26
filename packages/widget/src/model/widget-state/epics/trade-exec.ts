@@ -204,10 +204,13 @@ async function executeTrade(
       reportState({ stage: TxStage.TradeCompleted, trade });
     }
   } catch (err) {
-    console.error(err);
-    if (err.name === 'WalletError' && err.codeName === 'SignatureRejected') {
+    if (
+      err.message &&
+      err.message.includes('MetaMask Tx Signature: User denied transaction signature.')
+    ) {
       reportState({ stage: TxStage.SignatureRejected });
     } else {
+      console.error(err);
       reportState({ stage: TxStage.UnkownError });
     }
   }
