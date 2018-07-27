@@ -37,7 +37,7 @@ export class FormatEth extends React.PureComponent<FormatEthProps> {
       this.props.value,
       this.props.displayDecimals == null ? 6 : this.props.displayDecimals,
       this.props.defaultValue || '--',
-      this.props.mode || DivMode.Round
+      this.props.mode === undefined ? DivMode.Round : this.props.mode
     );
   }
 }
@@ -58,7 +58,7 @@ export class FormatToken extends React.PureComponent<FormatTokenProps> {
       decimals,
       displayDecimals,
       this.props.defaultValue || '--',
-      this.props.mode || DivMode.Round
+      this.props.mode === undefined ? DivMode.Round : this.props.mode
     );
   }
 }
