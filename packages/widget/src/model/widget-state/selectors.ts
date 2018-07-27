@@ -1,7 +1,7 @@
 import { getRequiredGas } from '@dexdex/model/lib/order';
+import { getFinalVolumeEth } from '@dexdex/model/lib/order-selection';
 import { getSide } from '@dexdex/model/lib/orderbook';
 import { Trade } from '@dexdex/model/lib/trade';
-import { Token } from '@dexdex/model/lib/token';
 import { toTokenDecimals } from '@dexdex/utils/lib/units';
 import BN from 'bn.js';
 import { WidgetState } from '.';
@@ -9,7 +9,6 @@ import { isMobile } from '../../config';
 import { AmountError, ErrorCode, ErrorMessage } from '../form-error';
 import { AccountState, DesktopWallets, WalletState } from '../wallets/index';
 import { computeGasPrice } from '../widget';
-import { getFinalVolumeEth } from '@dexdex/model/lib/order-selection';
 
 const withTrade = <A>(f: (t: Trade, ws: WidgetState) => A, defaultValue: A) => (
   ws: WidgetState
@@ -45,17 +44,6 @@ export const amountTD = (ws: WidgetState): BN => toTokenDecimals(ws.amount, ws.t
 
 export const getAllowanceTxHash = (ws: WidgetState) =>
   ws.tradeExecution ? ws.tradeExecution.approvalTxHash : null;
-
-export interface RequestAllowanceProps {
-  token: Token;
-  volume: BN;
-  txHash?: string | null;
-}
-export const getTokenAllowanceInfo = (state: WidgetState): RequestAllowanceProps => ({
-  token: state.token,
-  volume: expectedVolume(state),
-  txHash: getAllowanceTxHash(state),
-});
 
 export const getAmountError = (ws: WidgetState): null | ErrorMessage => {
   const toMessage: Record<AmountError, () => ErrorMessage> = {

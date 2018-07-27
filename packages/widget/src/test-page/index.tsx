@@ -10,6 +10,7 @@ import { Screen as TradeProgressScreen } from '../components/screens/TradeProgre
 import { Screen as TradeSuccessScreen } from '../components/screens/TradeSuccessScreen';
 import '../components/Widget.css';
 import { WalletInfo, WalletId } from '../model/wallets/index';
+import { TxStage } from '../model/widget';
 
 const tokenA: Token = {
   address: '0xbc98051d2cd1eeaa4b396dcde34624e5cd4d50e3',
@@ -64,11 +65,11 @@ class Switcher extends React.Component<{}, SwitcherState> {
 const TestApp: React.SFC = () => {
   return (
     <Switcher>
-      <RequestAllowanceScreen token={data.token} volume={data.amountBN} />
+      <RequestAllowanceScreen token={data.token} stage={TxStage.RequestTokenAllowanceSignature} />
       <RequestAllowanceScreen
         token={data.token}
-        volume={data.amountBN}
         txHash={'asdfsdfasdfsdfsdafsdafd'}
+        stage={TxStage.TokenAllowanceInProgress}
       />
       <TradeProgressScreen
         expectedVolume={data.amountBN}
@@ -77,6 +78,7 @@ const TestApp: React.SFC = () => {
         networkCost={data.networkCost}
         token={data.token}
         expectedVolumeEth={data.expectedVolumeEth}
+        stage={TxStage.RequestTradeSignature}
       />
       <TradeProgressScreen
         expectedVolume={data.amountBN}
@@ -86,6 +88,7 @@ const TestApp: React.SFC = () => {
         token={data.token}
         expectedVolumeEth={data.expectedVolumeEth}
         txHash={'asdfsdfasdfsdfsdafsdafd'}
+        stage={TxStage.TradeInProgress}
       />
       <TradeSuccessScreen
         amount={data.amount}

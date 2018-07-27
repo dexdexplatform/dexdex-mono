@@ -21,23 +21,12 @@ const TokenImage: React.SFC<{ token: Token }> = ({ token }) => (
   </div>
 );
 
-const TokenAmount: React.SFC<{ className?: string; token?: Token; value: BN }> = ({
-  className,
-  token,
-  value,
-}) => (
-  <div className={classNames(className, classes.tokenAmount)}>
-    <p className={classes.value}>
-      {token ? <FormatToken value={value} token={token} /> : <FormatEth value={value} />}
-    </p>
-    <p className={classes.name}>{token ? `${token.name} (${token.symbol})` : 'Ether (Eth)'}</p>
-  </div>
-);
-
-export const TokenInfo: React.SFC<{ token: Token; volume: BN }> = ({ token, volume }) => (
+export const TokenInfo: React.SFC<{ token: Token }> = ({ token }) => (
   <div className={classes.tokenInfo}>
     <TokenImage token={token} />
-    <TokenAmount value={volume} token={token} />
+    <div className={classNames(classes.tokenName)}>
+      {token.name} ({token.symbol})
+    </div>
   </div>
 );
 

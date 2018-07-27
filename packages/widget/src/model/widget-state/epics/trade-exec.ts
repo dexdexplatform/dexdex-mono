@@ -127,15 +127,30 @@ async function waitForTransaction(eth: Eth, txId: string): Promise<TransactionRe
   return txReceipt;
 }
 
+async function needsTokenAllowance(
+  eth: Eth,
+  account: Address,
+  token: Token,
+  volume: BN
+): Promise<boolean> {
+  const ourAddress = appConfig().ContractAddress;
+  const erc20 = Erc20(eth, token.address);
+
+  const currentAllowance = await erc20.allowance(account, ourAddress);
+  return currentAllowance.lt(volume);
+}
+
 async function approveTokenAllowance(
   eth: Eth,
   account: Address,
   token: Token,
-  volume: BN,
   gasPrice: BN
 ): Promise<string> {
-  const tokenContract = Erc20(eth, token.address);
-  return tokenContract.approve(appConfig().ContractAddress, volume, { from: account, gasPrice });
+  const ourAddress = appConfig().ContractAddress;
+  const erc20 = Erc20(eth, token.address);
+  // MaxVolume = 2^256 -1
+  const MaxVolume = new BN('ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', 16);
+  return erc20.approve(ourAddress, MaxVolume, { from: account, gasPrice });
 }
 
 async function executeTrade(
@@ -164,16 +179,12 @@ async function executeTrade(
         affiliate: affiliateAddress,
       });
     } else {
-      reportState({ stage: TxStage.RequestTokenAllowanceSignature });
-      const allowanceTxId = await approveTokenAllowance(
-        eth,
-        account,
-        token,
-        tradeParams.volume,
-        gasPrice
-      );
-      reportState({ stage: TxStage.TokenAllowanceInProgress, txId: allowanceTxId });
-      await waitForTransaction(eth, allowanceTxId);
+      if (await needsTokenAllowance(eth, account, token, tradeParams.volume)) {
+        reportState({ stage: TxStage.RequestTokenAllowanceSignature });
+        const allowanceTxId = await approveTokenAllowance(eth, account, token, gasPrice);
+        reportState({ stage: TxStage.TokenAllowanceInProgress, txId: allowanceTxId });
+        await waitForTransaction(eth, allowanceTxId);
+      }
 
       reportState({ stage: TxStage.RequestTradeSignature });
       tradeTxId = await dexdexSell({
