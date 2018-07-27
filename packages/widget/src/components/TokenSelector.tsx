@@ -230,7 +230,7 @@ class TokenSelector extends React.Component<TokenSelectorProps, TokenSelectorSta
         <span className={cx('name')}>
           {selectedToken.symbol} <small>{selectedToken.name}</small>
         </span>
-        <span className={cx('caret')}>▾</span>
+        {!isSingle && <span className={cx('caret')}>▾</span>}
         {this.state.isOpen && (
           <TokenSelectionModal
             tokens={this.props.tokens}
