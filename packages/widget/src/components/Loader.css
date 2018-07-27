@@ -1,0 +1,49 @@
+.dex {
+  animation: animatedLoader 4s infinite;
+  transform: scale(0.5);
+}
+
+.rectangleTop {
+  animation: animatedRectangleTop 2s ease-in infinite;
+}
+
+.rectangleBottom {
+  animation: animatedRectangleBottom 2s ease-in infinite;
+}
+
+@keyframes animatedLoader {
+  0% {
+    filter: grayscale(100%);
+  }
+  50% {
+    filter: grayscale(0);
+  }
+
+  100% {
+    filter: grayscale(100%);
+  }
+}
+
+@keyframes animatedRectangleTop {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-25px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes animatedRectangleBottom {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(25px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
