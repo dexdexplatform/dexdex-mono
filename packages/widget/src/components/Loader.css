@@ -1,13 +1,13 @@
-#dex {
+.dex {
   animation: animatedLoader 4s infinite;
   transform: scale(0.5);
 }
 
-#rectangleTop {
+.rectangleTop {
   animation: animatedRectangleTop 2s ease-in infinite;
 }
 
-#rectangleBottom {
+.rectangleBottom {
   animation: animatedRectangleBottom 2s ease-in infinite;
 }
 
