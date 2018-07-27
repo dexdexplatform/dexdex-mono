@@ -76,7 +76,7 @@ export class FormatPrice extends React.PureComponent<FormatPriceProps> {
     const defaultValue = this.props.defaultValue || '--';
     const displayDecimals = this.props.displayDecimals == null ? 6 : this.props.displayDecimals;
 
-    if (volume == null || volumeEth == null || volumeEth.isZero()) {
+    if (volume == null || volumeEth == null || volume.isZero()) {
       return defaultValue;
     }
 
@@ -100,7 +100,7 @@ export class FormatPriceComparison extends React.PureComponent<FormatPriceCompar
     const defaultValue = this.props.defaultValue || '--';
     const displayDecimals = this.props.displayDecimals == null ? 6 : this.props.displayDecimals;
 
-    if (volume == null || volumeEth == null || volumeEth.isZero() || effectiveVolumeEth.isZero()) {
+    if (volume == null || volumeEth == null || volume.isZero() || effectiveVolume.isZero()) {
       return defaultValue;
     }
 
