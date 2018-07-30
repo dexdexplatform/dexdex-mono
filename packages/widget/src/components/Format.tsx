@@ -80,7 +80,13 @@ export class FormatPrice extends React.PureComponent<FormatPriceProps> {
       return defaultValue;
     }
 
-    return computePrice(volumeEth, volume, token.decimals).toFixed(displayDecimals);
+    const price = computePrice(volumeEth, volume, token.decimals);
+    if (price < 1e-5) {
+      return price.toExponential();
+    } else {
+      return price.toFixed(displayDecimals);
+    }
+    // return computePrice(volumeEth, volume, token.decimals).toFixed(displayDecimals);
   }
 }
 
