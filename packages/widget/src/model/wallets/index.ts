@@ -1,12 +1,23 @@
-import { Address } from '@dexdex/model/lib/base';
-import BN from 'bn.js';
-import { Observable, of, combineLatest, empty } from 'rxjs';
-import { Token } from '@dexdex/model/lib/token';
-import { promiseFactory, seqAsync, pollDifferences } from '@dexdex/rx';
-import { share, concatMap, switchMap, startWith, map } from 'rxjs/operators';
-import Eth from 'ethjs-query';
 import Erc20 from '@dexdex/erc20';
+import { Address } from '@dexdex/model/lib/base';
+import { Token } from '@dexdex/model/lib/token';
+import { pollDifferences, seqAsync } from '@dexdex/rx';
+import BN from 'bn.js';
+import Eth from 'ethjs-query';
+import { combineLatest, defer, empty, interval, Observable, of, race } from 'rxjs';
+import {
+  concatMap,
+  delay,
+  first,
+  map,
+  mapTo,
+  repeatWhen,
+  share,
+  startWith,
+  switchMap,
+} from 'rxjs/operators';
 import { appConfig } from '../../config';
+import { waitOnLoad } from '../../utils/wait-on-load';
 
 export type WalletAccountRef = { wallet: WalletId; accountIdx: number };
 
@@ -22,6 +33,7 @@ export enum WalletId {
   Unkown = 'Unkown',
 }
 
+export type Provider = any;
 export const DesktopWallets: WalletId[] = [WalletId.MetaMask, WalletId.Ledger, WalletId.Trezor];
 
 export interface WalletInfo {
@@ -102,65 +114,30 @@ export interface WalletReadyState {
 
 export type WalletState = WalletErrorState | WalletReadyState;
 
-interface Provider {
-  sendAsync(payload: any, callback: (err: any, res?: any) => void): void;
-}
-
-// function decorateErrors(provider: Provider, errorMapper: (err: any) => any): Provider {
-//   return {
-//     sendAsync(payload: any, callback: (err: any, res?: any) => void) {
-//       provider.sendAsync(payload, (err, res) => {
-//         if (!err && res && res.error) {
-//           callback(errorMapper(res.error), res);
-//         } else {
-//           callback(err, res);
-//         }
-//       });
-//     },
-//   };
-// }
-
-// type RPCError = Error & { code: number; message: string };
-// function RPCError(code: number, message: string): RPCError {
-//   const err = new Error(message) as RPCError;
-//   err.code = code;
-//   err.message = message;
-//   return err;
-// }
-
-// const metamaskErrorMapper = (error: { code: number; message: string }): Error => {
-//   if (
-//     error.code === -32603 &&
-//     error.message === 'Error: MetaMask Tx Signature: User denied transaction signature.'
-//   ) {
-//     return RPCError(error.code, 'SignatureRejected');
-//   } else {
-//     return RPCError(error.code, error.message);
-//   }
-// };
-
-function withWeb3(fn: (p: any) => void) {
+const tryGetWeb3 = defer(() => {
   if ((window as any).web3 && (window as any).web3.currentProvider) {
-    fn((window as any).web3.currentProvider);
+    return of((window as any).web3.currentProvider);
   } else {
-    setTimeout(() => withWeb3(fn), 100);
+    return of(null);
   }
-}
+});
 
-function onLoad<A>(fn: () => void) {
-  switch (document.readyState) {
-    case 'loading':
-      window.addEventListener('load', fn);
-      return;
-    default:
-      fn();
-  }
-}
-
-const getWeb3Provider = (): Promise<any> =>
-  new Promise(resolve => {
-    onLoad(() => withWeb3(resolve));
-  });
+const injectedWeb3: Observable<Provider | null> =
+  // first wait for page to be loaded
+  waitOnLoad(
+    race(
+      tryGetWeb3.pipe(
+        // try get web3 => provider | null
+        repeatWhen(input => input.pipe(delay(100))), // repeat every 100ms
+        first(val => val != null) // take first value != null and finish
+      ),
+      // wait for 3s max
+      interval(3000).pipe(
+        mapTo(null), // return null if couldn't find it
+        first()
+      )
+    )
+  ).pipe(share()); // do this just once
 
 const errorState = (walletId: WalletId, reason: string): WalletErrorState => ({
   walletId,
@@ -173,8 +150,6 @@ const readyState = (walletId: WalletId, eth: Eth, accounts: AccountState[]): Wal
   eth,
   accounts,
 });
-
-const injectedWeb3 = promiseFactory(getWeb3Provider).pipe(share());
 
 const accountStates = (
   eth: Eth,
