@@ -16,6 +16,13 @@ const once = <A>(f: () => A) => {
 // tells wether we are a iframe or not
 export const isEmbed = window.parent !== window;
 
+function computeIsMobile() {
+  const ua = window.navigator.userAgent;
+  return ua.includes('iPhone') || ua.includes('Android');
+}
+
+export const isMobile = computeIsMobile();
+
 const configReader = () => {
   let getValue: (varname: string) => string | null;
   if (isEmbed) {
@@ -109,13 +116,6 @@ export const appConfig = once(readConfig);
 export const etherscanAddressUrl = (address: Address) =>
   `${appConfig().EtherscanUrl}/address/${address}`;
 export const etherscanTxUrl = (txhash: string) => `${appConfig().EtherscanUrl}/tx/${txhash}`;
-
-function computeIsMobile() {
-  const ua = window.navigator.userAgent;
-  return ua.includes('iPhone') || ua.includes('Android');
-}
-
-export const isMobile = computeIsMobile();
 
 const tokenImage = (size: 23 | 32, name: string) =>
   `https://firebasestorage.googleapis.com/v0/b/easytrade-00001.appspot.com/o/` +
