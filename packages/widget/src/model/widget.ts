@@ -22,6 +22,7 @@ export interface WidgetConfig {
   feePercentage: number;
   tokens: Token[];
   initialToken: Token;
+  initialTokenAddress: Address;
   affiliateAddress: Address;
   enabledOperations: Operation[];
   ethers2usdER: number;

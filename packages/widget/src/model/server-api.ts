@@ -115,7 +115,6 @@ const getWidgetConfig = async (
   tokens: string | null
 ): Promise<WidgetConfig> => {
   const referralAccount = getReferralAccount();
-  const initialTokenAddress = getInitialToken();
   var url = new URL(`${appConfig().ApiBase}/api/v1/widgets/${widgetId}`);
   if (referralAccount !== null) {
     url.searchParams.append('affiliate', referralAccount);
@@ -130,9 +129,12 @@ const getWidgetConfig = async (
   if (res.ok) {
     const widgetConfig: WidgetConfig = await res.json();
     widgetConfig.tokens.sort((tkA, tkB) => tkA.symbol.localeCompare(tkB.symbol));
-    const initialToken = widgetConfig.tokens.find(tk => tk.address === initialTokenAddress);
-    if (initialToken) {
-      widgetConfig.initialToken = initialToken;
+    const initialTokenAddress = getInitialToken() || widgetConfig.initialTokenAddress;
+    if (initialTokenAddress) {
+      const initialToken = widgetConfig.tokens.find(tk => tk.address === initialTokenAddress);
+      if (initialToken) {
+        widgetConfig.initialToken = initialToken;
+      }
     }
     return widgetConfig;
   } else {
