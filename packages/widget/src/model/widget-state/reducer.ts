@@ -141,6 +141,16 @@ function applySetters(state: WidgetState, action: Actions): WidgetState {
         ...state,
         tradeExecution: tradeExecutionReducer(state.tradeExecution, action),
       };
+    case 'showNoWalletModal':
+      return {
+        ...state,
+        noWalletModalOpen: true,
+      };
+    case 'closeNoWalletModal':
+      return {
+        ...state,
+        noWalletModalOpen: false,
+      };
     default:
       return { ...state };
   }

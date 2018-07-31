@@ -91,6 +91,22 @@ export const setTransactionState = (payload: TransactionState): SetTransactionSt
   payload,
 });
 
+export interface ShowNoWalletModal {
+  type: 'showNoWalletModal';
+}
+
+export const showNoWalletModal = (): ShowNoWalletModal => ({
+  type: 'showNoWalletModal',
+});
+
+export interface CloseNoWalletModal {
+  type: 'closeNoWalletModal';
+}
+
+export const closeNoWalletModal = (): CloseNoWalletModal => ({
+  type: 'closeNoWalletModal',
+});
+
 export function actionIs(action: Actions, ...types: Actions['type'][]): boolean {
   return types.indexOf(action.type) >= 0;
 }
@@ -104,4 +120,6 @@ export type Actions =
   | StartTransactionAction
   | SetTransactionStateAction
   | GoBackAction
-  | SetTokenAction;
+  | SetTokenAction
+  | ShowNoWalletModal
+  | CloseNoWalletModal;
