@@ -18,6 +18,7 @@ function createOrder(
   return {
     id: `order-${nextId++}`,
     token: '0x0000000000000000000000000000000000000000',
+    maker: '0x0000000000000000000000000000000000000000',
     isSell: true,
     decimals: TokenDecimals,
     remainingVolume,

@@ -55,35 +55,42 @@ export function selectOrdersFor(
   let accVolume = new BN(0);
   let accVolumeEth = new BN(0);
   let selectedOrders: Order[] = [];
+  let makers = {};
 
   for (const order of orders) {
-    // if next order will surpass qty, we first remove an order.
-    if (selectedOrders.length >= ordersQty) {
-      const idxToRemove = findMinVolumeIdx(selectedOrders);
-      const [deletedOrder] = selectedOrders.splice(idxToRemove, 1);
-      accVolume = accVolume.sub(deletedOrder.remainingVolume);
-      accVolumeEth = accVolumeEth.sub(deletedOrder.remainingVolumeEth);
-    }
+    if (!makers[order.maker]) {
+      //Save the maker
+      makers[order.maker] = true;
 
-    // We compute volume amounts to complete the remaining volume
-    // The computed volume can be the full order or just a part of it
-    const remainingVolume = totalVolume.sub(accVolume);
-    const { volume, volumeEth, extraVolume, extraVolumeEth } = applyOrder(order, remainingVolume);
+      // if next order will surpass qty, we first remove an order.
+      if (selectedOrders.length >= ordersQty) {
+        const idxToRemove = findMinVolumeIdx(selectedOrders);
+        const [deletedOrder] = selectedOrders.splice(idxToRemove, 1);
+        accVolume = accVolume.sub(deletedOrder.remainingVolume);
+        accVolumeEth = accVolumeEth.sub(deletedOrder.remainingVolumeEth);
+        makers[deletedOrder.maker] = false;
+      }
 
-    // We add the order the volume to use from it, to the set.
-    selectedOrders.push(order);
-    accVolume = accVolume.add(volume);
-    accVolumeEth = accVolumeEth.add(volumeEth);
+      // We compute volume amounts to complete the remaining volume
+      // The computed volume can be the full order or just a part of it
+      const remainingVolume = totalVolume.sub(accVolume);
+      const { volume, volumeEth, extraVolume, extraVolumeEth } = applyOrder(order, remainingVolume);
 
-    // If we already achieve the required volume, exit
-    if (accVolume.gte(totalVolume)) {
-      return {
-        baseVolume: accVolume,
-        baseVolumeEth: accVolumeEth,
-        extraVolume,
-        extraVolumeEth,
-        orders: selectedOrders,
-      };
+      // We add the order the volume to use from it, to the set.
+      selectedOrders.push(order);
+      accVolume = accVolume.add(volume);
+      accVolumeEth = accVolumeEth.add(volumeEth);
+
+      // If we already achieve the required volume, exit
+      if (accVolume.gte(totalVolume)) {
+        return {
+          baseVolume: accVolume,
+          baseVolumeEth: accVolumeEth,
+          extraVolume,
+          extraVolumeEth,
+          orders: selectedOrders,
+        };
+      }
     }
   }
   throw new Error("can't operate to that amount");
@@ -117,7 +124,13 @@ export function getMinVolume(orders: Order[], minVolumeEth: BN): BN {
 }
 
 export function getMaxVolume(orders: Order[], maxOrders: number): BN {
+  let makers = {};
   const maxVolume = orders
+    .filter(o => {
+      const result = !makers[o.maker];
+      makers[o.maker] = true;
+      return result;
+    })
     .map(o => o.remainingVolume)
     .sort((v1, v2) => v2.cmp(v1))
     .slice(0, maxOrders)

@@ -45,6 +45,7 @@ function createOrder(opts: Pick<Order, 'remainingVolume' | 'remainingVolumeEth'>
   return {
     id: `order-${nextId++}`,
     token: '0x0000000000000000000000000000000000000000',
+    maker: `0x00000000000000000000000000000000${nextId}`,
     isSell: true,
     decimals: TokenDecimals,
     remainingVolume,
@@ -116,6 +117,17 @@ describe('obmath', () => {
         2
       );
       expect(Number(fromTokenDecimals(maxVolume, TokenDecimals))).toBe(80);
+    });
+  });
+
+  describe('getMaxVolume() repeatead maker', () => {
+    test('simple case', () => {
+      const repeatedMakerOrder = sellOrderED(30, 5);
+      const maxVolume = obmath.getMaxVolume(
+        [repeatedMakerOrder, sellOrderED(20, 10), sellOrderED(50, 30), repeatedMakerOrder],
+        3
+      );
+      expect(Number(fromTokenDecimals(maxVolume, TokenDecimals))).toBe(100);
     });
   });
 

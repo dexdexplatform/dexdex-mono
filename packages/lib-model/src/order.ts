@@ -19,6 +19,8 @@ export interface Order {
   id: string;
   /** Ethereum Address for the Token to be sold or bought */
   token: Address;
+  /** Ethereum Address for the Order Maker to be sold or bought */
+  maker: Address;
   /** Wether is buy or sell order */
   isSell: boolean;
 

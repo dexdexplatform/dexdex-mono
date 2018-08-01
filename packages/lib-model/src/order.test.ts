@@ -7,6 +7,7 @@ describe('Order Model', () => {
       const o: Order = {
         id: 'o1',
         token: 'aaaaaaaaaaaaaaaaaaa',
+        maker: 'aaaaaaaaaaaaaaaaaaa',
         isSell: false,
         decimals: 0.1,
         remainingVolume: new BN('100000000000000000000'),
