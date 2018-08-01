@@ -1,0 +1,40 @@
+.header {
+  display: flex;
+  background-color: #124;
+  color: #fff;
+  padding: 1rem;
+
+  & h1 {
+    font-size: 1rem;
+    margin: 0;
+  }
+}
+.content {
+  padding: 1rem;
+
+  & p {
+    font-size: 0.75rem;
+    margin: 0;
+  }
+
+  & .links {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+
+    & a {
+      display: inline-block;
+      text-align: center;
+      margin-bottom: 0.75rem;
+
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+    }
+
+    & img {
+      height: 68px;
+      vertical-align: middle;
+    }
+  }
+}
