@@ -1,5 +1,5 @@
 import { Address } from '@dexdex/model/lib/base';
-import { EthNet } from './model/wallets';
+import { EthNet } from './model/wallets/base';
 
 const once = <A>(f: () => A) => {
   let called = false;
@@ -47,6 +47,18 @@ const isValidOperations = (operations: string) => withinChoices('buy', 'sell', '
 const areValidTokens = (tokens: string) =>
   /^0x[a-fA-F0-9]{40}(?:,0x[a-fA-F0-9]{40})*$/.test(tokens);
 
+function ethNetToId(ethNet: EthNet): number {
+  const EthNetIds = {
+    mainnet: 1,
+    morden: 2,
+    ropsten: 3,
+    rinkeby: 4,
+    kovan: 42,
+    devnet: 66,
+  };
+  return EthNetIds[ethNet];
+}
+
 function readConfig() {
   const getConfigParam = configReader();
 
@@ -84,6 +96,7 @@ function readConfig() {
     operations,
     tokens,
     network,
+    networkId: ethNetToId(network),
     ApiBase: getAPIBase(network),
     ContractAddress: getContractAddress(network),
     EtherscanUrl: network === 'kovan' ? 'https://kovan.etherscan.io' : 'https://etherscan.io',

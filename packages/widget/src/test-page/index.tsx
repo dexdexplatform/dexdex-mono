@@ -9,7 +9,7 @@ import { Screen as RequestAllowanceScreen } from '../components/screens/RequestA
 import { Screen as TradeProgressScreen } from '../components/screens/TradeProgressScreen';
 import { Screen as TradeSuccessScreen } from '../components/screens/TradeSuccessScreen';
 import '../components/Widget.css';
-import { WalletInfo, WalletId } from '../model/wallets/index';
+import { WalletInfo, WalletId } from '../model/wallets/base';
 import { TxStage } from '../model/widget';
 
 const tokenA: Token = {

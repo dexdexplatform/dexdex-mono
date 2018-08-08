@@ -4,13 +4,12 @@ import { feeFromVolumeEthWithFee } from '@dexdex/model/lib/fee';
 import BN from 'bn.js';
 import * as React from 'react';
 import { RenderMapper } from '.';
-import { WalletInfo } from '../../model/wallets/index';
+import { WalletInfo } from '../../model/wallets/base';
 import { goBack } from '../../model/widget-state/actions';
 import {
   effectiveNetworkCost,
   effectiveVolume,
   effectiveVolumeEth,
-  getCurrentAccountState,
 } from '../../model/widget-state/selectors';
 import { FormatAddress, FormatEth, FormatPrice, FormatToken, FormatTxHash } from '../Format';
 import { TradeInfo } from '../TokenInfo';
@@ -49,24 +48,20 @@ export interface TradeSuccessScreenProps {
 }
 
 export const mapper: RenderMapper<TradeSuccessScreenProps> = store => ws => {
-  const accountState = getCurrentAccountState(ws);
   if (ws.tradeExecution.trade == null) {
     throw new Error('BUG: no trade on success screen');
   }
   if (ws.tradeExecution.tradeTxHash == null) {
     throw new Error('BUG: no tradetxhash on success screen');
   }
-  if (accountState == null) {
-    throw new Error('BUG: no wallet address on success screen');
-  }
-  if (ws.selectedWallet == null) {
+  if (ws.wallet == null) {
     throw new Error('BUG: no selected wallet on success screen');
   }
   const effVolumeEth = effectiveVolumeEth(ws);
 
   return {
     token: ws.token,
-    fromAddress: accountState.address,
+    fromAddress: ws.wallet.address,
     amount: ws.amount,
     operation: ws.operation,
     volumeEth: ws.tradeExecution.trade.volumeEth,
@@ -77,7 +72,7 @@ export const mapper: RenderMapper<TradeSuccessScreenProps> = store => ws => {
     networkCost: effectiveNetworkCost(ws),
     executionDate: ws.tradeExecution.trade.executionDate!,
     tradeTxHash: ws.tradeExecution.tradeTxHash,
-    wallet: WalletInfo[ws.selectedWallet.wallet],
+    wallet: WalletInfo[ws.wallet.id],
     goBack: () => store.dispatch(goBack()),
   };
 };

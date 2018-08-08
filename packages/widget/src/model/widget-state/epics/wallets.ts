@@ -1,24 +1,53 @@
 import { select } from '@dexdex/rx';
-import { empty, merge } from 'rxjs';
-import { first, map, mapTo } from 'rxjs/operators';
+import BN from 'bn.js';
+import { empty, merge, Observable } from 'rxjs';
+import { distinctUntilChanged, first, map, mapTo, switchMap } from 'rxjs/operators';
 import { WidgetEpic } from '.';
+import { WalletDetails } from '..';
 import { isMobile } from '../../../config';
-import {
-  injectedWeb3,
-  ledgerWallet,
-  metmaskWallet,
-  mobileWallet,
-  trezorWallet,
-} from '../../wallets/index';
-import { setWalletState, showNoWalletModal } from '../actions';
+import { balanceWatcher, injectedWallet, injectedWeb3, walletAddressWatcher } from '../../wallets';
+import { WalletId } from '../../wallets/base';
+import { Actions, setWallet, setWalletState, showNoWalletModal } from '../actions';
+
+function metaMaskAccountWatcher(
+  currentWallet$: Observable<WalletDetails | null>
+): Observable<Actions> {
+  const onWalletIdChange$ = currentWallet$.pipe(
+    distinctUntilChanged(
+      (prev, curr) => prev === curr || (prev !== null && curr !== null && prev.id === curr.id)
+    )
+  );
+
+  return onWalletIdChange$.pipe(
+    switchMap(
+      wallet =>
+        wallet != null && wallet.id === WalletId.MetaMask
+          ? walletAddressWatcher(wallet.eth)
+          : empty()
+    ),
+    map(newAddress => {
+      if (newAddress == null) {
+        return setWallet(null);
+      } else {
+        return setWalletState({
+          address: newAddress,
+          balance: new BN(0),
+          tokenBalance: new BN(0),
+        });
+      }
+    })
+  );
+}
 
 export const wallets: WidgetEpic = changes => {
   const currentToken$ = changes.pipe(select('state', 'token'));
+  const currentWallet$ = changes.pipe(select('state', 'wallet'));
 
-  const walletStates$ = isMobile
-    ? mobileWallet(currentToken$)
-    : merge(metmaskWallet(currentToken$), ledgerWallet(currentToken$), trezorWallet(currentToken$));
-  return walletStates$.pipe(map(setWalletState));
+  return merge(
+    injectedWallet.pipe(map(setWallet)),
+    metaMaskAccountWatcher(currentWallet$),
+    balanceWatcher(currentWallet$, currentToken$).pipe(map(setWalletState))
+  );
 };
 
 export const noWalletWarning: WidgetEpic = changes => {

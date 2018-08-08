@@ -1,8 +1,9 @@
-import { Operation } from '@dexdex/model/lib/base';
+import { Operation, Address } from '@dexdex/model/lib/base';
 import { Token } from '@dexdex/model/lib/token';
 import { OrderBookEvent } from '../server-api';
-import { WalletAccountRef, WalletState } from '../wallets/index';
 import { TransactionState } from '../widget';
+import { Wallet } from '.';
+import BN from 'bn.js';
 
 //-------------------------------------------------------------------------------------------------
 // Actions
@@ -37,13 +38,19 @@ export const setOperation = (payload: Operation): SetOperationAction => ({
 
 export interface SetWalletAction {
   type: 'setWallet';
-  payload: WalletAccountRef | null;
+  payload: null | Wallet;
 }
 
-export const setWallet = (payload: WalletAccountRef | null): SetWalletAction => ({
+export const setWallet = (payload: null | Wallet): SetWalletAction => ({
   type: 'setWallet',
   payload,
 });
+
+export interface WalletState {
+  balance: BN;
+  tokenBalance: BN;
+  address: Address;
+}
 
 export interface SetWalletStateAction {
   type: 'setWalletState';

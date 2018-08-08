@@ -1,22 +1,22 @@
-import Erc20 from '@dexdex/erc20';
 import { Operation } from '@dexdex/model/lib/base';
-import { Trade, TradeState } from '@dexdex/model/lib/trade';
+import { getOrdersData } from '@dexdex/model/lib/order';
+import { getFinalVolumeEth } from '@dexdex/model/lib/order-selection';
 import { Token } from '@dexdex/model/lib/token';
+import { Trade, TradeState } from '@dexdex/model/lib/trade';
 import BN from 'bn.js';
 import Eth, { Address, TransactionReceipt } from 'ethjs-query';
 import { empty, Observable, Observer } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { WidgetState } from '..';
+import Erc20 from '@dexdex/erc20';
 import { appConfig } from '../../../config';
 import DexDex from '../../contracts/dexdex';
 import { ServerApi } from '../../server-api';
 import { computeGasPrice, TransactionState, TxStage } from '../../widget';
 import { Actions, setTransactionState } from '../actions';
-import { getCurrentAccountState, getCurrentWalletState, expectedVolume } from '../selectors';
+import { expectedVolume } from '../selectors';
 import { Epic } from '../store';
 import { filterAction } from './utils';
-import { getOrdersData } from '@dexdex/model/lib/order';
-import { getFinalVolumeEth } from '@dexdex/model/lib/order-selection';
 
 const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -51,6 +51,9 @@ async function dexdexBuy(opts: {
         gasPrice: opts.gasPrice,
       }
     );
+
+    console.log(opts.token, opts.volume.toString(), opts.ordersData, opts.account, opts.affiliate);
+    console.log(opts.volumeEth.toString());
     return await dexdex.buy(
       opts.token,
       opts.volume,
@@ -262,10 +265,9 @@ export const executeTradeEpic = (api: ServerApi): Epic<WidgetState, Actions> => 
   changes.pipe(
     filterAction('startTransaction'),
     switchMap(({ state }) => {
-      const walletState = getCurrentWalletState(state);
-      const accountState = getCurrentAccountState(state);
+      const wallet = state.wallet;
 
-      if (walletState == null || accountState == null || walletState.status === 'error') {
+      if (wallet == null || wallet.networkId !== appConfig().networkId) {
         // something is wrong here
         console.log('invalid UI state: starting tx with no valid wallet');
         return empty();
@@ -291,8 +293,8 @@ export const executeTradeEpic = (api: ServerApi): Epic<WidgetState, Actions> => 
 
       return executeTradeObs(
         api,
-        walletState.eth,
-        accountState.address,
+        wallet.eth,
+        wallet.address,
         gasPriceBN,
         state.token,
         state.operation,

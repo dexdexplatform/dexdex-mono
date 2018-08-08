@@ -1,17 +1,18 @@
 import { Address, Operation } from '@dexdex/model/lib/base';
+import { OrderSelection } from '@dexdex/model/lib/order-selection';
 import { OrderBook } from '@dexdex/model/lib/orderbook';
-import { Trade } from '@dexdex/model/lib/trade';
 import { Token } from '@dexdex/model/lib/token';
+import { Trade } from '@dexdex/model/lib/trade';
 import BN from 'bn.js';
+import Eth from 'ethjs-query';
 import { AmountError, BalanceError } from '../form-error';
 import { createApi } from '../server-api';
-import { WalletAccountRef, WalletId, WalletState } from '../wallets/index';
+import { WalletId } from '../wallets/base';
 import { GasPrice, TxStage, WidgetConfig } from '../widget';
 import * as actions from './actions';
 import rootEpic from './epics';
 import { reducerWithDefaults } from './reducer';
 import { createStore, Store } from './store';
-import { OrderSelection } from '../../../../lib-model/lib/order-selection';
 
 //-------------------------------------------------------------------------------------------------
 // Types
@@ -27,10 +28,16 @@ export type WidgetScreen =
   | 'rejectedSignature'
   | 'waitingTrade';
 
-export interface WalletDetails {
-  address: Address | null;
-  etherBalance: BN;
-  tokenBalance: BN | null;
+export interface Wallet {
+  id: WalletId;
+  eth: Eth;
+  networkId: number;
+  address: Address;
+}
+
+export interface WalletDetails extends Wallet {
+  balance: BN;
+  tokenBalance: BN;
 }
 
 export interface WidgetState {
@@ -38,8 +45,7 @@ export interface WidgetState {
   noWalletModalOpen: boolean;
   operation: Operation;
   token: Token;
-  wallets: Partial<Record<WalletId, WalletState>>;
-  selectedWallet: null | WalletAccountRef;
+  wallet: null | WalletDetails;
   amountPristine: boolean;
   amount: string; // expressed in Tokens #
   orderbook: OrderBook | null;
@@ -62,7 +68,7 @@ export type WidgetStore = Store<WidgetState, actions.Actions>;
 export interface Operations {
   setOperation: (operation: Operation) => void;
   setToken: (token: Token) => void;
-  setWallet: (wallet: WalletAccountRef | null) => void;
+  setWallet: (wallet: Wallet) => void;
   setAmount: (amount: string) => void;
   startTransaction: () => void;
 }
@@ -84,8 +90,7 @@ export async function initWidget(
     noWalletModalOpen: false,
     operation: config.enabledOperations.length > 1 ? 'buy' : config.enabledOperations[0],
     token: config.initialToken || config.tokens[0],
-    wallets: {},
-    selectedWallet: null,
+    wallet: null,
     amountPristine: true,
     amount: '0', // expressed in Tokens #
     orderbook: null,

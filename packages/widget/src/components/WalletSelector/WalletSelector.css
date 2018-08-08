@@ -1,0 +1,112 @@
+/*******************************************************************************************
+/* Wallet Selector
+/*******************************************************************************************/
+.walletSelector {
+  border: 1px solid #ccc;
+  padding: 8px 10px;
+  border-radius: 4px;
+  display: flex;
+  cursor: pointer;
+
+  &.mobile {
+    cursor: default;
+  }
+}
+
+.nameContainer {
+  margin: auto 0;
+
+  & .icon {
+    height: 23px;
+    width: 23px;
+    vertical-align: middle;
+  }
+
+  & .name {
+    margin-left: 5px;
+    vertical-align: middle;
+  }
+}
+
+.info {
+  text-align: right;
+  font-size: 0.75rem;
+  line-height: 0.9rem;
+  color: #124;
+  margin-left: auto;
+
+  & .balance:nth-child(2) {
+    color: #39f;
+  }
+
+  & .address {
+    font-size: 10px;
+    color: rgba(28, 42, 70, 0.4);
+  }
+}
+
+@media (max-width: 320px) {
+  .nameContainer .name {
+    display: none;
+  }
+}
+
+/*************** MODAL ******************************/
+
+.modal {
+  background: #31395e;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.walletBox {
+  border: 1px solid #21243f;
+  border-radius: 8px;
+  min-height: 80px;
+  margin: 10px 0;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+
+  padding: 10px;
+
+  &.disabled {
+    cursor: default;
+    opacity: 0.6;
+  }
+}
+
+.walletBoxLeft {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  & img {
+    margin: 10px;
+    height: 32px;
+  }
+}
+
+.walletBoxRight {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.ledgerAccount {
+  cursor: pointer;
+  font-size: 0.8rem;
+  margin: 3px 5px;
+  padding: 4px;
+  border: 1px solid #21243f;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+
+  /* & div:last-child {
+
+  } */
+}
