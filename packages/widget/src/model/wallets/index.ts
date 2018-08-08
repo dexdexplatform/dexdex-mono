@@ -122,22 +122,25 @@ const tryGetWeb3 = defer(() => {
   }
 });
 
-const injectedWeb3: Observable<Provider | null> =
-  // first wait for page to be loaded
-  waitOnLoad(
+function timeout<A>(ms: number, defaultValue: A | Observable<A>) {
+  return (input: Observable<A>) =>
     race(
-      tryGetWeb3.pipe(
-        // try get web3 => provider | null
-        repeatWhen(input => input.pipe(delay(100))), // repeat every 100ms
-        first(val => val != null) // take first value != null and finish
-      ),
-      // wait for 3s max
+      input,
       interval(3000).pipe(
-        mapTo(null), // return null if couldn't find it
+        mapTo(defaultValue),
         first()
       )
-    )
-  ).pipe(share()); // do this just once
+    );
+}
+
+export const injectedWeb3: Observable<Provider | null> = tryGetWeb3.pipe(
+  // tryGetWeb3 is a one time try of getting a provider
+  repeatWhen(input => input.pipe(delay(100))), // repeat tryGetWeb3 every 100ms
+  first(val => val != null), // stop after one try return != null
+  timeout(3000, null), // don't run forever, timeout after 3s and emit null
+  waitOnLoad, // do ALL that, but first wait for page to be loaded
+  share() // do ALL that, just once for concurrent subscribers
+);
 
 const errorState = (walletId: WalletId, reason: string): WalletErrorState => ({
   walletId,

@@ -35,6 +35,7 @@ export interface WalletDetails {
 
 export interface WidgetState {
   config: WidgetConfig;
+  noWalletModalOpen: boolean;
   operation: Operation;
   token: Token;
   wallets: Partial<Record<WalletId, WalletState>>;
@@ -80,6 +81,7 @@ export async function initWidget(
 
   const initialState: WidgetState = {
     config,
+    noWalletModalOpen: false,
     operation: config.enabledOperations.length > 1 ? 'buy' : config.enabledOperations[0],
     token: config.initialToken || config.tokens[0],
     wallets: {},

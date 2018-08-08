@@ -6,6 +6,8 @@ import WidgetLoader from './WidgetLoader';
 import screens from './screens';
 import BN from 'bn.js';
 import { TxStage } from '../model/widget';
+import { closeNoWalletModal } from '../model/widget-state/actions';
+import NoWalletModal from './NoWalletModal';
 
 export interface WidgetManagerState {
   widgetError: boolean;
@@ -100,6 +102,10 @@ class Widget extends React.Component<WidgetProps, WidgetManagerState> {
     }
   }
 
+  closeNoWalletModal = () => {
+    this.store.dispatch(closeNoWalletModal());
+  };
+
   render() {
     if (this.state.widgetError) {
       return (
@@ -117,7 +123,16 @@ class Widget extends React.Component<WidgetProps, WidgetManagerState> {
     const ScreenRenderer = screens[screen].Screen;
     const screenMapper = screens[screen].mapper(this.store);
 
-    return <ScreenRenderer {...screenMapper(this.state.widgetState)} />;
+    if (this.state.widgetState.noWalletModalOpen) {
+      return (
+        <>
+          <ScreenRenderer {...screenMapper(this.state.widgetState)} />
+          <NoWalletModal closeModal={this.closeNoWalletModal} />
+        </>
+      );
+    } else {
+      return <ScreenRenderer {...screenMapper(this.state.widgetState)} />;
+    }
   }
 }
 
