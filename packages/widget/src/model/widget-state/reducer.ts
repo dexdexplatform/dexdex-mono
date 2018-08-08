@@ -11,6 +11,7 @@ import {
   updateSide,
   Sort,
 } from '@dexdex/model/lib/orderbook';
+import BN from 'bn.js';
 import { fixDecimals, removeExtraZeros } from '@dexdex/utils/lib/format';
 import { toTokenDecimals, changeDecimals, DivMode } from '@dexdex/utils/lib/units';
 import { WidgetState } from '.';
@@ -22,7 +23,7 @@ import {
   expectedVolume,
   expectedVolumeEth,
   getCurrentAccountState,
-  networkCost,
+  //networkCost,
 } from './selectors';
 import { canHandle } from '@dexdex/model/lib/order-selection';
 
@@ -229,7 +230,8 @@ function reducer(oldState: WidgetState, action: Actions): WidgetState {
   }
 
   // Check Balance errors
-  const newNetworkCost = networkCost(st);
+  // const newNetworkCost = networkCost(st);
+  const newNetworkCost = new BN(0);
   const newAccountState = getCurrentAccountState(st);
   const newVolumeEth = expectedVolumeEth(st);
   if (
