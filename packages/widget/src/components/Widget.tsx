@@ -100,11 +100,19 @@ class Widget extends React.Component<WidgetProps, WidgetManagerState> {
     }
   }
 
+  refresh: React.MouseEventHandler<any> = e => {
+    e.stopPropagation();
+    window.location.reload();
+  };
+
   render() {
     if (this.state.widgetError) {
       return (
         <div className={classes.widgetError}>
-          <div>There was an error loading the widget!</div>
+          <p>There was an error loading the app</p>
+          <button className={classes.btn} onClick={this.refresh}>
+            Click here to refresh
+          </button>
         </div>
       );
     }

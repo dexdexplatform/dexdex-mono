@@ -43,8 +43,26 @@
   background-color: #fff;
   height: 100%;
   min-height: 492px;
-  & > div {
-    font-size: 0.75rem;
+  & > p {
+    margin: 0 0 1rem;
+    font-size: 1rem;
+  }
+}
+
+.btn {
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 1rem;
+  transition: 0.25s;
+  text-transform: uppercase;
+  color: #fff;
+  cursor: pointer;
+  border: 0;
+  border-radius: 3px;
+  background-color: #39f;
+
+  &:hover {
+    background-color: #38e;
   }
 }
 

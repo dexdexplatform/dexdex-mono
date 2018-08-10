@@ -30,6 +30,7 @@ export enum WalletId {
   Cipher = 'Cipher',
   Trust = 'Trust',
   Status = 'Status',
+  BunToy = 'BunToy',
   Unkown = 'Unkown',
 }
 
@@ -87,6 +88,10 @@ export const WalletInfo: Record<WalletId, { icon: string; label: string }> = {
   [WalletId.Status]: {
     label: 'Status',
     icon: require('./icons/status.png'),
+  },
+  [WalletId.BunToy]: {
+    label: 'BunToy',
+    icon: require('./icons/buntoy.png'),
   },
   [WalletId.Unkown]: {
     label: 'Unidentified',
@@ -272,6 +277,8 @@ function detectMobileWalletId(provider: any) {
     return WalletId.Trust;
   } else if (provider.isStatus) {
     return WalletId.Status;
+  } else if (provider.isBunToy) {
+    return WalletId.BunToy;
   } else {
     return WalletId.Unkown;
   }
