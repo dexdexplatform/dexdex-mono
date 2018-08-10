@@ -102,7 +102,7 @@ class Widget extends React.Component<WidgetProps, WidgetManagerState> {
 
   refresh: React.MouseEventHandler<any> = e => {
     e.stopPropagation();
-    window.location.reload();
+    window.location.reload(true);
   };
 
   render() {
