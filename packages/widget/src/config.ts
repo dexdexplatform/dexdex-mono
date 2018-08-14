@@ -139,3 +139,18 @@ export const tokenDefaultSmallImg = tokenImage(23, '_default');
 export const tokenDefaultBigImg = tokenImage(32, '_default');
 export const tokenSmallImg = (address: string) => tokenImage(23, address.toLowerCase());
 export const tokenBigImg = (address: string) => tokenImage(32, address.toLowerCase());
+
+const INFURA_API_KEY = 'T5WSC8cautR4KXyYgsRs';
+
+const NodeUrls: Record<EthNet, string> = {
+  mainnet: `https://mainnet.infura.io/${INFURA_API_KEY}`,
+  kovan: `https://kovan.infura.io/${INFURA_API_KEY}`,
+  ropsten: `https://ropsten.infura.io/${INFURA_API_KEY}`,
+  rinkeby: `https://rinkeby.infura.io/${INFURA_API_KEY}`,
+  morden: `https://morden.infura.io/${INFURA_API_KEY}`,
+  devnet: `http://localhost:8545`,
+};
+
+export function getNodeUrl(net: EthNet) {
+  return NodeUrls[net];
+}

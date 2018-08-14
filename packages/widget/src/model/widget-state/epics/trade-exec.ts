@@ -220,7 +220,8 @@ async function executeTrade(
   } catch (err) {
     if (
       err.message &&
-      err.message.includes('MetaMask Tx Signature: User denied transaction signature.')
+      (err.message.includes('MetaMask Tx Signature: User denied transaction signature.') ||
+        err.message.includes('Ledger device: Condition of use not satisfied'))
     ) {
       reportState({ stage: TxStage.SignatureRejected });
     } else {
