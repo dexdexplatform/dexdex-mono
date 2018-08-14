@@ -105,21 +105,6 @@
   }
 }
 
-.ledgerAccount {
-  cursor: pointer;
-  font-size: 0.8rem;
-  margin: 3px 5px;
-  padding: 4px;
-  border: 1px solid #21243f;
-  border-radius: 4px;
-  display: flex;
-  justify-content: space-between;
-
-  /* & div:last-child {
-
-  } */
-}
-
 ol {
   margin: 0;
   padding: 0;
@@ -136,7 +121,7 @@ ol {
   }
 }
 
-button {
+.btn {
   font-size: 1rem;
   font-weight: 700;
   padding: 1rem;
@@ -149,4 +134,41 @@ button {
   border: 0;
   border-radius: 3px;
   background-color: #39f;
+}
+
+/*****************************************************  
+* SELECT ACCOUNT SCREEN
+******************************************************/
+.modalHeader {
+  font-weight: 700;
+  margin: 0;
+  font-size: 1rem;
+}
+.ledgerAccount {
+  cursor: pointer;
+  font-size: 0.75rem;
+  align-items: center;
+  height: 60px;
+  box-sizing: border-box;
+  margin: 10px 0;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  transition: 0.25s;
+
+  & span {
+    font-size: 0.925rem;
+  }
+
+  & .token {
+    color: #39f;
+  }
+
+  &:hover {
+    background-color: rgba(17, 34, 68, 0.1);
+  }
 }

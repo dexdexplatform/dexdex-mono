@@ -165,7 +165,9 @@ export class WalletSelectModal extends React.Component<
               </li>
             </ol>
           </div>
-          <button onClick={this.connectLedgerNano}>Connect!</button>
+          <button onClick={this.connectLedgerNano} className={cx('btn')}>
+            Connect!
+          </button>
           {this.state.ledgerConnectOp === 'connecting' && <div>Connecting...</div>}
           {this.state.ledgerConnectOp === 'failed' && (
             <div>Couldn't connect: {this.state.ledger.status}</div>
@@ -182,27 +184,23 @@ export class WalletSelectModal extends React.Component<
     const { currentToken } = this.props;
     return (
       <Modal modalClassName={cx('modal')} onClose={this.props.onCancel}>
-        <div>
-          Choose an account:
-          <div>
-            {accountStates.map((accountState, idx) => (
-              <div key={idx} className={cx('ledgerAccount')} onClick={() => this.selectLedger(idx)}>
-                <div>
-                  <FormatAddress value={accountState.address} noLink />
-                </div>
-                <div>
-                  <div>
-                    <FormatEth value={accountState.balance} /> ETH
-                  </div>
-                  <div>
-                    <FormatToken value={accountState.tokenBalance} token={currentToken} />{' '}
-                    {currentToken.symbol}
-                  </div>
-                </div>
+        <h1 className={cx('modalHeader')}>Choose an account:</h1>
+
+        {accountStates.map((accountState, idx) => (
+          <div key={idx} className={cx('ledgerAccount')} onClick={() => this.selectLedger(idx)}>
+            <FormatAddress value={accountState.address} noLink />
+
+            <div>
+              <div>
+                <FormatEth value={accountState.balance} /> ETH
               </div>
-            ))}
+              <div className={cx('token')}>
+                <FormatToken value={accountState.tokenBalance} token={currentToken} />{' '}
+                {currentToken.symbol}
+              </div>
+            </div>
           </div>
-        </div>
+        ))}
       </Modal>
     );
   }
