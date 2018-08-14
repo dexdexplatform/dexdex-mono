@@ -54,22 +54,23 @@
 /*************** MODAL ******************************/
 
 .modal {
-  background: #31395e;
+  color: #124;
   padding: 20px;
   border-radius: 8px;
 }
 
 .walletBox {
-  border: 1px solid #21243f;
-  border-radius: 8px;
-  min-height: 80px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
   margin: 10px 0;
-  color: #fff;
   display: flex;
+
   justify-content: space-between;
   cursor: pointer;
-
-  padding: 10px;
+  padding: 3px 10px;
+  font-size: 0.75rem;
+  height: 60px;
+  box-sizing: border-box;
 
   &.disabled {
     cursor: default;
@@ -79,12 +80,12 @@
 
 .walletBoxLeft {
   display: flex;
-  flex-direction: column;
+
   justify-content: center;
   align-items: center;
 
   & img {
-    margin: 10px;
+    margin-right: 10px;
     height: 32px;
   }
 }
@@ -93,7 +94,15 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
+
+  & :nth-child(2) {
+    color: #39f;
+  }
+
+  & .accountAddress {
+    font-size: 10px;
+  }
 }
 
 .ledgerAccount {

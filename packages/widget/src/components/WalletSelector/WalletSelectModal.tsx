@@ -59,7 +59,7 @@ const MetaMaskBox: React.SFC<{ state: MetaMaskState; token: Token; onClick: () =
       <div>
         <FormatToken value={state.state.tokenBalance} token={token} /> {token.symbol}
       </div>
-      <FormatAddress value={state.state.address} noLink />
+      <FormatAddress className={cx('accountAddress')} value={state.state.address} noLink />
     </WalletBox>
   );
 };
