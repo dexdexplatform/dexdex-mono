@@ -119,3 +119,34 @@
 
   } */
 }
+
+ol {
+  margin: 0;
+  padding: 0;
+  list-style-position: inside;
+  & h1 {
+    margin: 0;
+    font-size: 0.875rem;
+    display: inline;
+  }
+
+  & p {
+    font-size: 0.75rem;
+    margin: 0 0 1rem;
+  }
+}
+
+button {
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 1rem;
+  -webkit-transition: 0.25s;
+  -o-transition: 0.25s;
+  transition: 0.25s;
+  text-transform: uppercase;
+  color: #fff;
+  cursor: pointer;
+  border: 0;
+  border-radius: 3px;
+  background-color: #39f;
+}

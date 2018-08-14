@@ -141,11 +141,29 @@ export class WalletSelectModal extends React.Component<
       <Modal modalClassName={cx('modal')} onClose={this.props.onCancel}>
         <div>
           <div>
-            <ul>
-              <li>Connect ledger nano & enter passcode</li>
-              <li>Open Ethereum App</li>
-              <li>Make sure you browser is enabled in settings</li>
-            </ul>
+            <ol>
+              <li>
+                <h1>Enter Your Pin Code</h1>
+                <p>
+                  First, you need to unlock your ledger by entering your personal pin into your
+                  ledger device.
+                </p>
+              </li>
+              <li>
+                <h1>Select the Ethereum App</h1>
+                <p>
+                  Scroll to and select the "Ethereum App" section on your ledger device. Select
+                  Settings.
+                </p>
+              </li>
+              <li>
+                <h1>Set Browser Support and Contract Data to "Yes"</h1>
+                <p>
+                  Under "Settings", set the "Browser Support" and "Contract Data" options to "Yes".
+                  Connect ledger nano & enter passcode
+                </p>
+              </li>
+            </ol>
           </div>
           <button onClick={this.connectLedgerNano}>Connect!</button>
           {this.state.ledgerConnectOp === 'connecting' && <div>Connecting...</div>}
