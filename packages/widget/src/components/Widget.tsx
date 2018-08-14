@@ -1,13 +1,12 @@
+import BN from 'bn.js';
 import * as React from 'react';
 import { Subscription } from 'rxjs';
-import { WidgetState, WidgetStore, initWidget, WidgetScreen } from '../model/widget-state';
-import './Widget.css';
-import WidgetLoader from './WidgetLoader';
-import screens from './screens';
-import BN from 'bn.js';
-import { TxStage } from '../model/widget';
+import { initWidget, WidgetState, WidgetStore } from '../model/widget-state';
 import { closeNoWalletModal } from '../model/widget-state/actions';
 import NoWalletModal from './NoWalletModal';
+import screens from './screens';
+import './Widget.css';
+import WidgetLoader from './WidgetLoader';
 
 export interface WidgetManagerState {
   widgetError: boolean;
@@ -52,18 +51,6 @@ function connectDevTools(widgetId: string) {
   };
 }
 
-const TxStageScreenMap: Record<TxStage, WidgetScreen> = {
-  [TxStage.Idle]: 'form',
-  [TxStage.TokenAllowanceInProgress]: 'waitingApproval',
-  [TxStage.TradeInProgress]: 'waitingTrade',
-  [TxStage.RequestTokenAllowanceSignature]: 'signatureApproval',
-  [TxStage.RequestTradeSignature]: 'signatureTrade',
-  [TxStage.TradeCompleted]: 'tradeSuccess',
-  [TxStage.TradeFailed]: 'error',
-  [TxStage.UnkownError]: 'error',
-  [TxStage.SignatureRejected]: 'rejectedSignature',
-};
-
 class Widget extends React.Component<WidgetProps, WidgetManagerState> {
   private store: WidgetStore;
   private subscription: Subscription | null;
@@ -105,7 +92,7 @@ class Widget extends React.Component<WidgetProps, WidgetManagerState> {
   refresh: React.MouseEventHandler<any> = e => {
     e.stopPropagation();
     window.location.reload(true);
-  }
+  };
 
   closeNoWalletModal = () => {
     this.store.dispatch(closeNoWalletModal());
@@ -127,9 +114,9 @@ class Widget extends React.Component<WidgetProps, WidgetManagerState> {
       return <WidgetLoader />;
     }
 
-    const screen = TxStageScreenMap[this.state.widgetState.tradeExecution.stage];
-    const ScreenRenderer = screens[screen].Screen;
-    const screenMapper = screens[screen].mapper(this.store);
+    const stage = this.state.widgetState.tradeExecution.stage;
+    const ScreenRenderer = screens[stage].Screen;
+    const screenMapper = screens[stage].mapper(this.store);
 
     if (this.state.widgetState.noWalletModalOpen) {
       return (

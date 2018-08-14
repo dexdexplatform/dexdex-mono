@@ -18,16 +18,6 @@ import { createStore, Store } from './store';
 // Types
 //-------------------------------------------------------------------------------------------------
 
-export type WidgetScreen =
-  | 'form'
-  | 'error'
-  | 'tradeSuccess'
-  | 'signatureTrade'
-  | 'signatureApproval'
-  | 'waitingApproval'
-  | 'rejectedSignature'
-  | 'waitingTrade';
-
 export interface Wallet {
   id: WalletId;
   eth: Eth;

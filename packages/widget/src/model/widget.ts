@@ -37,21 +37,22 @@ export enum TxStage {
   TradeInProgress = 'TradeInProgress',
   TradeCompleted = 'TradeCompleted',
   TradeFailed = 'TradeFailed',
+  LedgerNotConnected = 'LedgerNotConnected',
   UnkownError = 'UnkownError',
 }
+
+// prettier-ignore
 export type TransactionState =
-  | { stage: TxStage.Idle }
-  | {
-      stage: TxStage.RequestTradeSignature | TxStage.RequestTokenAllowanceSignature;
-    }
-  | {
-      stage: TxStage.TradeInProgress | TxStage.TokenAllowanceInProgress;
-      txId: string;
-    }
-  | { stage: TxStage.TradeCompleted; trade: Trade }
-  | { stage: TxStage.TradeFailed; trade: Trade }
-  | { stage: TxStage.SignatureRejected }
-  | { stage: TxStage.UnkownError };
+  | { stage: TxStage.Idle                                        }
+  | { stage: TxStage.RequestTradeSignature                       }
+  | { stage: TxStage.RequestTokenAllowanceSignature              }
+  | { stage: TxStage.TradeInProgress;               txId: string }
+  | { stage: TxStage.TokenAllowanceInProgress;      txId: string }
+  | { stage: TxStage.TradeCompleted;                trade: Trade }
+  | { stage: TxStage.TradeFailed;                   trade: Trade }
+  | { stage: TxStage.SignatureRejected                           }
+  | { stage: TxStage.LedgerNotConnected                          }
+  | { stage: TxStage.UnkownError                                 };
 
 export function computeGasPrice(prices: GasPrices, price: GasPrice): BN {
   switch (price) {

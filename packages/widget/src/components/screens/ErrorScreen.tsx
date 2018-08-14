@@ -2,32 +2,60 @@ import * as React from 'react';
 import { RenderMapper } from '.';
 import { goBack } from '../../model/widget-state/actions';
 import { Screen, ScreenContent, ScreenHeader } from '../Screen';
+import { TxStage } from '../../model/widget';
 
 const classes = require('./ErrorScreen.css');
 
 const errorIcon = require('../icons/error.svg');
 const rejectedIcon = require('../icons/rejected.svg');
 
-export interface ErrorScreenProps {
-  goBack: () => void;
-}
+export const mapper: RenderMapper<ErrorScreenProps> = store => {
+  const onClick = () => store.dispatch(goBack());
 
-export const errorMapper: RenderMapper<ErrorScreenProps> = store => {
-  const props = {
-    goBack: () => store.dispatch(goBack()),
+  return ws => {
+    const stage = ws.tradeExecution.stage;
+    if (stage === TxStage.UnkownError || stage === TxStage.TradeFailed) {
+      return {
+        onClick,
+        imageSrc: errorIcon,
+        headerMsg: (
+          <>
+            Ohhh!! <br /> There was an error!
+          </>
+        ),
+        contentMsg: 'Should we start again?',
+        btnLabel: 'YEAH!',
+      };
+    } else if (stage === TxStage.SignatureRejected) {
+      return {
+        onClick,
+        imageSrc: rejectedIcon,
+        headerMsg: 'You rejected us...',
+        contentMsg: 'Should we start again?',
+        btnLabel: 'Go Gack',
+      };
+    } else if (stage === TxStage.LedgerNotConnected) {
+      return {
+        onClick,
+        imageSrc: rejectedIcon,
+        headerMsg: 'Ledger is disconnected',
+        contentMsg: 'Please unlock ledger and try again',
+        btnLabel: 'Go Gack',
+      };
+    } else {
+      throw new Error(`can't render ErrorScreen in stage: ${stage}`);
+    }
   };
-
-  return ws => props;
 };
 
-export interface BaseErrorScreenProps {
+export interface ErrorScreenProps {
   onClick: () => void;
   imageSrc: string;
   headerMsg: string | JSX.Element;
   contentMsg: string | JSX.Element;
   btnLabel: string | JSX.Element;
 }
-const BaseErrorScreen: React.SFC<BaseErrorScreenProps> = ({
+const ErrorScreen: React.SFC<ErrorScreenProps> = ({
   onClick,
   imageSrc,
   headerMsg,
@@ -46,28 +74,4 @@ const BaseErrorScreen: React.SFC<BaseErrorScreenProps> = ({
   </Screen>
 );
 
-const ErrorScreen: React.SFC<ErrorScreenProps> = props => (
-  <BaseErrorScreen
-    imageSrc={errorIcon}
-    headerMsg={
-      <>
-        Ohhh!! <br /> There was an error!
-      </>
-    }
-    contentMsg="Should we start again?"
-    onClick={props.goBack}
-    btnLabel="YEAH!"
-  />
-);
-
-const RejectedSignatureScreen: React.SFC<ErrorScreenProps> = props => (
-  <BaseErrorScreen
-    imageSrc={rejectedIcon}
-    headerMsg="You rejected us..."
-    contentMsg="Should we start again?"
-    onClick={props.goBack}
-    btnLabel="Go Gack"
-  />
-);
-
-export { RejectedSignatureScreen, ErrorScreen };
+export { ErrorScreen as Screen };

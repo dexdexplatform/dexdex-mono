@@ -67,6 +67,7 @@ function tradeExecutionReducer(
         tradeTxHash: null,
         trade: null,
       };
+    case TxStage.LedgerNotConnected:
     case TxStage.UnkownError:
     case TxStage.RequestTokenAllowanceSignature:
     case TxStage.RequestTradeSignature:

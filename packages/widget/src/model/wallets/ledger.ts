@@ -16,6 +16,11 @@ export enum LedgetStatus {
   Ok = 'Ok',
 }
 
+export async function isLedgerConnected() {
+  const currentStatus = await senseLedgerStatus();
+  return currentStatus === LedgetStatus.Ok;
+}
+
 export async function senseLedgerStatus() {
   const isSupported = await TransportU2F.isSupported();
   if (!isSupported) {

@@ -4,7 +4,7 @@ import { toTokenDecimals } from '@dexdex/utils/lib/units';
 import BN from 'bn.js';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { ErrorScreen, RejectedSignatureScreen } from '../components/screens/ErrorScreen';
+// import { Screen as Error } from '../components/screens/ErrorScreen';
 import { Screen as RequestAllowanceScreen } from '../components/screens/RequestAllowanceScreen';
 import { Screen as TradeProgressScreen } from '../components/screens/TradeProgressScreen';
 import { Screen as TradeSuccessScreen } from '../components/screens/TradeSuccessScreen';
@@ -106,8 +106,8 @@ const TestApp: React.SFC = () => {
         wallet={WalletInfo[WalletId.MetaMask]}
         goBack={() => console.log('go back cliked!')}
       />
-      <ErrorScreen goBack={() => console.log('go back cliked!')} />
-      <RejectedSignatureScreen goBack={() => console.log('go back cliked!')} />
+      {/* <ErrorScreen goBack={() => console.log('go back cliked!')} />
+      <RejectedSignatureScreen goBack={() => console.log('go back cliked!')} /> */}
     </Switcher>
   );
 };
