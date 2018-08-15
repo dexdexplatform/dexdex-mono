@@ -47,9 +47,10 @@ class WalletSelector extends React.Component<WalletSelectorProps, WalletSelector
             onClick={isMobile ? undefined : this.openModal}
           >
             {wallet === null ? (
-              <div>
+              <>
                 <span>You don’t have a wallet connected</span>
-              </div>
+                <span className={cx('caret')}>▾</span>
+              </>
             ) : (
               <>
                 <div className={classes.nameContainer}>

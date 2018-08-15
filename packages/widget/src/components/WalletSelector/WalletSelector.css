@@ -2,12 +2,15 @@
 /* Wallet Selector
 /*******************************************************************************************/
 .walletSelector {
-  border: 1px solid #ccc;
-  padding: 8px 10px;
-  border-radius: 4px;
   display: flex;
-  align-items: center;
+  box-sizing: border-box;
+  height: 59px;
+  padding: 8px 10px;
   cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  align-items: center;
+  justify-content: space-between;
 
   &.mobile {
     cursor: default;
