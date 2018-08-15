@@ -7,7 +7,7 @@ import { getLedgerState, LedgerState, LedgetStatus } from '../../model/wallets/l
 import { getMetamaskState, MetaMaskState } from '../../model/wallets/metamask';
 import { Wallet } from '../../model/widget-state';
 import { FormatAddress, FormatEth, FormatToken } from '../Format';
-import { Modal } from '../Modal';
+import { DialogModal } from '../Modal';
 
 const classes = require('./WalletSelector.css');
 const cx = classnames.bind(classes);
@@ -138,7 +138,7 @@ export class WalletSelectModal extends React.Component<
 
   renderLedgerConnect() {
     return (
-      <Modal modalClassName={cx('modal')} onClose={this.props.onCancel}>
+      <DialogModal title="Please connect your ledger" onClose={this.props.onCancel}>
         <div>
           <div>
             <ol>
@@ -173,7 +173,7 @@ export class WalletSelectModal extends React.Component<
             <div>Couldn't connect: {this.state.ledger.status}</div>
           )}
         </div>
-      </Modal>
+      </DialogModal>
     );
   }
   renderLedgerChooseAccount() {
@@ -183,8 +183,8 @@ export class WalletSelectModal extends React.Component<
     const accountStates = this.state.ledger.accounts;
     const { currentToken } = this.props;
     return (
-      <Modal modalClassName={cx('modal')} onClose={this.props.onCancel}>
-        <h1 className={cx('modalHeader')}>Choose an account:</h1>
+      <DialogModal title="Choose an account" onClose={this.props.onCancel}>
+        {/* <h1 className={cx('modalHeader')}>Choose an account:</h1> */}
 
         {accountStates.map((accountState, idx) => (
           <div key={idx} className={cx('ledgerAccount')} onClick={() => this.selectLedger(idx)}>
@@ -201,13 +201,13 @@ export class WalletSelectModal extends React.Component<
             </div>
           </div>
         ))}
-      </Modal>
+      </DialogModal>
     );
   }
 
   renderHome() {
     return (
-      <Modal modalClassName={cx('modal')} onClose={this.props.onCancel}>
+      <DialogModal title="Please select your wallet" onClose={this.props.onCancel}>
         <div>
           <MetaMaskBox
             state={this.state.metamask}
@@ -221,7 +221,7 @@ export class WalletSelectModal extends React.Component<
             Comming soon...
           </WalletBox>
         </div>
-      </Modal>
+      </DialogModal>
     );
   }
 }
