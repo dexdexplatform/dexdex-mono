@@ -126,8 +126,6 @@ ol {
   font-size: 1rem;
   font-weight: 700;
   padding: 1rem;
-  -webkit-transition: 0.25s;
-  -o-transition: 0.25s;
   transition: 0.25s;
   text-transform: uppercase;
   color: #fff;
@@ -145,14 +143,17 @@ ol {
   margin: 0;
   font-size: 1rem;
 }
+.ledgerAccountsContainer {
+  overflow: auto;
+}
 .ledgerAccount {
   cursor: pointer;
   font-size: 0.75rem;
   align-items: center;
-  height: 60px;
+  height: 58px;
   box-sizing: border-box;
-  margin: 10px 0;
-  padding: 8px 10px;
+  margin-bottom: 10px;
+  padding: 0 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
   display: -ms-flexbox;
@@ -171,5 +172,8 @@ ol {
 
   &:hover {
     background-color: rgba(17, 34, 68, 0.1);
+  }
+  &:last-of-type {
+    margin-bottom: 0;
   }
 }

@@ -18,6 +18,8 @@
 
 .modal {
   position: relative;
+  display: flex;
+  flex-direction: column;
   box-sizing: border-box;
   width: 30em;
   max-width: 100vw;

@@ -186,21 +186,23 @@ export class WalletSelectModal extends React.Component<
       <DialogModal title="Choose an account" onClose={this.props.onCancel}>
         {/* <h1 className={cx('modalHeader')}>Choose an account:</h1> */}
 
-        {accountStates.map((accountState, idx) => (
-          <div key={idx} className={cx('ledgerAccount')} onClick={() => this.selectLedger(idx)}>
-            <FormatAddress value={accountState.address} noLink />
+        <div className={cx('ledgerAccountsContainer')}>
+          {accountStates.map((accountState, idx) => (
+            <div key={idx} className={cx('ledgerAccount')} onClick={() => this.selectLedger(idx)}>
+              <FormatAddress value={accountState.address} noLink />
 
-            <div>
               <div>
-                <FormatEth value={accountState.balance} /> ETH
-              </div>
-              <div className={cx('token')}>
-                <FormatToken value={accountState.tokenBalance} token={currentToken} />{' '}
-                {currentToken.symbol}
+                <div>
+                  <FormatEth value={accountState.balance} /> ETH
+                </div>
+                <div className={cx('token')}>
+                  <FormatToken value={accountState.tokenBalance} token={currentToken} />{' '}
+                  {currentToken.symbol}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </DialogModal>
     );
   }
