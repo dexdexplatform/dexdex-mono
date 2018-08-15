@@ -1,7 +1,7 @@
 import { select } from '@dexdex/rx';
 import BN from 'bn.js';
 import { empty, merge, Observable } from 'rxjs';
-import { distinctUntilChanged, first, map, mapTo, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, mapTo, switchMap } from 'rxjs/operators';
 import { WidgetEpic } from '.';
 import { WalletDetails } from '..';
 import { isMobile } from '../../../config';
@@ -54,7 +54,7 @@ export const noWalletWarning: WidgetEpic = changes => {
   if (isMobile) {
     // if we can't find a web3 provider, we open the mobile wallet modal
     return injectedWeb3.pipe(
-      first(provider => provider == null),
+      filter(provider => provider == null),
       mapTo(showNoWalletModal())
     );
   } else {
