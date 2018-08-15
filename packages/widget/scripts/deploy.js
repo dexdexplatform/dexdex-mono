@@ -27,16 +27,21 @@ const check = (assertion, msg) => {
   }
 };
 
+const project = process.argv[2];
+const ValidProjects = ['staging', 'production'];
+
+check(ValidProjects.includes(project), `Need to specify project!\nValid value: ${ValidProjects}`);
 check(sh('git status --porcelain').length === 0, 'You have uncommited files, cannot publish');
 
-check(
-  sh('git rev-parse --abbrev-ref HEAD') === 'master',
-  'You can only publish from master branch'
-);
+const currentBranch = sh('git rev-parse --abbrev-ref HEAD');
 
-sh('git fetch origin master');
+if (project === 'production') {
+  check(currentBranch === 'master', 'You can only publish from master branch');
+}
+
+sh(`git fetch origin ${currentBranch}`);
 check(
-  sh('git rev-parse master') === sh('git rev-parse origin/master'),
+  sh(`git rev-parse ${currentBranch}`) === sh(`git rev-parse origin/${currentBranch}`),
   'Push changes before publish'
 );
 
@@ -62,16 +67,16 @@ function writeFirebaseConfig() {
   fs.writeJsonSync(paths.appFirebaseConfig, firebaseConfig, { spaces: 2 });
 }
 
-async function run() {
+async function run(projectName) {
   await build();
   const currentCommit = sh('git rev-parse --short HEAD');
   fs.writeFileSync(path.join(paths.appBuild, '__version'), currentCommit);
   writeFirebaseConfig();
-  sh('yarn firebase deploy');
+  sh(`yarn firebase deploy --project ${projectName}`);
   sh('git checkout firebase.json'); // reset firebase config
 }
 
-run().catch(err => {
+run(project).catch(err => {
   console.error(err);
   process.exit(1);
 });
