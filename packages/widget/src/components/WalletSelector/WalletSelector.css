@@ -6,10 +6,16 @@
   padding: 8px 10px;
   border-radius: 4px;
   display: flex;
+  align-items: center;
   cursor: pointer;
 
   &.mobile {
     cursor: default;
+  }
+
+  & .caret {
+    margin-left: 10px;
+    color: #999;
   }
 }
 
@@ -17,7 +23,6 @@
   margin: auto 0;
 
   & .icon {
-    height: 23px;
     width: 23px;
     vertical-align: middle;
   }
@@ -87,7 +92,7 @@
 
   & img {
     margin-right: 10px;
-    height: 32px;
+    width: 23px;
   }
 }
 

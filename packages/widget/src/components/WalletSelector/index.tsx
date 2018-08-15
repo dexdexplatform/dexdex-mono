@@ -67,6 +67,7 @@ class WalletSelector extends React.Component<WalletSelectorProps, WalletSelector
 
                   <FormatAddress className={classes.address} value={wallet.address} noLink />
                 </div>
+                <span className={cx('caret')}>▾</span>
               </>
             )}
           </div>
