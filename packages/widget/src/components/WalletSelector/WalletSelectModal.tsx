@@ -3,7 +3,12 @@ import * as classnames from 'classnames/bind';
 import * as React from 'react';
 import { appConfig } from '../../config';
 import { WalletId, WalletInfo } from '../../model/wallets/base';
-import { getLedgerState, LedgerState, LedgetStatus } from '../../model/wallets/ledger';
+import {
+  getLedgerState,
+  LedgerState,
+  LedgerStatus,
+  LedgerErrorMessages,
+} from '../../model/wallets/ledger';
 import { getMetamaskState, MetaMaskState } from '../../model/wallets/metamask';
 import { Wallet } from '../../model/widget-state';
 import { FormatAddress, FormatEth, FormatToken } from '../Format';
@@ -76,7 +81,7 @@ export class WalletSelectModal extends React.Component<
   WalletSelectModalState
 > {
   state: WalletSelectModalState = {
-    ledger: { status: LedgetStatus.NotConnected },
+    ledger: { status: LedgerStatus.NotConnected },
     ledgerConnectOp: 'idle',
     metamask: { status: 'uninstalled' },
     page: 'home',
@@ -88,9 +93,9 @@ export class WalletSelectModal extends React.Component<
   }
 
   connectLedgerNano = async () => {
-    this.setState({ ledgerConnectOp: 'connecting', ledger: { status: LedgetStatus.NotConnected } });
+    this.setState({ ledgerConnectOp: 'connecting', ledger: { status: LedgerStatus.NotConnected } });
     const ledgerState = await getLedgerState(this.props.currentToken);
-    if (ledgerState.status === LedgetStatus.Ok) {
+    if (ledgerState.status === LedgerStatus.Ok) {
       this.setState({ ledger: ledgerState, ledgerConnectOp: 'idle', page: 'ledgerChooseAccount' });
     } else {
       this.setState({ ledger: ledgerState, ledgerConnectOp: 'failed' });
@@ -109,7 +114,7 @@ export class WalletSelectModal extends React.Component<
   };
 
   selectLedger = (idx: number) => {
-    if (this.state.ledger.status === LedgetStatus.Ok) {
+    if (this.state.ledger.status === LedgerStatus.Ok) {
       this.props.onChange({
         id: WalletId.Ledger,
         address: this.state.ledger.accounts[idx].address,
@@ -163,7 +168,9 @@ export class WalletSelectModal extends React.Component<
           </li>
         </ol>
         {this.state.ledgerConnectOp === 'failed' && (
-          <div className={cx('error')}>Couldn't connect: {this.state.ledger.status}</div>
+          <div className={cx('error')}>
+            Connection Error: {LedgerErrorMessages[this.state.ledger.status]}
+          </div>
         )}
         <button onClick={this.connectLedgerNano} className={cx('btn')}>
           {this.state.ledgerConnectOp === 'connecting' ? (
@@ -179,7 +186,7 @@ export class WalletSelectModal extends React.Component<
     );
   }
   renderLedgerChooseAccount() {
-    if (this.state.ledger.status !== LedgetStatus.Ok) {
+    if (this.state.ledger.status !== LedgerStatus.Ok) {
       throw new Error('invalid state');
     }
     const accountStates = this.state.ledger.accounts;
@@ -222,7 +229,7 @@ export class WalletSelectModal extends React.Component<
             Connect your ledger nano
           </WalletBox>
           <WalletBox id={WalletId.Trezor} disabled>
-            Comming soon...
+            Coming soon...
           </WalletBox>
         </div>
       </DialogModal>

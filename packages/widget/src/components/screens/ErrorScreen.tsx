@@ -38,8 +38,8 @@ export const mapper: RenderMapper<ErrorScreenProps> = store => {
       return {
         onClick,
         imageSrc: rejectedIcon,
-        headerMsg: 'Ledger is disconnected',
-        contentMsg: 'Please unlock ledger and try again',
+        headerMsg: 'Ledger Wallet is disconnected',
+        contentMsg: 'Please connect and try again',
         btnLabel: 'Go Gack',
       };
     } else {

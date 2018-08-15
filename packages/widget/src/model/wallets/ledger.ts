@@ -9,22 +9,28 @@ import { getBalances } from '.';
 import { appConfig, getNodeUrl } from '../../config';
 import { WalletState } from '../widget-state/actions';
 
-export enum LedgetStatus {
+export enum LedgerStatus {
   Unsupported = 'Unsupported',
   NotConnected = 'NotConnected',
   NoSmartContractSupport = 'NoSmartContractSupport',
   Ok = 'Ok',
 }
 
+export const LedgerErrorMessages: Record<Exclude<LedgerStatus, LedgerStatus.Ok>, string> = {
+  [LedgerStatus.Unsupported]: 'Browser not supported',
+  [LedgerStatus.NotConnected]: 'Device not detected',
+  [LedgerStatus.NoSmartContractSupport]: "'Contract Data' not enabled",
+};
+
 export async function isLedgerConnected() {
   const currentStatus = await senseLedgerStatus();
-  return currentStatus === LedgetStatus.Ok;
+  return currentStatus === LedgerStatus.Ok;
 }
 
 export async function senseLedgerStatus() {
   const isSupported = await TransportU2F.isSupported();
   if (!isSupported) {
-    return LedgetStatus.Unsupported;
+    return LedgerStatus.Unsupported;
   }
 
   const t = await TransportU2F.create();
@@ -34,13 +40,13 @@ export async function senseLedgerStatus() {
     const ethAppConfig = await ethApp.getAppConfiguration();
     t.close();
     if (ethAppConfig.arbitraryDataEnabled === 0) {
-      return LedgetStatus.NoSmartContractSupport;
+      return LedgerStatus.NoSmartContractSupport;
     } else {
-      return LedgetStatus.Ok;
+      return LedgerStatus.Ok;
     }
   } catch (err) {
     if (err.originalError && err.originalError.metaData && err.originalError.metaData.code === 5) {
-      return LedgetStatus.NotConnected;
+      return LedgerStatus.NotConnected;
     }
     t.close();
     throw err;
@@ -66,9 +72,9 @@ export function getProvider() {
 }
 
 export type LedgerState =
-  | { status: Exclude<LedgetStatus, LedgetStatus.Ok> }
+  | { status: Exclude<LedgerStatus, LedgerStatus.Ok> }
   | {
-      status: LedgetStatus.Ok;
+      status: LedgerStatus.Ok;
       accounts: WalletState[];
       eth: Eth;
     };
@@ -76,7 +82,7 @@ export type LedgerState =
 export async function getLedgerState(token: Token): Promise<LedgerState> {
   const status = await senseLedgerStatus();
 
-  if (status !== LedgetStatus.Ok) {
+  if (status !== LedgerStatus.Ok) {
     return { status };
   }
 
@@ -87,7 +93,7 @@ export async function getLedgerState(token: Token): Promise<LedgerState> {
     accounts = await eth.accounts();
   } catch (err) {
     console.log(err);
-    return { status: LedgetStatus.NotConnected };
+    return { status: LedgerStatus.NotConnected };
   }
 
   const accountStates = await Promise.all(
@@ -99,5 +105,5 @@ export async function getLedgerState(token: Token): Promise<LedgerState> {
     })
   );
 
-  return { status: LedgetStatus.Ok, eth, accounts: accountStates };
+  return { status: LedgerStatus.Ok, eth, accounts: accountStates };
 }

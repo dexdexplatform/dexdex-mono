@@ -48,8 +48,8 @@ class WalletSelector extends React.Component<WalletSelectorProps, WalletSelector
           >
             {wallet === null ? (
               <>
-                <span>You don’t have a wallet connected</span>
-                <span className={cx('caret')}>▾</span>
+                <span>Please, select a wallet</span>
+                {!isMobile && <span className={cx('caret')}>▾</span>}
               </>
             ) : (
               <>
@@ -68,7 +68,7 @@ class WalletSelector extends React.Component<WalletSelectorProps, WalletSelector
 
                   <FormatAddress className={classes.address} value={wallet.address} noLink />
                 </div>
-                <span className={cx('caret')}>▾</span>
+                {!isMobile && <span className={cx('caret')}>▾</span>}
               </>
             )}
           </div>
