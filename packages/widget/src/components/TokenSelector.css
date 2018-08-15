@@ -58,19 +58,12 @@
 }
 
 .modalSearchArea {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
   display: flex;
-  padding: 0.5rem;
-  background-color: rgba(17, 34, 68, 0.25);
-
-  & input {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 1rem;
-    width: 100%;
-    border: transparent;
-    padding: 0.75rem;
-    border-radius: 4px;
-    /* background: #fff; */
-  }
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
 }
 
 .modalTokenList {
@@ -80,17 +73,14 @@
 .row {
   display: flex;
   align-items: center;
-  padding: 0 1rem;
-  border-bottom: 1px solid rgba(17, 34, 68, 0.1);
+  padding: 0 0.75rem;
+  border-bottom: 1px solid #eee;
   cursor: default;
   transition: 0.25s;
+  box-sizing: border-box;
 
   &:hover {
-    background-color: rgba(17, 34, 68, 0.1);
-  }
-
-  &.selected {
-    background-color: rgba(17, 34, 68, 0.1);
+    background-color: #f6f6f6;
   }
 }
 
