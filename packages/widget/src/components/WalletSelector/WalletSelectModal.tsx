@@ -139,40 +139,42 @@ export class WalletSelectModal extends React.Component<
   renderLedgerConnect() {
     return (
       <DialogModal title="Please connect your ledger" onClose={this.props.onCancel}>
-        <div>
-          <div>
-            <ol>
-              <li>
-                <h1>Enter Your Pin Code</h1>
-                <p>
-                  First, you need to unlock your ledger by entering your personal pin into your
-                  ledger device.
-                </p>
-              </li>
-              <li>
-                <h1>Select the Ethereum App</h1>
-                <p>
-                  Scroll to and select the "Ethereum App" section on your ledger device. Select
-                  Settings.
-                </p>
-              </li>
-              <li>
-                <h1>Set Browser Support and Contract Data to "Yes"</h1>
-                <p>
-                  Under "Settings", set the "Browser Support" and "Contract Data" options to "Yes".
-                  Connect ledger nano & enter passcode
-                </p>
-              </li>
-            </ol>
-          </div>
-          <button onClick={this.connectLedgerNano} className={cx('btn')}>
-            Connect!
-          </button>
-          {this.state.ledgerConnectOp === 'connecting' && <div>Connecting...</div>}
-          {this.state.ledgerConnectOp === 'failed' && (
-            <div>Couldn't connect: {this.state.ledger.status}</div>
+        <ol className={cx('list')}>
+          <li>
+            <h1>Enter Your Pin Code</h1>
+            <p>
+              First, you need to unlock your ledger by entering your personal pin into your ledger
+              device.
+            </p>
+          </li>
+          <li>
+            <h1>Select the Ethereum App</h1>
+            <p>
+              Scroll to and select the "Ethereum App" section on your ledger device. Select
+              Settings.
+            </p>
+          </li>
+          <li>
+            <h1>Set Browser Support and Contract Data to "Yes"</h1>
+            <p>
+              Under "Settings", set the "Browser Support" and "Contract Data" options to "Yes".
+              Connect ledger nano & enter passcode
+            </p>
+          </li>
+        </ol>
+        {this.state.ledgerConnectOp === 'failed' && (
+          <div className={cx('error')}>Couldn't connect: {this.state.ledger.status}</div>
+        )}
+        <button onClick={this.connectLedgerNano} className={cx('btn')}>
+          {this.state.ledgerConnectOp === 'connecting' ? (
+            <>
+              <div className={cx('spinner')} />
+              <div>Connecting</div>
+            </>
+          ) : (
+            <div>Connect</div>
           )}
-        </div>
+        </button>
       </DialogModal>
     );
   }
