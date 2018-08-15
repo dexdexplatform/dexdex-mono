@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Modal } from './Modal';
+import { DialogModal } from './Modal';
 import { isEmbed } from '../config';
 
 const classes = require('./NoWalletModal.css');
@@ -27,10 +27,7 @@ const logoStatus = require('./images/logoStatus.png');
 class NoWalletModal extends React.PureComponent<NoWalletModalProps> {
   render() {
     return (
-      <Modal onClose={this.props.closeModal}>
-        <div className={classes.header}>
-          <h1>Wallet App Required</h1>
-        </div>
+      <DialogModal title="Wallet App Required" onClose={this.props.closeModal}>
         <div className={classes.content}>
           <p>To use EasyTrade you need to install a wallet app. We suggest the followings:</p>
 
@@ -48,7 +45,7 @@ class NoWalletModal extends React.PureComponent<NoWalletModalProps> {
             </a>
           </div>
         </div>
-      </Modal>
+      </DialogModal>
     );
   }
 }
