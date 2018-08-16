@@ -6,7 +6,7 @@ import { appConfig } from '../../config';
 import { Token } from '@dexdex/model/lib/token';
 
 export type MetaMaskState =
-  | { status: 'networkInvalid' | 'uninstalled' }
+  | { status: 'connecting' | 'networkInvalid' | 'uninstalled' }
   | {
       status: 'ok';
       state: WalletState;

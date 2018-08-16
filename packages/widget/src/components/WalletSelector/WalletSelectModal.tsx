@@ -46,6 +46,7 @@ const MetaMaskBox: React.SFC<{ state: MetaMaskState; token: Token; onClick: () =
 }) => {
   if (state.status !== 'ok') {
     const Messages = {
+      connecting: 'Connecting...',
       uninstalled: 'Metamask is not installed',
       networkInvalid: `Invalid network. Please use ${appConfig().network}`,
     };
@@ -83,7 +84,7 @@ export class WalletSelectModal extends React.Component<
   state: WalletSelectModalState = {
     ledger: { status: LedgerStatus.NotConnected },
     ledgerConnectOp: 'idle',
-    metamask: { status: 'uninstalled' },
+    metamask: { status: 'connecting' },
     page: 'home',
   };
 
