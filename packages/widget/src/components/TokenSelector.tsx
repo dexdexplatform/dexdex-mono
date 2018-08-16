@@ -217,12 +217,6 @@ class TokenSelector extends React.Component<TokenSelectorProps, TokenSelectorSta
     const { selectedToken, tokens } = this.props;
 
     const isSingle = tokens.length === 1;
-    const tokensCopy = this.props.tokens.concat(
-      this.props.tokens,
-      this.props.tokens,
-      this.props.tokens,
-      this.props.tokens
-    );
     return (
       <div className={cx('tokenSelector', isSingle && 'single')} onClick={this.openSelector}>
         <TokenImage token={selectedToken} />
@@ -232,7 +226,7 @@ class TokenSelector extends React.Component<TokenSelectorProps, TokenSelectorSta
         {!isSingle && <span className={cx('caret')}>▾</span>}
         {this.state.isOpen && (
           <TokenSelectionModal
-            tokens={tokensCopy}
+            tokens={tokens}
             selectedToken={selectedToken}
             setToken={this.setToken}
             onCancel={this.cancelSelection}
