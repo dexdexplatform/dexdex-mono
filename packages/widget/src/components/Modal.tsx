@@ -54,3 +54,22 @@ export class Modal extends React.PureComponent<ModalProps> {
     );
   }
 }
+
+export interface DialogModalProps {
+  title?: string;
+  onClose: () => void;
+}
+
+export const DialogModal: React.SFC<DialogModalProps> = ({ onClose, children, title }) => {
+  return (
+    <Modal onClose={onClose}>
+      <div className={cx('header')}>
+        {title != null && <h1>{title}</h1>}
+        <div className={cx('close')} onClick={onClose}>
+          ✕
+        </div>
+      </div>
+      {children}
+    </Modal>
+  );
+};

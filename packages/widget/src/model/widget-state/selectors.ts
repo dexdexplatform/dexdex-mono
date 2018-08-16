@@ -2,12 +2,10 @@ import { getRequiredGas } from '@dexdex/model/lib/order';
 import { getFinalVolumeEth } from '@dexdex/model/lib/order-selection';
 import { getSide } from '@dexdex/model/lib/orderbook';
 import { Trade } from '@dexdex/model/lib/trade';
-import { toTokenDecimals } from '@dexdex/utils/lib/units';
 import BN from 'bn.js';
 import { WidgetState } from '.';
-import { isMobile } from '../../config';
+import { toTokenDecimals } from '@dexdex/utils/lib/units';
 import { AmountError, ErrorCode, ErrorMessage } from '../form-error';
-import { AccountState, DesktopWallets, WalletState } from '../wallets/index';
 import { computeGasPrice } from '../widget';
 
 const withTrade = <A>(f: (t: Trade, ws: WidgetState) => A, defaultValue: A) => (
@@ -70,34 +68,5 @@ export const getBalanceError = (ws: WidgetState): null | ErrorMessage => {
     return null;
   } else {
     return { code: ws.errors.balance };
-  }
-};
-
-export const getCurrentWalletState = (ws: WidgetState): WalletState | null =>
-  ws.selectedWallet == null ? null : ws.wallets[ws.selectedWallet.wallet] || null;
-
-export const getCurrentAccountState = (ws: WidgetState): AccountState | null => {
-  if (ws.selectedWallet == null) {
-    return null;
-  }
-  const walletState = ws.wallets[ws.selectedWallet.wallet];
-  if (walletState == null || walletState.status === 'error') {
-    return null;
-  }
-  const accountState = walletState.accounts[ws.selectedWallet.accountIdx];
-  return accountState;
-};
-
-function values<K>(obj: Record<any, K>): K[] {
-  return Object.keys(obj).map(key => obj[key]);
-}
-
-export const getWalletList = (ws: WidgetState): WalletState[] => {
-  if (isMobile) {
-    return values(ws.wallets) as WalletState[];
-  } else {
-    return DesktopWallets.map(id => ws.wallets[id]).filter(
-      wallet => wallet != null
-    ) as WalletState[];
   }
 };

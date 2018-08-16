@@ -1,0 +1,219 @@
+/*******************************************************************************************
+/* Wallet Selector
+/*******************************************************************************************/
+.walletSelector {
+  display: flex;
+  box-sizing: border-box;
+  height: 59px;
+  padding: 8px 10px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  align-items: center;
+  justify-content: space-between;
+
+  &.mobile {
+    cursor: default;
+  }
+
+  & .caret {
+    margin-left: 10px;
+    color: #999;
+  }
+}
+
+.nameContainer {
+  margin: auto 0;
+
+  & .icon {
+    width: 23px;
+    vertical-align: middle;
+  }
+
+  & .name {
+    margin-left: 5px;
+    vertical-align: middle;
+  }
+}
+
+.info {
+  text-align: right;
+  font-size: 0.75rem;
+  line-height: 0.9rem;
+  color: #124;
+  margin-left: auto;
+
+  & .balance:nth-child(2) {
+    color: #39f;
+  }
+
+  & .address {
+    font-size: 10px;
+    color: rgba(28, 42, 70, 0.4);
+  }
+}
+
+@media (max-width: 320px) {
+  .nameContainer .name {
+    display: none;
+  }
+}
+
+/*************** MODAL ******************************/
+
+.modal {
+  color: #124;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.walletBox {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 10px 0;
+  display: flex;
+
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 3px 10px;
+  font-size: 0.75rem;
+  height: 60px;
+  box-sizing: border-box;
+
+  &.disabled {
+    cursor: default;
+    opacity: 0.6;
+  }
+}
+
+.walletBoxLeft {
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+
+  & img {
+    margin-right: 10px;
+    width: 23px;
+  }
+}
+
+.walletBoxRight {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+
+  & :nth-child(2) {
+    color: #39f;
+  }
+
+  & .accountAddress {
+    font-size: 10px;
+  }
+}
+
+.list {
+  margin: 0 0 auto;
+  padding: 0;
+  list-style-position: inside;
+  & h1 {
+    margin: 0;
+    font-size: 0.875rem;
+    display: inline;
+  }
+
+  & p {
+    font-size: 0.75rem;
+    margin: 0 0 1rem;
+  }
+}
+
+.error {
+  font-size: 0.75rem;
+  margin-bottom: 0.5rem;
+  text-align: right;
+  color: #c02;
+}
+
+.btn {
+  font-size: 1rem;
+  font-weight: 700;
+  display: flex;
+  padding: 1rem;
+  cursor: pointer;
+  transition: 0.25s;
+  text-transform: uppercase;
+  color: #fff;
+  border: 0;
+  border-radius: 3px;
+  background-color: #39f;
+  align-items: center;
+  justify-content: center;
+}
+
+/* spinner */
+.spinner {
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-right: 0.5rem;
+  border-radius: 50%;
+  display: inline-block;
+  background-color: transparent;
+  border: 2px solid #fff;
+  border-top: 2px solid #39f;
+  animation: spinner 1s linear infinite;
+}
+
+@keyframes spinner {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/*****************************************************
+* SELECT ACCOUNT SCREEN
+******************************************************/
+.modalHeader {
+  font-weight: 700;
+  margin: 0;
+  font-size: 1rem;
+}
+.ledgerAccountsContainer {
+  overflow: auto;
+}
+.ledgerAccount {
+  cursor: pointer;
+  font-size: 0.75rem;
+  align-items: center;
+  height: 58px;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+  padding: 0 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  transition: 0.25s;
+
+  & span {
+    font-size: 0.925rem;
+  }
+
+  & .token {
+    color: #39f;
+  }
+
+  &:hover {
+    background-color: rgba(17, 34, 68, 0.1);
+  }
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}

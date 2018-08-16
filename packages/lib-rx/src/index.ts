@@ -1,4 +1,4 @@
-import { concat, defer, from, interval, Observable, OperatorFunction } from 'rxjs';
+import { concat, defer, from, interval, Observable, OperatorFunction, empty } from 'rxjs';
 import {
   bufferWhen,
   concatAll,
@@ -11,6 +11,9 @@ import {
   startWith,
   take,
   toArray,
+  catchError,
+  repeatWhen,
+  delay,
 } from 'rxjs/operators';
 
 export const removeNull = <A>(input$: Observable<A | null>): Observable<A> =>
@@ -113,6 +116,18 @@ export function accumulateUntil(notifier: Observable<any>) {
       ),
       sharedInput
     );
+  };
+}
+
+export function repeatWithDelay<A>(opts: { delay: number; ignoreErrors?: boolean }) {
+  const ignoreErrors = opts.ignoreErrors == null ? true : opts.ignoreErrors;
+  return (input$: Observable<A>) => {
+    let output$ = input$;
+    if (ignoreErrors) {
+      output$ = output$.pipe(catchError(() => empty()));
+    }
+
+    return output$.pipe(repeatWhen(completes$ => completes$.pipe(delay(opts.delay))));
   };
 }
 

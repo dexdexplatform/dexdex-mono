@@ -1,31 +1,56 @@
 .modalOverlay {
   /* use absolute since it's a modal contained in a realative div */
   position: absolute;
-  overflow: hidden;
+  z-index: 100;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  background: rgba(40, 40, 40, 0.5);
-  z-index: 100;
-
   /* to center .modal inside */
   display: flex;
+  overflow: hidden;
   align-items: center;
   justify-content: center;
-
   /* add extra space around the .modal */
   padding: 1rem;
+  background: rgba(40, 40, 40, 0.5);
 }
 
 .modal {
   position: relative;
-  background-color: white;
-
-  height: 90%;
-  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
   width: 30em;
   max-width: 100vw;
-
+  height: 90%;
+  max-height: 80vh;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: white;
   line-height: 1.4;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0 1rem 0;
+
+  & h1 {
+    margin: 0;
+    font-size: 1rem;
+    color: #124;
+  }
+
+  & .close {
+    font-weight: 700;
+    color: #999;
+    cursor: pointer;
+    transition: 0.25s;
+    margin-left: auto;
+
+    &:hover {
+      color: #124;
+    }
+  }
 }

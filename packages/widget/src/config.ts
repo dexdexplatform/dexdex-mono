@@ -1,5 +1,5 @@
 import { Address } from '@dexdex/model/lib/base';
-import { EthNet } from './model/wallets';
+import { EthNet } from './model/wallets/base';
 
 const once = <A>(f: () => A) => {
   let called = false;
@@ -15,6 +15,13 @@ const once = <A>(f: () => A) => {
 
 // tells wether we are a iframe or not
 export const isEmbed = window.parent !== window;
+
+function computeIsMobile() {
+  const ua = window.navigator.userAgent;
+  return ua.includes('iPhone') || ua.includes('Android');
+}
+
+export const isMobile = computeIsMobile();
 
 const configReader = () => {
   let getValue: (varname: string) => string | null;
@@ -39,6 +46,18 @@ const isValidOperations = (operations: string) => withinChoices('buy', 'sell', '
 
 const areValidTokens = (tokens: string) =>
   /^0x[a-fA-F0-9]{40}(?:,0x[a-fA-F0-9]{40})*$/.test(tokens);
+
+function ethNetToId(ethNet: EthNet): number {
+  const EthNetIds = {
+    mainnet: 1,
+    morden: 2,
+    ropsten: 3,
+    rinkeby: 4,
+    kovan: 42,
+    devnet: 66,
+  };
+  return EthNetIds[ethNet];
+}
 
 function readConfig() {
   const getConfigParam = configReader();
@@ -77,6 +96,7 @@ function readConfig() {
     operations,
     tokens,
     network,
+    networkId: ethNetToId(network),
     ApiBase: getAPIBase(network),
     ContractAddress: getContractAddress(network),
     EtherscanUrl: network === 'kovan' ? 'https://kovan.etherscan.io' : 'https://etherscan.io',
@@ -110,13 +130,6 @@ export const etherscanAddressUrl = (address: Address) =>
   `${appConfig().EtherscanUrl}/address/${address}`;
 export const etherscanTxUrl = (txhash: string) => `${appConfig().EtherscanUrl}/tx/${txhash}`;
 
-function computeIsMobile() {
-  const ua = window.navigator.userAgent;
-  return ua.includes('iPhone') || ua.includes('Android');
-}
-
-export const isMobile = computeIsMobile();
-
 const tokenImage = (size: 23 | 32, name: string) =>
   `https://firebasestorage.googleapis.com/v0/b/easytrade-00001.appspot.com/o/` +
   encodeURIComponent(`tokens/${size}/${name}.png`) +
@@ -126,3 +139,18 @@ export const tokenDefaultSmallImg = tokenImage(23, '_default');
 export const tokenDefaultBigImg = tokenImage(32, '_default');
 export const tokenSmallImg = (address: string) => tokenImage(23, address.toLowerCase());
 export const tokenBigImg = (address: string) => tokenImage(32, address.toLowerCase());
+
+const INFURA_API_KEY = 'T5WSC8cautR4KXyYgsRs';
+
+const NodeUrls: Record<EthNet, string> = {
+  mainnet: `https://mainnet.infura.io/${INFURA_API_KEY}`,
+  kovan: `https://kovan.infura.io/${INFURA_API_KEY}`,
+  ropsten: `https://ropsten.infura.io/${INFURA_API_KEY}`,
+  rinkeby: `https://rinkeby.infura.io/${INFURA_API_KEY}`,
+  morden: `https://morden.infura.io/${INFURA_API_KEY}`,
+  devnet: `http://localhost:8545`,
+};
+
+export function getNodeUrl(net: EthNet) {
+  return NodeUrls[net];
+}

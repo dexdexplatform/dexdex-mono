@@ -3,16 +3,11 @@ import { Token } from '@dexdex/model/lib/token';
 import BN from 'bn.js';
 import * as React from 'react';
 import { RenderMapper } from '.';
-import {
-  expectedVolume,
-  expectedVolumeEth,
-  getCurrentAccountState,
-  networkCost,
-} from '../../model/widget-state/selectors';
+import { TxStage } from '../../model/widget';
+import { expectedVolume, expectedVolumeEth, networkCost } from '../../model/widget-state/selectors';
+import { Screen, ScreenContent, ScreenHeader } from '../Screen';
 import { TradeInfo } from '../TokenInfo';
 import { BuySteps, SellSteps } from '../TradeSteps';
-import { Screen, ScreenHeader, ScreenContent } from '../Screen';
-import { TxStage } from '../../model/widget';
 
 export interface TradeProgressScreen {
   stage: TxStage.TradeInProgress | TxStage.RequestTradeSignature;
@@ -37,7 +32,7 @@ export const mapper: RenderMapper<TradeProgressScreen> = store => ws => {
   return {
     stage: ws.tradeExecution.stage,
     token: ws.token,
-    fromAddress: getCurrentAccountState(ws)!.address,
+    fromAddress: ws.wallet!.address,
     expectedVolume: expectedVolume(ws),
     operation: ws.operation,
     expectedVolumeEth: expectedVolumeEth(ws)!,

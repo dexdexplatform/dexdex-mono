@@ -1,4 +1,5 @@
 import { Operation } from '@dexdex/model/lib/base';
+import { canHandle } from '@dexdex/model/lib/order-selection';
 import {
   addOrder,
   getSide,
@@ -7,25 +8,19 @@ import {
   OrderBookSide,
   removeOrder,
   selectOrdersFor,
+  Sort,
   updateOrder,
   updateSide,
-  Sort,
 } from '@dexdex/model/lib/orderbook';
-import BN from 'bn.js';
 import { fixDecimals, removeExtraZeros } from '@dexdex/utils/lib/format';
-import { toTokenDecimals, changeDecimals, DivMode } from '@dexdex/utils/lib/units';
+import { changeDecimals, DivMode, toTokenDecimals } from '@dexdex/utils/lib/units';
+import BN from 'bn.js';
 import { WidgetState } from '.';
 import { ErrorCode } from '../form-error';
 import { OrderBookEvent, OrderEventKind } from '../server-api';
 import { TxStage } from '../widget';
 import { Actions, GoBackAction, SetTransactionStateAction } from './actions';
-import {
-  expectedVolume,
-  expectedVolumeEth,
-  getCurrentAccountState,
-  //networkCost,
-} from './selectors';
-import { canHandle } from '@dexdex/model/lib/order-selection';
+import { expectedVolume, expectedVolumeEth } from './selectors';
 
 function applyEvent(ob: OrderBook, event: OrderBookEvent): OrderBook {
   switch (event.kind) {
@@ -72,6 +67,7 @@ function tradeExecutionReducer(
         tradeTxHash: null,
         trade: null,
       };
+    case TxStage.LedgerNotConnected:
     case TxStage.UnkownError:
     case TxStage.RequestTokenAllowanceSignature:
     case TxStage.RequestTradeSignature:
@@ -112,18 +108,17 @@ function applySetters(state: WidgetState, action: Actions): WidgetState {
     case 'setOperation':
       return { ...state, operation: action.payload };
     case 'setWallet':
-      return { ...state, selectedWallet: action.payload };
+      return {
+        ...state,
+        wallet:
+          action.payload == null
+            ? null
+            : { ...action.payload, balance: new BN(0), tokenBalance: new BN(0) },
+      };
     case 'setWalletState':
       return {
         ...state,
-        wallets: {
-          ...state.wallets,
-          [action.payload.walletId]: action.payload,
-        },
-        selectedWallet:
-          state.selectedWallet == null && action.payload.status === 'ready'
-            ? { wallet: action.payload.walletId, accountIdx: 0 }
-            : state.selectedWallet,
+        wallet: state.wallet === null ? null : { ...state.wallet, ...action.payload },
       };
     case 'setToken':
       return {
@@ -141,6 +136,16 @@ function applySetters(state: WidgetState, action: Actions): WidgetState {
       return {
         ...state,
         tradeExecution: tradeExecutionReducer(state.tradeExecution, action),
+      };
+    case 'showNoWalletModal':
+      return {
+        ...state,
+        noWalletModalOpen: true,
+      };
+    case 'closeNoWalletModal':
+      return {
+        ...state,
+        noWalletModalOpen: false,
       };
     default:
       return { ...state };
@@ -230,30 +235,29 @@ function reducer(oldState: WidgetState, action: Actions): WidgetState {
   }
 
   // Check Balance errors
+
   // const newNetworkCost = networkCost(st);
   const newNetworkCost = new BN(0);
-  const newAccountState = getCurrentAccountState(st);
+  const wallet = st.wallet;
+
   const newVolumeEth = expectedVolumeEth(st);
   if (
     st.errors.amount != null ||
     newNetworkCost == null ||
-    newAccountState == null ||
+    wallet == null ||
     newVolumeEth == null
   ) {
     // If invalid amount => no plan => can't check balance error
     // If no trade plan => (no network cost Or volumeEth) => can't check balance error
     // If no valid account state => can't check balance error
     st.errors.balance = null;
-  } else if (newNetworkCost.gt(newAccountState.balance)) {
+  } else if (newNetworkCost.gt(wallet.balance)) {
     // can't pay network cost
     st.errors.balance = ErrorCode.CantPayNetwork;
-  } else if (
-    st.operation === 'buy' &&
-    newVolumeEth.add(newNetworkCost).gt(newAccountState.balance)
-  ) {
+  } else if (st.operation === 'buy' && newVolumeEth.add(newNetworkCost).gt(wallet.balance)) {
     // we don't have enough ether to buy those tokens
     st.errors.balance = ErrorCode.NotEnoughEther;
-  } else if (st.operation === 'sell' && expectedVolume(st).gt(newAccountState.tokenBalance)) {
+  } else if (st.operation === 'sell' && expectedVolume(st).gt(wallet.tokenBalance)) {
     // we don't have enough tokens to sell
     st.errors.balance = ErrorCode.NotEnoughTokens;
   } else {

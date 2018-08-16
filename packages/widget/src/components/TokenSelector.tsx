@@ -5,7 +5,7 @@ import 'react-select/dist/react-select.css';
 import { AutoSizer, List, ListRowProps } from 'react-virtualized';
 import { tokenDefaultSmallImg, tokenSmallImg, isMobile } from '../config';
 import { SafeImage } from './ImageLoader';
-import { Modal } from './Modal';
+import { DialogModal } from './Modal';
 
 const cx = classnames.bind(require('./TokenSelector.css'));
 
@@ -157,31 +157,23 @@ class TokenSelectionModal extends React.PureComponent<
 
   render() {
     return (
-      <Modal modalClassName={cx('modal')} onClose={this.props.onCancel}>
-        <div className={cx('headerModal')}>
-          <div className={cx('headerTitle')}>Token List</div>
-          <div className={cx('closeModal')} onClick={this.props.onCancel}>
-            ✕
-          </div>
-        </div>
-        <div className={cx('modalSearchArea')}>
-          <input
-            placeholder="search..."
-            ref={this.searchRef}
-            type="text"
-            value={this.state.currentSearch}
-            onChange={this.setSearchText}
-            onKeyUp={this.onSearchKeyUp}
-          />
-        </div>
-        <div className={cx('modalTokenList')}>
-          <TokenList
-            tokens={this.filteredTokens}
-            selectedToken={this.props.selectedToken}
-            setToken={this.props.setToken}
-          />
-        </div>
-      </Modal>
+      <DialogModal title="Token List" onClose={this.props.onCancel}>
+        <input
+          placeholder="search..."
+          ref={this.searchRef}
+          type="text"
+          value={this.state.currentSearch}
+          onChange={this.setSearchText}
+          onKeyUp={this.onSearchKeyUp}
+          className={cx('modalSearchArea')}
+        />
+
+        <TokenList
+          tokens={this.filteredTokens}
+          selectedToken={this.props.selectedToken}
+          setToken={this.props.setToken}
+        />
+      </DialogModal>
     );
   }
 }

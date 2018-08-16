@@ -1,30 +1,33 @@
 import Erc20 from '@dexdex/erc20';
-import { Operation } from '@dexdex/model/lib/base';
+import { getOrdersData } from '@dexdex/model/lib/order';
+import { getFinalVolumeEth } from '@dexdex/model/lib/order-selection';
 import { Trade, TradeState } from '@dexdex/model/lib/trade';
-import { Token } from '@dexdex/model/lib/token';
 import BN from 'bn.js';
 import Eth, { Address, TransactionReceipt } from 'ethjs-query';
-import { empty, Observable, Observer } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { Observable, Observer } from 'rxjs';
+import { filter, map, switchMap } from 'rxjs/operators';
 import { WidgetState } from '..';
 import { appConfig } from '../../../config';
 import DexDex from '../../contracts/dexdex';
 import { ServerApi } from '../../server-api';
+import { WalletId } from '../../wallets/base';
+import { isLedgerConnected } from '../../wallets/ledger';
 import { computeGasPrice, TransactionState, TxStage } from '../../widget';
 import { Actions, setTransactionState } from '../actions';
-import { getCurrentAccountState, getCurrentWalletState, expectedVolume } from '../selectors';
+import { expectedVolume } from '../selectors';
 import { Epic } from '../store';
 import { filterAction } from './utils';
-import { getOrdersData } from '@dexdex/model/lib/order';
-import { getFinalVolumeEth } from '@dexdex/model/lib/order-selection';
+import { Operation } from '@dexdex/model/lib/base';
 
 const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-type TradeParameters = {
-  ordersData: string;
-  volume: BN;
-  volumeEth: BN;
-};
+function isRejectionError(err: any) {
+  return (
+    err.message &&
+    (err.message.includes('MetaMask Tx Signature: User denied transaction signature.') ||
+      err.message.includes('Ledger device: Condition of use not satisfied'))
+  );
+}
 
 async function dexdexBuy(opts: {
   eth: Eth;
@@ -36,38 +39,27 @@ async function dexdexBuy(opts: {
   affiliate: Address;
   gasPrice: BN;
 }): Promise<string> {
-  try {
-    const dexdex = DexDex(opts.eth, appConfig().ContractAddress);
-    const estimatedGas = await dexdex.estimateGasForBuy(
-      opts.eth,
-      opts.token,
-      opts.volume,
-      opts.ordersData,
-      opts.account,
-      opts.affiliate,
-      {
-        from: opts.account,
-        value: opts.volumeEth,
-        gasPrice: opts.gasPrice,
-      }
-    );
-    return await dexdex.buy(
-      opts.token,
-      opts.volume,
-      opts.ordersData,
-      opts.account,
-      opts.affiliate,
-      {
-        from: opts.account,
-        value: opts.volumeEth,
-        gas: estimatedGas.muln(1.5),
-        gasPrice: opts.gasPrice,
-      }
-    );
-  } catch (err) {
-    throw err;
-    // throw toWalletError(err);
-  }
+  const dexdex = DexDex(opts.eth, appConfig().ContractAddress);
+  const estimatedGas = await dexdex.estimateGasForBuy(
+    opts.eth,
+    opts.token,
+    opts.volume,
+    opts.ordersData,
+    opts.account,
+    opts.affiliate,
+    {
+      from: opts.account,
+      value: opts.volumeEth,
+      gasPrice: opts.gasPrice,
+    }
+  );
+
+  return await dexdex.buy(opts.token, opts.volume, opts.ordersData, opts.account, opts.affiliate, {
+    from: opts.account,
+    value: opts.volumeEth,
+    gas: estimatedGas.muln(1.5),
+    gasPrice: opts.gasPrice,
+  });
 }
 
 async function dexdexSell(opts: {
@@ -80,38 +72,33 @@ async function dexdexSell(opts: {
   affiliate: Address;
   gasPrice: BN;
 }): Promise<string> {
-  try {
-    const dexdex = DexDex(opts.eth, appConfig().ContractAddress);
-    const estimatedGas = await dexdex.estimateGasForSell(
-      opts.eth,
-      opts.token,
-      opts.volume,
-      opts.volumeEth,
-      opts.ordersData,
-      opts.account,
-      opts.affiliate,
-      {
-        from: opts.account,
-        gasPrice: opts.gasPrice,
-      }
-    );
-    return await dexdex.sell(
-      opts.token,
-      opts.volume,
-      opts.volumeEth,
-      opts.ordersData,
-      opts.account,
-      opts.affiliate,
-      {
-        from: opts.account,
-        gas: estimatedGas.muln(1.5),
-        gasPrice: opts.gasPrice,
-      }
-    );
-  } catch (err) {
-    throw err;
-    // throw toWalletError(err);
-  }
+  const dexdex = DexDex(opts.eth, appConfig().ContractAddress);
+  const estimatedGas = await dexdex.estimateGasForSell(
+    opts.eth,
+    opts.token,
+    opts.volume,
+    opts.volumeEth,
+    opts.ordersData,
+    opts.account,
+    opts.affiliate,
+    {
+      from: opts.account,
+      gasPrice: opts.gasPrice,
+    }
+  );
+  return await dexdex.sell(
+    opts.token,
+    opts.volume,
+    opts.volumeEth,
+    opts.ordersData,
+    opts.account,
+    opts.affiliate,
+    {
+      from: opts.account,
+      gas: estimatedGas.muln(1.5),
+      gasPrice: opts.gasPrice,
+    }
+  );
 }
 
 async function waitForTransaction(eth: Eth, txId: string): Promise<TransactionReceipt> {
@@ -127,87 +114,104 @@ async function waitForTransaction(eth: Eth, txId: string): Promise<TransactionRe
   return txReceipt;
 }
 
-async function needsTokenAllowance(
-  eth: Eth,
-  account: Address,
-  token: Token,
-  volume: BN
-): Promise<boolean> {
+async function needsTokenAllowance({
+  eth,
+  account,
+  token,
+  volume,
+}: TradeDetails): Promise<boolean> {
   const ourAddress = appConfig().ContractAddress;
-  const erc20 = Erc20(eth, token.address);
+  const erc20 = Erc20(eth, token);
 
   const currentAllowance = await erc20.allowance(account, ourAddress);
   return currentAllowance.lt(volume);
 }
 
-async function approveTokenAllowance(
-  eth: Eth,
-  account: Address,
-  token: Token,
-  gasPrice: BN
-): Promise<string> {
+async function approveTokenAllowance({
+  eth,
+  account,
+  token,
+  gasPrice,
+}: TradeDetails): Promise<string> {
   const ourAddress = appConfig().ContractAddress;
-  const erc20 = Erc20(eth, token.address);
+  const erc20 = Erc20(eth, token);
   // MaxVolume = 2^256 -1
   const MaxVolume = new BN('ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', 16);
   return erc20.approve(ourAddress, MaxVolume, { from: account, gasPrice });
 }
 
+type TradeDetails = {
+  walletId: WalletId;
+  eth: Eth;
+  account: string;
+  affiliate: string;
+  gasPrice: BN;
+  ordersData: string;
+  volume: BN;
+  volumeEth: BN;
+  token: string;
+  operation: Operation;
+};
+
+function getTradeDetails(state: WidgetState): TradeDetails {
+  const volume = expectedVolume(state);
+  return {
+    walletId: state.wallet!.id,
+    eth: state.wallet!.eth,
+    account: state.wallet!.address,
+    affiliate: state.config.affiliateAddress,
+    gasPrice: computeGasPrice(state.config.gasprices, state.gasPrice),
+    ordersData: getOrdersData(state.orderSelection!.orders),
+    volume,
+    volumeEth: getFinalVolumeEth(state.orderSelection!, volume, state.config.feePercentage),
+    token: state.token.address,
+    operation: state.operation,
+  };
+}
+
+async function waitForTrade(api: ServerApi, tradeTxId: string): Promise<Trade> {
+  let trade: Trade | null = null;
+  while (trade == null || trade.state === TradeState.Pending) {
+    trade = await api.getTrade(tradeTxId);
+    await wait(1000);
+  }
+  return trade;
+}
+
 async function executeTrade(
   api: ServerApi,
-  eth: Eth,
-  account: Address,
-  gasPrice: BN,
-  token: Token,
-  operation: Operation,
-  affiliateAddress: Address,
-  tradeParams: TradeParameters,
+  state: WidgetState,
   reportState: (newState: TransactionState) => void
 ) {
-  let tradeTxId: string;
+  const tradeDetails = getTradeDetails(state);
+  const isSell = tradeDetails.operation === 'sell';
+  const isLedger = tradeDetails.walletId === WalletId.Ledger;
+  const { eth } = tradeDetails;
+
   try {
-    if (operation === 'buy') {
-      reportState({ stage: TxStage.RequestTradeSignature });
-      tradeTxId = await dexdexBuy({
-        eth,
-        account,
-        token: token.address,
-        volume: tradeParams.volume,
-        volumeEth: tradeParams.volumeEth,
-        ordersData: tradeParams.ordersData,
-        gasPrice,
-        affiliate: affiliateAddress,
-      });
-    } else {
-      if (await needsTokenAllowance(eth, account, token, tradeParams.volume)) {
-        reportState({ stage: TxStage.RequestTokenAllowanceSignature });
-        const allowanceTxId = await approveTokenAllowance(eth, account, token, gasPrice);
-        reportState({ stage: TxStage.TokenAllowanceInProgress, txId: allowanceTxId });
-        await waitForTransaction(eth, allowanceTxId);
+    if (isSell && (await needsTokenAllowance(tradeDetails))) {
+      reportState({ stage: TxStage.RequestTokenAllowanceSignature });
+
+      if (isLedger && !(await isLedgerConnected())) {
+        reportState({ stage: TxStage.LedgerNotConnected });
+        return;
       }
 
-      reportState({ stage: TxStage.RequestTradeSignature });
-      tradeTxId = await dexdexSell({
-        eth,
-        account,
-        token: token.address,
-        volume: tradeParams.volume,
-        volumeEth: tradeParams.volumeEth,
-        ordersData: tradeParams.ordersData,
-        gasPrice,
-        affiliate: affiliateAddress,
-      });
+      const allowanceTxId = await approveTokenAllowance(tradeDetails);
+      reportState({ stage: TxStage.TokenAllowanceInProgress, txId: allowanceTxId });
+      await waitForTransaction(eth, allowanceTxId);
     }
 
+    reportState({ stage: TxStage.RequestTradeSignature });
+    if (isLedger && !(await isLedgerConnected())) {
+      reportState({ stage: TxStage.LedgerNotConnected });
+      return;
+    }
+
+    const tradeTxId = await (isSell ? dexdexSell(tradeDetails) : dexdexBuy(tradeDetails));
     reportState({ stage: TxStage.TradeInProgress, txId: tradeTxId });
-    const tradeTxReceipt = await waitForTransaction(eth, tradeTxId);
-    console.log(tradeTxReceipt);
-
-    let trade: Trade | null = null;
-    while (trade == null || trade.state === TradeState.Pending) {
-      trade = await api.getTrade(tradeTxId);
-      await wait(1000);
-    }
+    await waitForTransaction(eth, tradeTxId);
+    const trade = await waitForTrade(api, tradeTxId);
 
     if (trade.state === TradeState.Failed) {
       reportState({ stage: TxStage.TradeFailed, trade });
@@ -215,10 +219,7 @@ async function executeTrade(
       reportState({ stage: TxStage.TradeCompleted, trade });
     }
   } catch (err) {
-    if (
-      err.message &&
-      err.message.includes('MetaMask Tx Signature: User denied transaction signature.')
-    ) {
+    if (isRejectionError(err)) {
       reportState({ stage: TxStage.SignatureRejected });
     } else {
       console.error(err);
@@ -227,30 +228,12 @@ async function executeTrade(
   }
 }
 
-function executeTradeObs(
-  api: ServerApi,
-  eth: Eth,
-  account: Address,
-  gasPrice: BN,
-  token: Token,
-  operation: Operation,
-  affiliateAddress: Address,
-  tradeParams: TradeParameters
-): Observable<TransactionState> {
-  return Observable.create(async (observer: Observer<TransactionState>) => {
-    executeTrade(
-      api,
-      eth,
-      account,
-      gasPrice,
-      token,
-      operation,
-      affiliateAddress,
-      tradeParams,
-      state => observer.next(state)
-    )
-      .catch(err => observer.error(err))
-      .then(() => observer.complete());
+function runTrade(api: ServerApi, state: WidgetState): Observable<TransactionState> {
+  return Observable.create((observer: Observer<TransactionState>) => {
+    const reportState = (newState: TransactionState) => observer.next(newState);
+    const p = executeTrade(api, state, reportState);
+    p.catch(err => observer.error(err));
+    p.then(() => observer.complete());
 
     return () => {
       console.log("can't unsubscribe to this observable");
@@ -261,44 +244,22 @@ function executeTradeObs(
 export const executeTradeEpic = (api: ServerApi): Epic<WidgetState, Actions> => changes =>
   changes.pipe(
     filterAction('startTransaction'),
-    switchMap(({ state }) => {
-      const walletState = getCurrentWalletState(state);
-      const accountState = getCurrentAccountState(state);
+    filter(({ state }) => {
+      const wallet = state.wallet;
 
-      if (walletState == null || accountState == null || walletState.status === 'error') {
+      if (wallet == null || wallet.networkId !== appConfig().networkId) {
         // something is wrong here
         console.log('invalid UI state: starting tx with no valid wallet');
-        return empty();
+        return false;
       }
 
       if (state.orderSelection == null) {
         // something is wrong here
         console.log('invalid UI state: starting tx with no trade plan');
-        return empty();
+        return false;
       }
-
-      const affiliateAddress = state.config.affiliateAddress;
-      const gasPriceBN = computeGasPrice(state.config.gasprices, state.gasPrice);
-      const ordersData = getOrdersData(state.orderSelection.orders);
-      const volume = expectedVolume(state);
-      const volumeEth = getFinalVolumeEth(state.orderSelection, volume, state.config.feePercentage);
-
-      const tradeParameters: TradeParameters = {
-        ordersData,
-        volume,
-        volumeEth,
-      };
-
-      return executeTradeObs(
-        api,
-        walletState.eth,
-        accountState.address,
-        gasPriceBN,
-        state.token,
-        state.operation,
-        affiliateAddress,
-        tradeParameters
-      );
+      return true;
     }),
+    switchMap(change => runTrade(api, change.state)),
     map(setTransactionState)
   );

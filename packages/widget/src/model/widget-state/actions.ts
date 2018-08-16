@@ -1,8 +1,9 @@
-import { Operation } from '@dexdex/model/lib/base';
+import { Operation, Address } from '@dexdex/model/lib/base';
 import { Token } from '@dexdex/model/lib/token';
 import { OrderBookEvent } from '../server-api';
-import { WalletAccountRef, WalletState } from '../wallets/index';
 import { TransactionState } from '../widget';
+import { Wallet } from '.';
+import BN from 'bn.js';
 
 //-------------------------------------------------------------------------------------------------
 // Actions
@@ -37,13 +38,19 @@ export const setOperation = (payload: Operation): SetOperationAction => ({
 
 export interface SetWalletAction {
   type: 'setWallet';
-  payload: WalletAccountRef | null;
+  payload: null | Wallet;
 }
 
-export const setWallet = (payload: WalletAccountRef | null): SetWalletAction => ({
+export const setWallet = (payload: null | Wallet): SetWalletAction => ({
   type: 'setWallet',
   payload,
 });
+
+export interface WalletState {
+  balance: BN;
+  tokenBalance: BN;
+  address: Address;
+}
 
 export interface SetWalletStateAction {
   type: 'setWalletState';
@@ -91,6 +98,22 @@ export const setTransactionState = (payload: TransactionState): SetTransactionSt
   payload,
 });
 
+export interface ShowNoWalletModal {
+  type: 'showNoWalletModal';
+}
+
+export const showNoWalletModal = (): ShowNoWalletModal => ({
+  type: 'showNoWalletModal',
+});
+
+export interface CloseNoWalletModal {
+  type: 'closeNoWalletModal';
+}
+
+export const closeNoWalletModal = (): CloseNoWalletModal => ({
+  type: 'closeNoWalletModal',
+});
+
 export function actionIs(action: Actions, ...types: Actions['type'][]): boolean {
   return types.indexOf(action.type) >= 0;
 }
@@ -104,4 +127,6 @@ export type Actions =
   | StartTransactionAction
   | SetTransactionStateAction
   | GoBackAction
-  | SetTokenAction;
+  | SetTokenAction
+  | ShowNoWalletModal
+  | CloseNoWalletModal;

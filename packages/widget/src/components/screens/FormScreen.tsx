@@ -5,15 +5,13 @@ import BN from 'bn.js';
 import * as React from 'react';
 import { RenderMapper } from '.';
 import { ErrorMessage } from '../../model/form-error';
-import { WalletAccountRef, WalletState } from '../../model/wallets/index';
 import { GasPrice } from '../../model/widget';
-import { Operations, WidgetState } from '../../model/widget-state';
+import { Operations, WidgetState, WalletDetails, Wallet } from '../../model/widget-state';
 import * as actions from '../../model/widget-state/actions';
 import {
   expectedVolume,
   expectedVolumeEth,
   getAmountError,
-  getWalletList,
   networkCost,
   getBalanceError,
 } from '../../model/widget-state/selectors';
@@ -32,8 +30,7 @@ export interface WidgetFormProps {
   actions: Operations;
   tokenList: Token[];
   token: Token;
-  walletList: WalletState[];
-  wallet: WalletAccountRef | null;
+  wallet: WalletDetails | null;
   amountError: null | ErrorMessage;
   balanceError: null | ErrorMessage;
   canSubmit: boolean;
@@ -49,7 +46,7 @@ export interface WidgetFormProps {
 export const mapper: RenderMapper<WidgetFormProps> = store => {
   const setToken = (x: Token) => store.dispatch(actions.setToken(x));
   const setOperation = (x: Operation) => store.dispatch(actions.setOperation(x));
-  const setWallet = (x: WalletAccountRef | null) => store.dispatch(actions.setWallet(x));
+  const setWallet = (x: Wallet) => store.dispatch(actions.setWallet(x));
   const startTransaction = () => store.dispatch(actions.startTransaction());
 
   const setAmount = (ws: WidgetState) => (x: string) => {
@@ -65,15 +62,11 @@ export const mapper: RenderMapper<WidgetFormProps> = store => {
     return {
       tokenList: ws.config.tokens,
       token: ws.token,
-      walletList: getWalletList(ws),
-      wallet: ws.selectedWallet,
+      wallet: ws.wallet,
       amountError,
       balanceError,
       canSubmit:
-        amountError == null &&
-        balanceError == null &&
-        ws.selectedWallet != null &&
-        ws.orderbook != null,
+        amountError == null && balanceError == null && ws.wallet != null && ws.orderbook != null,
       amount: ws.amount,
       gasPrice: ws.gasPrice,
       enabledOperations: ws.config.enabledOperations,
@@ -110,8 +103,7 @@ const WidgetForm: React.SFC<WidgetFormProps> = props => (
       </div>
     </FormField>
     <WalletSelector
-      selectedWallet={props.wallet}
-      wallets={props.walletList}
+      wallet={props.wallet}
       token={props.token}
       error={props.balanceError}
       onChange={props.actions.setWallet}
