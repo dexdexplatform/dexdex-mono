@@ -167,12 +167,13 @@ class TokenSelectionModal extends React.PureComponent<
           onKeyUp={this.onSearchKeyUp}
           className={cx('modalSearchArea')}
         />
-
-        <TokenList
-          tokens={this.filteredTokens}
-          selectedToken={this.props.selectedToken}
-          setToken={this.props.setToken}
-        />
+        <div className={cx('modalTokenList')}>
+          <TokenList
+            tokens={this.filteredTokens}
+            selectedToken={this.props.selectedToken}
+            setToken={this.props.setToken}
+          />
+        </div>
       </DialogModal>
     );
   }
@@ -216,6 +217,12 @@ class TokenSelector extends React.Component<TokenSelectorProps, TokenSelectorSta
     const { selectedToken, tokens } = this.props;
 
     const isSingle = tokens.length === 1;
+    const tokensCopy = this.props.tokens.concat(
+      this.props.tokens,
+      this.props.tokens,
+      this.props.tokens,
+      this.props.tokens
+    );
     return (
       <div className={cx('tokenSelector', isSingle && 'single')} onClick={this.openSelector}>
         <TokenImage token={selectedToken} />
@@ -225,8 +232,8 @@ class TokenSelector extends React.Component<TokenSelectorProps, TokenSelectorSta
         {!isSingle && <span className={cx('caret')}>▾</span>}
         {this.state.isOpen && (
           <TokenSelectionModal
-            tokens={this.props.tokens}
-            selectedToken={this.props.selectedToken}
+            tokens={tokensCopy}
+            selectedToken={selectedToken}
             setToken={this.setToken}
             onCancel={this.cancelSelection}
           />
